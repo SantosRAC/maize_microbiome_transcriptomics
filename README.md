@@ -31,5 +31,5 @@ Pipeline for analyzing maize microbiome metataxonomics data using Nextflow.
 
 ## Funding
 
- * São Paulo Research Foundation (FAPESP), São Paulo, SP, Brazil
+ * São Paulo Research Foundation (FAPESP), São Paulo, SP, Brazil (grant number [2023/11133-3](https://bv.fapesp.br/en/bolsas/212537/integrating-metataxonomics-and-host-transcriptomics-data-in-maize/))
 
