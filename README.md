@@ -19,6 +19,9 @@ Pipeline for analyzing maize microbiome metataxonomics data using Nextflow.
  * Qiime2 2023.9 ([qiime2-tiny-2023.9-py38-linux-conda.yml](https://data.qiime2.org/distro/tiny/qiime2-tiny-2023.9-py38-linux-conda.yml))
  * 
 
+## How to run the pipeline
+
+
 
 ## Institutional Support
 
