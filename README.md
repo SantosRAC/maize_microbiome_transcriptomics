@@ -17,8 +17,8 @@ Pipeline for analyzing maize microbiome metataxonomics and transcriptomics data 
  * Nextflow version 23.10.0.5889
  * Python 3.8
  * Conda or Miniconda
- * Qiime2 2023.9 ([qiime2-tiny-2023.9-py38-linux-conda.yml](https://data.qiime2.org/distro/tiny/qiime2-tiny-2023.9-py38-linux-conda.yml))
- * 
+ * Qiime2 2023.9 ([qiime2-tiny-2023.9-py38-linux-conda.yml](https://data.qiime2.org/distro/tiny/qiime2-tiny-2023.9-py38-linux-conda.yml)) (a copy of this `.yml` file is available in the `nextflow/conda_envs/` folder)
+
 
 ### Transcriptomics pipeline
 
@@ -26,11 +26,14 @@ Pipeline for analyzing maize microbiome metataxonomics and transcriptomics data 
 
 ## How to run
 
+Running the metataxonomics pipeline:
+
 ```bash
-nextflow maize_metataxonomics.nf -with-report -with-dag
+cd /path/to/maize_microbiome_transcriptomics/nextflow
+nextflow maize_metataxonomics.nf nextflow.config -with-report -with-dag -with-conda 
 ```
 
-With `-with-report`, Nextflow will generate a HTML report with details about individuals runs, including reasons why some process failed. `-with-dag` enables the generation of a graph with the workflow (great for presentation).
+With `-with-report`, Nextflow will generate a HTML report with details about individuals runs, including reasons why some process failed. `-with-dag` enables the generation of a graph with the workflow (great for presentation). `-with-conda` enables execution of processes in Conda environments.
 
 ## Institutional Support
 
