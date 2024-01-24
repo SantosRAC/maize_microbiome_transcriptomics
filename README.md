@@ -19,6 +19,12 @@ Pipeline for analyzing maize microbiome metataxonomics and transcriptomics data 
  * Conda or Miniconda
  * Qiime2 2023.9 ([qiime2-tiny-2023.9-py38-linux-conda.yml](https://data.qiime2.org/distro/tiny/qiime2-tiny-2023.9-py38-linux-conda.yml)) (a copy of this `.yml` file is available in the `nextflow/conda_envs/` folder)
 
+Create the conda environment:
+
+```bash
+conda env create -f /path/to/nextflow/conda_envs/qiime2-amplicon-2023.9-py38-linux-conda.yml -n qiime2-amplicon-2023.9
+```
+
 
 ### Transcriptomics pipeline
 

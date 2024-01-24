@@ -34,7 +34,7 @@ process runFastqc {
 }
 
 process createQiimeArtifact {
-    conda 'conda_envs/qiime2-amplicon-2023.9-py38-linux-conda.yml'
+    conda '/home/renato/miniconda3/envs/picrust2/envs/qiime2-amplicon-2023.9'
 
     input:
     path reads_file_dir
