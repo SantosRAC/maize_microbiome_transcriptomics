@@ -1,17 +1,18 @@
 # maize_microbiome_transcriptomics
 
-Researchers:
+## Description
+
+Pipeline for analyzing maize microbiome metataxonomics and transcriptomics data using Nextflow.
+
+## Researchers
+
  * Dr. Renato Augusto Corrêa dos Santos
  * Professor Dr. Jason Wallace
  * Professor Dr. Diego M. Riaño-Pachón
 
-
-## Description
-
-Pipeline for analyzing maize microbiome metataxonomics data using Nextflow.
-
-
 ## Dependencies
+
+### Metataxonomics pipeline
 
  * Nextflow version 23.10.0.5889
  * Python 3.8
@@ -19,9 +20,17 @@ Pipeline for analyzing maize microbiome metataxonomics data using Nextflow.
  * Qiime2 2023.9 ([qiime2-tiny-2023.9-py38-linux-conda.yml](https://data.qiime2.org/distro/tiny/qiime2-tiny-2023.9-py38-linux-conda.yml))
  * 
 
-## How to run the pipeline
+### Transcriptomics pipeline
 
 
+
+## How to run
+
+```bash
+nextflow maize_metataxonomics.nf -with-report -with-dag
+```
+
+With `-with-report`, Nextflow will generate a HTML report with details about individuals runs, including reasons why some process failed. `-with-dag` enables the generation of a graph with the workflow (great for presentation).
 
 ## Institutional Support
 
