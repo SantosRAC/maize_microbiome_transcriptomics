@@ -2,6 +2,10 @@
 
 ## Description
 
+Repository storing analyses during Dr. Santos internship at UGA - Wallace Lab.
+
+
+
 Pipeline for analyzing maize microbiome metataxonomics and transcriptomics data using Nextflow.
 
 ## Researchers
