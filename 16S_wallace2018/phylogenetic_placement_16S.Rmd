@@ -1,0 +1,52 @@
+---
+title: "compare_16S_placements"
+author: "Renato Augusto Correa dos Santos"
+date: "2024-03-18"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Comparing placements of ASVs generating with forward and reverve reads
+
+
+
+Importing trees:
+
+```{r}
+library(treeio)
+forward_epangplacement_wallace2018 <- read.newick('/media/rsantos/4TB_drive/Projects/UGA_RACS/16S/PhylogeneticPlacement/epa-ng_in_picrust2/rep-seqs-paired-end_wallace2018_assingle_forward-dada2_placed_seqs.tre')
+reverse_epangplacement_wallace2018 <- read.newick('/media/rsantos/4TB_drive/Projects/UGA_RACS/16S/PhylogeneticPlacement/epa-ng_in_picrust2/rep-seqs-paired-end_wallace2018_assingle_reverse-dada2_placed_seqs.tre')
+```
+
+
+Visualizing tree for the forward reads placement:
+
+```{r echo=FALSE}
+ggplot(forward_epangplacement_wallace2018, aes(x, y)) + geom_tree() + theme_tree()
+```
+
+
+```{r}
+library(ape)
+#https://rdrr.io/cran/ape/man/cophyloplot.html
+cophyloplot(forward_epangplacement_wallace2018, reverse_epangplacement_wallace2018)
+
+
+#https://rdrr.io/cran/ape/man/comparePhylo.html
+
+```
+
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
