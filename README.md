@@ -2,11 +2,11 @@
 
 ## Description
 
-Repository storing analyses during Dr. Santos internship at UGA - Wallace Lab.
+Repository storing analyses during [Dr. Santos](https://bv.fapesp.br/pt/pesquisador/164909/renato-augusto-correa-dos-santos/) internship at UGA - Wallace Lab.
 
+Results from analysis of RNAseq, 16S and correlation between both will be included here.
 
-
-Pipeline for analyzing maize microbiome metataxonomics and transcriptomics data using Nextflow.
+Eventually, it will include a pipeline for analyzing maize microbiome metataxonomics and transcriptomics data using Nextflow.
 
 ## Researchers
 
@@ -16,7 +16,14 @@ Pipeline for analyzing maize microbiome metataxonomics and transcriptomics data 
 
 ## Dependencies
 
-### Metataxonomics pipeline
+### Virtual env for correlation analyses
+
+```bash
+virtualenv --python=python3.10 .venv
+source .venv/bin/activate
+```
+
+### Metataxonomics Nextflow pipeline
 
  * Nextflow version 23.10.0.5889
  * Python 3.8
@@ -30,11 +37,11 @@ conda env create -f /path/to/nextflow/conda_envs/qiime2-amplicon-2023.9-py38-lin
 ```
 
 
-### Transcriptomics pipeline
+### Transcriptomics Nextflow pipeline
 
 
 
-## How to run
+## How to run Nextlof pipelines
 
 Running the metataxonomics pipeline:
 
