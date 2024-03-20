@@ -16,7 +16,7 @@ Eventually, it will include a pipeline for analyzing maize microbiome metataxono
 
 ## Dependencies
 
-### Virtual env for correlation analyses
+### Virtual env for all analyses (except Nextflow)
 
 ```bash
 virtualenv --python=python3.10 .venv
@@ -56,7 +56,8 @@ With `-with-report`, Nextflow will generate a HTML report with details about ind
 
  * Computational, Evolutionary, and Systems Biology Laboratory (LabBCES)
  * Nuclear Center of Energy in Agriculture (CENA), University of Sao Paulo, Piracicaba, SP, Brazil
- * University of Georgia, Athens, GA, USA
+ * Wallace Lab
+ * University of Georgia (UGA), Athens, GA, USA
 
 ## Funding
 
