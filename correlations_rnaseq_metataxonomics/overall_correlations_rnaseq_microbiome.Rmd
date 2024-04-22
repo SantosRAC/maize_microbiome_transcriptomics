@@ -1,0 +1,57 @@
+---
+title: "overall_correlations_rnaseq_microbiome.ipynb"
+author: "Renato Augusto Correa dos Santos"
+date: "2024-04-22"
+output: html_document
+---
+
+# 
+
+Importing OTU data:
+
+```{r}
+wallace_asvs_q20_fw_closedref_silva <- read.table("/home/rsantos/Repositories/maize_microbiome_transcriptomics/correlations_rnaseq_metataxonomics/wallace_asvs_q20_fw_closedref_silva.tsv", header = TRUE, sep = "\t", row.names = 1)
+#head(wallace_asvs_q20_fw_closedref_silva)
+#dim(wallace_asvs_q20_fw_closedref_silva)
+#rownames(wallace_asvs_q20_fw_closedref_silva)
+#class(wallace_asvs_q20_fw_closedref_silva)
+```
+
+Importing RNAseq data:
+
+```{r}
+kremling_expression_v5_numreads_closedref <- read.table("/home/rsantos/Repositories/maize_microbiome_transcriptomics/correlations_rnaseq_metataxonomics/kremling_expression_v5_numreads_closedref.tsv", header = TRUE, sep = "\t", row.names = 1)
+kremling_expression_v5_tpm_closedref <- read.table("/home/rsantos/Repositories/maize_microbiome_transcriptomics/correlations_rnaseq_metataxonomics/kremling_expression_v5_tpm_closedref.tsv", header = TRUE, sep = "\t", row.names = 1)
+#dim(kremling_expression_v5_numreads_closedref)
+head(kremling_expression_v5_numreads_closedref)
+```
+
+
+## Calculating dissimilarity distance matrices
+
+```{r}
+#install.packages('vegan')
+library(vegan)
+
+# Inspecting the structure of test data in Vegan`s documentation
+data(varespec)
+dim(varespec)
+head(varespec)
+class(varespec)
+```
+
+```{r}
+library(vegan)
+
+#Calculate the Aitchison dissimilarity distance matrix
+vegdist(kremling_expression_v5_numreads_closedref, method="aitchison", binary=FALSE, diag=FALSE, upper=FALSE, na.rm=FALSE)
+vegdist(kremling_expression_v5_tpm_closedref, method="aitchison", binary=FALSE, diag=FALSE, upper=FALSE, na.rm=FALSE)
+
+```
+
+
+
+```{r pressure, echo=FALSE}
+
+```
+
