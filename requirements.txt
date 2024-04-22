@@ -1,2 +1,3 @@
 corals==0.1.6
 mantel==2.2.1
+pandas==2.2.2

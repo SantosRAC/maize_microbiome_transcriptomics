@@ -21,6 +21,7 @@ Eventually, it will include a pipeline for analyzing maize microbiome metataxono
 ```bash
 virtualenv --python=python3.10 .venv
 source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
 ### Metataxonomics Nextflow pipeline
