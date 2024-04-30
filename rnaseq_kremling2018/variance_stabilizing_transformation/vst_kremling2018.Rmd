@@ -1,0 +1,42 @@
+---
+title: "VST_kremling_2018"
+author: "Renato A. Correa dos Santos"
+date: "2024-04-30"
+output: html_document
+---
+
+## Variance Stabilizing Transformation on Kremling et al (2018) data
+
+Installing DESeq2:
+
+```{r}
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("DESeq2")
+```
+
+Importing the Salmon counts as a matrix and creating a DESeq object:
+
+```{r}
+kremling2018_cts <- round(as.matrix(read.csv("/media/renato/SSD1TB/Projects/UGA_RACS/RNAseq/Salmon/Zma2_counts_matrix.txt",sep="\t")))
+kremling_coldata <- as.matrix(read.csv("/media/renato/SSD1TB/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/run_info/SraRunInfo_Kremling_etal_2018_LMAsamples.csv"))
+head(kremling2018_cts, 2)
+head(kremling_coldata, 2)
+dim(kremling2018_cts)
+dim(kremling_coldata)
+
+library("DESeq2")
+
+
+dds_Kremling2018 <- DESeqDataSetFromMatrix(countData = kremling2018_cts,
+                              colData = kremling_coldata,
+                              design = ~1)
+dds_Kremling2018
+```
+
+Embed plots:
+
+```{r pressure, echo=FALSE}
+
+```
