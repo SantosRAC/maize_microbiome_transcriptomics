@@ -14,6 +14,12 @@ Eventually, it will include a pipeline for analyzing maize microbiome metataxono
  * Professor Dr. Jason Wallace
  * Professor Dr. Diego M. Riaño-Pachón
 
+## Wiki page
+
+Research results will are included in our [wiki page](https://github.com/SantosRAC/maize_microbiome_transcriptomics/wiki).
+
+ * Poster presentation: IPBGG 2024 retreat (May 15-17, 2024)
+
 ## Dependencies
 
 ### Virtual env for all analyses (except Nextflow)
