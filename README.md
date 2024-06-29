@@ -6,8 +6,6 @@ Repository storing analyses during [Dr. Santos](https://bv.fapesp.br/pt/pesquisa
 
 Results from analysis of RNAseq, 16S and correlation between both will be included here.
 
-Eventually, it will include a pipeline for analyzing maize microbiome metataxonomics and transcriptomics data using Nextflow.
-
 ## Researchers
 
  * Dr. Renato Augusto Corrêa dos Santos
@@ -22,7 +20,7 @@ Research results will are included in our [wiki page](https://github.com/SantosR
 
 ## Dependencies
 
-### Virtual env for all analyses (except Nextflow)
+### Virtual env for all analyses
 
 ```bash
 virtualenv --python=python3.10 .venv
