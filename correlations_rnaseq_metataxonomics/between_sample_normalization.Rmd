@@ -139,3 +139,13 @@ norm_factors_night <- calcNormFactors(object = kremling_raw_expression_v5_night,
 cuf_normalized_day <- sweep(kremling_raw_expression_v5_day, 2, norm_factors_day, "/")
 cuf_normalized_night <- sweep(kremling_raw_expression_v5_night, 2, norm_factors_night, "/")
 ```
+
+# Data transformation
+
+## asinh transformation
+
+```{r}
+kremling_raw_expression_v5_night_asinh <- asinh(kremling_raw_expression_v5_night)
+kremling_raw_expression_v5_day_asinh <- asinh(kremling_raw_expression_v5_day)
+```
+
