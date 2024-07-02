@@ -25,7 +25,7 @@ kremling_raw_expression_v5_day <- read.delim("/home/rsantos/Repositories/maize_m
                                                row.names = "Name", header=TRUE)
 ```
 
-Names of R objects cannot start with numbers. Therefore, I will have to consider this when naming columns of the imported expression data in downstream analyses. 
+Names of R objects cannot start with numbers. Therefore, a "X" is added to the plot - day associations in my sample names (e.g., `14A0253_26` becomes `X14A0253_26`). I will have to consider this when naming columns of the imported expression data in downstream analyses. 
 
 ```{r}
 head(kremling_raw_expression_v5_night)
@@ -103,9 +103,11 @@ uq_normalized_night <- sweep(kremling_raw_expression_v5_night, 2, c((colSums(kre
 uq_normalized_round_night <- apply(uq_normalized_night, 2, round, digits = 5)
 ```
 
-## CTF normalization
+## counts adjusted with TMM factors (CTF) normalization
 
 ```{r}
+library(edgeR)
+
 lib_size_day <- base::colSums(kremling_raw_expression_v5_day)
 lib_size_night <- base::colSums(kremling_raw_expression_v5_night)
 
@@ -121,3 +123,19 @@ head(ctf_normalized_day)
 head(ctf_normalized_night)
 ```
 
+## counts adjusted with upper quartile factors (CUF) normalization
+
+```{r}
+library(edgeR)
+
+lib_size_day <- base::colSums(kremling_raw_expression_v5_day)
+lib_size_night <- base::colSums(kremling_raw_expression_v5_night)
+
+norm_factors_day <- calcNormFactors(object = kremling_raw_expression_v5_day,
+                                    lib.size = lib_size_day, method = "upperquartile")
+norm_factors_night <- calcNormFactors(object = kremling_raw_expression_v5_night,
+                                      lib.size = lib_size_night, method = "upperquartile")
+
+cuf_normalized_day <- sweep(kremling_raw_expression_v5_day, 2, norm_factors_day, "/")
+cuf_normalized_night <- sweep(kremling_raw_expression_v5_night, 2, norm_factors_night, "/")
+```
