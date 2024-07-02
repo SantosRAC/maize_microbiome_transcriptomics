@@ -1,0 +1,123 @@
+---
+title: "RNAseq between sample mormalization methods"
+author: "Renato Augusto Correa dos Santos"
+date: "2024-07-02"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Between sample RNAseq normalization methods
+
+As part of the RNAseq analysis and for getting correlations between microbiome and transcriptome during my (RACS) internship abroad at UGA (Wallace Lab), I include methods for between sample normalization of RNAseq data, following  [Renesh Bedre's blog](https://www.reneshbedre.com/blog/expression_units.html#rpm-or-cpm-reads-per-million-mapped-reads-or-counts-per-million-mapped-reads-), who discussed TMM, EdgeR and DESeq2 methods (and others), and the work of [Johnson and Krishnan 2022](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-021-02568-9), who have also implemented codes using R.
+
+In this notebook, I describe the between sample normalization of Day and Night maize transcriptome (all methods have been summarized in a JuPyTer notebook [here](https://github.com/SantosRAC/maize_microbiome_transcriptomics/tree/main/correlations_rnaseq_metataxonomics)):
+
+## Importing matrix of estimated counts (Salmon results after rounding values to integers)
+
+```{r}
+kremling_raw_expression_v5_night <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/correlations_rnaseq_metataxonomics/kremling_expression_v5_night.tsv",
+                                               row.names = "Name", header=TRUE)
+
+kremling_raw_expression_v5_day <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/correlations_rnaseq_metataxonomics/kremling_expression_v5_day.tsv",
+                                               row.names = "Name", header=TRUE)
+```
+
+Names of R objects cannot start with numbers. Therefore, I will have to consider this when naming columns of the imported expression data in downstream analyses. 
+
+```{r}
+head(kremling_raw_expression_v5_night)
+```
+
+## TMM normalization (EdgeR)
+
+Creating groups of samples for TMM normalization. I (RACS) will consider genotypes as different groups in a first analysis, so I used this code to get a file with associations between genotypes and names as they appear on the expression matrix (plot, followed by day) using `0_kremling_expression_key.txt` from Wallace et al (2018) FigShare:
+
+```{bash}
+perl -e 'while(<>){chomp; @fields=split(/\t/, $_); @fields2=split(/_/, $fields[0]); @fields3=split(/\./, $fields[1]); $sample = $fields3[2]."_".$fields3[1]; print "$fields2[2]\t$sample\n"}' /home/rsantos/Repositories/maize_microbiome_transcriptomics/correlations_rnaseq_metataxonomics/0_kremling_expression_key.txt > /home/rsantos/Repositories/maize_microbiome_transcriptomics/correlations_rnaseq_metataxonomics/0_kremling_genotype_plot_day_key.txt
+```
+
+Importing the association file as a dataframe:
+
+```{r}
+genotype_plot_day_association <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/correlations_rnaseq_metataxonomics/0_kremling_genotype_plot_day_key.txt")
+dim(genotype_plot_day_association)
+```
+
+Sorting 
+
+```{r}
+# Subsetting association dataframes according to columns in the expression matrix
+genotype_plot_day_association_night <- subset(genotype_plot_day_association, Plot_Day %in% colnames(kremling_raw_expression_v5_night))
+genotype_plot_day_association_day <- subset(genotype_plot_day_association, Plot_Day %in% colnames(kremling_raw_expression_v5_day))
+
+# Sorting association dataframes according to columns in the expression matrix
+genotype_plot_day_association_night <- genotype_plot_day_association_night[match(colnames(kremling_raw_expression_v5_night), genotype_plot_day_association_night$Plot_Day),]
+genotype_plot_day_association_day <- genotype_plot_day_association_day[match(colnames(kremling_raw_expression_v5_day), genotype_plot_day_association_day$Plot_Day),]
+```
+
+Using `EdgeR version 4.2.0`:
+
+```{r}
+# Installing EdgeR:
+#if (!require("BiocManager", quietly = TRUE))
+#    install.packages("BiocManager")
+#BiocManager::install("edgeR")
+
+library(edgeR)
+
+group_day <- factor(genotype_plot_day_association_day$Genotype)
+group_night <- factor(genotype_plot_day_association_night$Genotype)
+
+dgelist_day <- DGEList(counts=kremling_raw_expression_v5_day, group=group_day)
+dgelist_night <- DGEList(counts=kremling_raw_expression_v5_night, group=group_night)
+
+dgelist_day <- calcNormFactors(dgelist_day)
+dgelist_night <- calcNormFactors(dgelist_night)
+
+norm_counts_tmm_day <- cpm(dgelist_day)
+norm_counts_tmm_night <- cpm(dgelist_night)
+```
+
+## Upper Quartile (UQ) normalization (EdgeR)
+
+```{r}
+# Installation of EdgeR is shown in TMM
+
+library(edgeR)
+
+lib_size_day <- base::colSums(kremling_raw_expression_v5_day)
+lib_size_night <- base::colSums(kremling_raw_expression_v5_night)
+
+norm_factors_day <- calcNormFactors(object = kremling_raw_expression_v5_day,
+                                    lib.size = lib_size_day, method = "upperquartile")
+norm_factors_night <- calcNormFactors(object = kremling_raw_expression_v5_night,
+                                    lib.size = lib_size_night, method = "upperquartile")
+
+uq_normalized_day <- sweep(kremling_raw_expression_v5_day, 2, c((colSums(kremling_raw_expression_v5_day)*norm_factors_day)/(10**6)), "/")
+uq_normalized_round_day <- apply(uq_normalized_day, 2, round, digits = 5)
+
+uq_normalized_night <- sweep(kremling_raw_expression_v5_night, 2, c((colSums(kremling_raw_expression_v5_night)*norm_factors_night)/(10**6)), "/")
+uq_normalized_round_night <- apply(uq_normalized_night, 2, round, digits = 5)
+```
+
+## CTF normalization
+
+```{r}
+lib_size_day <- base::colSums(kremling_raw_expression_v5_day)
+lib_size_night <- base::colSums(kremling_raw_expression_v5_night)
+
+norm_factors_day <- calcNormFactors(object = kremling_raw_expression_v5_day,
+                                    lib.size = lib_size_day, method = "TMM")
+norm_factors_night <- calcNormFactors(object = kremling_raw_expression_v5_night,
+                                      lib.size = lib_size_night, method = "TMM")
+
+ctf_normalized_day <- sweep(kremling_raw_expression_v5_day, 2, norm_factors_day, "/")
+ctf_normalized_night <- sweep(kremling_raw_expression_v5_night, 2, norm_factors_night, "/")
+
+head(ctf_normalized_day)
+head(ctf_normalized_night)
+```
+
