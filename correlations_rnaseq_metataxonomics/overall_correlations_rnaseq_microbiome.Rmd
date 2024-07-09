@@ -1,7 +1,7 @@
 ---
 title: "overall_correlations_rnaseq_microbiome.ipynb"
 author: "Renato Augusto Correa dos Santos"
-date: "2024-04-22"
+date: "2024-07-09"
 output: html_document
 ---
 
@@ -10,35 +10,81 @@ output: html_document
 Importing OTU data:
 
 ```{r}
-wallace_asvs_q20_fw_closedref_silva <- read.table("/home/rsantos/Repositories/maize_microbiome_transcriptomics/correlations_rnaseq_metataxonomics/wallace_asvs_q20_fw_closedref_silva.tsv", header = TRUE, sep = "\t", row.names = 1)
-#head(wallace_asvs_q20_fw_closedref_silva)
-#dim(wallace_asvs_q20_fw_closedref_silva)
-#rownames(wallace_asvs_q20_fw_closedref_silva)
-#class(wallace_asvs_q20_fw_closedref_silva)
+wallace_otu_filtered_day <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/16S_wallace2018/combine_day_night_samples/otu_table_merged_counts_day_filtered.tsv", row.names = "OTU.ID", header=TRUE)
+wallace_otu_filtered_night <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/16S_wallace2018/combine_day_night_samples/otu_table_merged_counts_night_filtered.tsv", row.names = "OTU.ID", header=TRUE)
+
+dim(wallace_otu_filtered_day)
+dim(wallace_otu_filtered_night)
+head(wallace_otu_filtered_day)
+head(wallace_otu_filtered_night)
+
+#install.packages('compositions')
+library(compositions)
+
+wallace_otu_filtered_day_clr <- clr(wallace_otu_filtered_day)
+wallace_otu_filtered_night_clr <- clr(wallace_otu_filtered_night)
+
 ```
 
 Importing RNAseq data:
 
 ```{r}
-kremling_expression_v5_numreads_closedref <- read.table("/home/rsantos/Repositories/maize_microbiome_transcriptomics/correlations_rnaseq_metataxonomics/kremling_expression_v5_numreads_closedref.tsv", header = TRUE, sep = "\t", row.names = 1)
-kremling_expression_v5_tpm_closedref <- read.table("/home/rsantos/Repositories/maize_microbiome_transcriptomics/correlations_rnaseq_metataxonomics/kremling_expression_v5_tpm_closedref.tsv", header = TRUE, sep = "\t", row.names = 1)
-#dim(kremling_expression_v5_numreads_closedref)
-head(kremling_expression_v5_numreads_closedref)
+# TPM data after filtering low expression and low variance
+kremling_expression_v5_day_tpm_filtered_cv_filtered <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_day_tpm_filtered_cv_filtered.tsv", row.names = "Name", header=TRUE)
+kremling_expression_v5_night_tpm_filtered_cv_filtered <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_night_tpm_filtered_cv_filtered.tsv", row.names = "Name", header=TRUE)
+dim(kremling_expression_v5_day_tpm_filtered_cv_filtered)
+dim(kremling_expression_v5_night_tpm_filtered_cv_filtered)
+head(kremling_expression_v5_day_tpm_filtered_cv_filtered)
+head(kremling_expression_v5_night_tpm_filtered_cv_filtered)
 ```
 
 
 ## Calculating dissimilarity distance matrices
 
+Calculating Bray-Curtis dissimilarity distance matrices for microbiome and Aitchison dissimilarity distance matrices for gene expression (following M&M of [Priya et al 2022](https://www.nature.com/articles/s41564-022-01121-z)).
+
 ```{r}
-#install.packages('vegan')
+install.packages('vegan')
 library(vegan)
 
-# Inspecting the structure of test data in Vegan`s documentation
-data(varespec)
-dim(varespec)
-head(varespec)
-class(varespec)
+#Calculate the Bray-Curtis dissimilarity distance matrix for Microbiome
+wallace_otu_filtered_day <- as.data.frame(t(wallace_otu_filtered_day))
+wallace_otu_filtered_day_bc <- vegdist(wallace_otu_filtered_day,
+        method="bray")
+wallace_otu_filtered_night <- as.data.frame(t(wallace_otu_filtered_night))
+wallace_otu_filtered_night_bc <- vegdist(wallace_otu_filtered_night,
+        method="bray")
+
+#Calculate the Aitchison dissimilarity distance matrix for gene expression
+kremling_expression_v5_day_tpm_filtered_cv_filtered <- as.data.frame(t(kremling_expression_v5_day_tpm_filtered_cv_filtered))
+kremling_expression_v5_day_tpm_filtered_cv_filtered_aitchison <- vegdist(kremling_expression_v5_day_tpm_filtered_cv_filtered,
+        method="aitchison",
+        pseudocount=1)
+kremling_expression_v5_night_tpm_filtered_cv_filtered <- as.data.frame(t(kremling_expression_v5_night_tpm_filtered_cv_filtered))
+kremling_expression_v5_night_tpm_filtered_cv_filtered_aitchison <- vegdist(kremling_expression_v5_night_tpm_filtered_cv_filtered,
+        method="aitchison",
+        pseudocount=1)
 ```
+
+Running procrustes with distance matrices:
+
+```{r}
+day_procrustes <- procrustes(wallace_otu_filtered_day_bc, kremling_expression_v5_day_tpm_filtered_cv_filtered_aitchison)
+night_procrustes <- procrustes(wallace_otu_filtered_night_bc, kremling_expression_v5_night_tpm_filtered_cv_filtered_aitchison)
+
+summary(day_procrustes)
+summary(night_procrustes)
+
+plot(day_procrustes)
+plot(night_procrustes)
+
+day_procrustes_protest <- protest(wallace_otu_filtered_day_bc, kremling_expression_v5_day_tpm_filtered_cv_filtered_aitchison, scores = "sites", permutations = how(nperm = 9999))
+day_procrustes_protest
+night_procrustes_protest <- protest(wallace_otu_filtered_night_bc, kremling_expression_v5_night_tpm_filtered_cv_filtered_aitchison, scores = "sites", permutations = how(nperm = 9999))
+night_procrustes_protest
+```
+
+
 
 ```{r}
 library(vegan)

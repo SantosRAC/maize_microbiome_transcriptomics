@@ -1,0 +1,293 @@
+---
+title: "Data transformation"
+author: "Renato Augusto Correa dos Santos"
+date: "2024-07-09"
+output: pdf_document
+---
+
+# Importing normalized matrices after filtering lowly expressed genes and OTUs
+
+Importing filtered matrices (within and between sample normalization after filtering lowly expressed or abundance/low variance genes and OTUs):
+
+```{r}
+
+# OTU data
+wallace_cpm_otu_filtered_day <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/16S_wallace2018/combine_day_night_samples/otu_table_merged_day_cpm_filtered_cv_filtered.tsv",
+                                               row.names = "OTU.ID", header=TRUE)
+wallace_cpm_otu_filtered_night <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/16S_wallace2018/combine_day_night_samples/otu_table_merged_night_cpm_filtered_cv_filtered.tsv",
+                                               row.names = "OTU.ID", header=TRUE)
+
+# Filtered gene expression data after filtering lowly expressed genes
+
+## Within sample normalization
+kremling_tpm_expression_v5_filtered_day <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_day_tpm_filtered_cv_filtered.tsv",
+                                               row.names = "Name", header=TRUE)
+
+kremling_tpm_expression_v5_filtered_night <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_night_tpm_filtered_cv_filtered.tsv",
+                                               row.names = "Name", header=TRUE)
+
+kremling_rpkm_expression_v5_filtered_day <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_day_rpkm_filtered_cv_filtered.tsv",
+                                               row.names = "Name", header=TRUE)
+
+kremling_rpkm_expression_v5_filtered_night <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_night_rpkm_filtered_cv_filtered.tsv",
+                                               row.names = "Name", header=TRUE)
+
+kremling_cpm_expression_v5_filtered_day <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_day_cpm_filtered_cv_filtered.tsv",
+                                               row.names = "Name", header=TRUE)
+
+kremling_cpm_expression_v5_filtered_night <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_night_cpm_filtered_cv_filtered.tsv",
+                                               row.names = "Name", header=TRUE)
+
+## Between sample normalization
+kremling_tmm_expression_v5_filtered_day <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_day_tmm_filtered_cv_filtered.tsv",
+                                               row.names = "Name", header=TRUE)
+
+kremling_tmm_expression_v5_filtered_night <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_night_tmm_filtered_cv_filtered.tsv",
+                                               row.names = "Name", header=TRUE)
+
+kremling_uq_expression_v5_filtered_day <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_day_uq_filtered_cv_filtered.tsv",
+                                               row.names = "Name", header=TRUE)
+
+kremling_uq_expression_v5_filtered_night <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_night_uq_filtered_cv_filtered.tsv",
+                                               row.names = "Name", header=TRUE)
+
+kremling_ctf_expression_v5_filtered_day <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_day_ctf_filtered_cv_filtered.tsv",
+                                               row.names = "Name", header=TRUE)
+
+kremling_ctf_expression_v5_filtered_night <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_night_ctf_filtered_cv_filtered.tsv",
+                                               row.names = "Name", header=TRUE)
+
+kremling_cuf_expression_v5_filtered_day <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_day_cuf_filtered_cv_filtered.tsv",
+                                               row.names = "Name", header=TRUE)
+
+kremling_cuf_expression_v5_filtered_night <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_night_cuf_filtered_cv_filtered.tsv",
+                                               row.names = "Name", header=TRUE)
+```
+
+# Data transformation
+
+## asinh transformation
+
+Applying asinh transformation to gene and OTU data:
+
+```{r}
+# Applying asinh transformation to gene expression data
+kremling_tpm_expression_v5_day_asinh <- asinh(kremling_tpm_expression_v5_filtered_day)
+kremling_tpm_expression_v5_night_asinh <- asinh(kremling_tpm_expression_v5_filtered_night)
+kremling_rpkm_expression_v5_day_asinh <- asinh(kremling_rpkm_expression_v5_filtered_day)
+kremling_rpkm_expression_v5_night_asinh <- asinh(kremling_rpkm_expression_v5_filtered_night)
+kremling_cpm_expression_v5_day_asinh <- asinh(kremling_cpm_expression_v5_filtered_day)
+kremling_cpm_expression_v5_night_asinh <- asinh(kremling_cpm_expression_v5_filtered_night)
+norm_counts_tmm_day_asinh <- asinh(kremling_tmm_expression_v5_filtered_day)
+norm_counts_tmm_night_asinh <- asinh(kremling_tmm_expression_v5_filtered_night)
+uq_normalized_round_day_asinh <- asinh(kremling_uq_expression_v5_filtered_day)
+uq_normalized_round_night_asinh <- asinh(kremling_uq_expression_v5_filtered_night)
+ctf_normalized_day_asinh <- asinh(kremling_ctf_expression_v5_filtered_day)
+ctf_normalized_night_asinh <- asinh(kremling_ctf_expression_v5_filtered_night)
+cuf_normalized_day_asinh <- asinh(kremling_cuf_expression_v5_filtered_day)
+cuf_normalized_night_asinh <- asinh(kremling_cuf_expression_v5_filtered_night)
+
+# Applying asinh transformation to OTU data
+wallace_cpm_otu_day_asinh <- asinh(wallace_cpm_otu_filtered_day)
+wallace_cpm_otu_night_asinh <- asinh(wallace_cpm_otu_filtered_night)
+
+# Writing transformed data to file
+# I (RACS) had to make small changes in the output file to make columns match the identifiers (without X starting columns names and adding "Name" to column with genes); using vim :%s/^IX/^I/g (replace X with tab by tab)
+write.table(kremling_tpm_expression_v5_day_asinh, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_day_tpm_asinh.tsv',
+            sep = "\t", quote = FALSE)
+write.table(kremling_tpm_expression_v5_night_asinh, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_night_tpm_asinh.tsv',
+            sep = "\t", quote = FALSE)
+write.table(kremling_rpkm_expression_v5_day_asinh, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_day_rpkm_asinh.tsv',
+            sep = "\t", quote = FALSE)
+write.table(kremling_rpkm_expression_v5_night_asinh, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_night_rpkm_asinh.tsv',
+            sep = "\t", quote = FALSE)
+write.table(kremling_cpm_expression_v5_day_asinh, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_day_cpm_asinh.tsv',
+            sep = "\t", quote = FALSE)
+write.table(kremling_cpm_expression_v5_night_asinh, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_night_cpm_asinh.tsv',
+            sep = "\t", quote = FALSE)
+write.table(norm_counts_tmm_day_asinh, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_day_tmm_asinh.tsv',
+            sep = "\t", quote = FALSE)
+write.table(norm_counts_tmm_night_asinh, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_night_tmm_asinh.tsv',
+            sep = "\t", quote = FALSE)
+write.table(uq_normalized_round_day_asinh, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_day_uq_asinh.tsv',
+            sep = "\t", quote = FALSE)
+write.table(uq_normalized_round_night_asinh, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_night_uq_asinh.tsv',
+            sep = "\t", quote = FALSE)
+write.table(ctf_normalized_day_asinh, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_day_ctf_asinh.tsv',
+            sep = "\t", quote = FALSE)
+write.table(ctf_normalized_night_asinh, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_night_ctf_asinh.tsv',
+            sep = "\t", quote = FALSE)
+write.table(cuf_normalized_day_asinh, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_day_cuf_asinh.tsv',
+            sep = "\t", quote = FALSE)
+write.table(cuf_normalized_night_asinh, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/kremling_expression_v5_night_cuf_asinh.tsv',
+            sep = "\t", quote = FALSE)
+write.table(wallace_cpm_otu_day_asinh, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/16S_wallace2018/combine_day_night_samples/summed_d_n_otu_day_cpm_asinh.tsv',
+            sep = "\t", quote = FALSE)
+write.table(wallace_cpm_otu_night_asinh, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/16S_wallace2018/combine_day_night_samples/summed_d_n_otu_night_cpm_asinh.tsv',
+            sep = "\t", quote = FALSE)
+```
+
+## Variance Stabilizing Transformation
+
+
+```{r}
+#if (!require("BiocManager", quietly = TRUE))
+#    install.packages("BiocManager")
+
+#BiocManager::install("DESeq2")
+
+library("DESeq2")
+library("dplyr")
+
+# Importing metadata (genotype associated with each "plot_day" used in columns of the expression/OTU matrices)
+genotype_plot_day_association <- read.delim("/home/rsantos/Repositories/maize_microbiome_transcriptomics/correlations_rnaseq_metataxonomics/0_kremling_genotype_plot_day_key.txt")
+rownames(genotype_plot_day_association) <- genotype_plot_day_association$Plot_Day
+# Using select function from the dplyr library to select only the Genotype column
+genotype_plot_day_association <- select(genotype_plot_day_association, Genotype)
+head(genotype_plot_day_association)
+
+# Subsetting association dataframes according to columns in the expression matrix
+# These dataframes will be used to generate Deseq2 objects for all normalization methods, since column names for day and night are the same
+genotype_plot_day_association_day <- genotype_plot_day_association[colnames(kremling_tpm_expression_v5_filtered_day), , drop=FALSE]
+genotype_plot_day_association_night <- genotype_plot_day_association[colnames(kremling_tpm_expression_v5_filtered_night), , drop=FALSE]
+head(genotype_plot_day_association_day)
+head(genotype_plot_day_association_night)
+
+# Generating the DESeq2 object for all within sample normalization
+dds_tpm_day <- DESeqDataSetFromMatrix(countData = round(kremling_tpm_expression_v5_filtered_day),
+                              colData = genotype_plot_day_association_day,
+                              design=~1)
+dds_tpm_night <- DESeqDataSetFromMatrix(countData = round(kremling_tpm_expression_v5_filtered_night),
+                              colData = genotype_plot_day_association_night,
+                              design=~1)
+dds_rpkm_day <- DESeqDataSetFromMatrix(countData = round(kremling_rpkm_expression_v5_filtered_day),
+                              colData = genotype_plot_day_association_day,
+                              design=~1)
+dds_rpkm_night <- DESeqDataSetFromMatrix(countData = round(kremling_rpkm_expression_v5_filtered_night),
+                              colData = genotype_plot_day_association_night,
+                              design=~1)
+dds_cpm_day <- DESeqDataSetFromMatrix(countData = round(kremling_cpm_expression_v5_filtered_day),
+                              colData = genotype_plot_day_association_day,
+                              design=~1)
+dds_cpm_night <- DESeqDataSetFromMatrix(countData = round(kremling_cpm_expression_v5_filtered_night),
+                              colData = genotype_plot_day_association_night,
+                              design=~1)
+
+# Generating the DESeq2 object for all between sample normalization
+dds_tmm_day <- DESeqDataSetFromMatrix(countData = round(kremling_tmm_expression_v5_filtered_day),
+                              colData = genotype_plot_day_association_day,
+                              design=~1)
+dds_tmm_night <- DESeqDataSetFromMatrix(countData = round(kremling_tmm_expression_v5_filtered_night),
+                              colData = genotype_plot_day_association_night,
+                              design=~1)
+dds_uq_day <- DESeqDataSetFromMatrix(countData = round(kremling_uq_expression_v5_filtered_day),
+                              colData = genotype_plot_day_association_day,
+                              design=~1)
+dds_uq_night <- DESeqDataSetFromMatrix(countData = round(kremling_uq_expression_v5_filtered_night),
+                              colData = genotype_plot_day_association_night,
+                              design=~1)
+dds_ctf_day <- DESeqDataSetFromMatrix(countData = round(kremling_ctf_expression_v5_filtered_day),
+                              colData = genotype_plot_day_association_day,
+                              design=~1)
+dds_ctf_night <- DESeqDataSetFromMatrix(countData = round(kremling_ctf_expression_v5_filtered_night),
+                              colData = genotype_plot_day_association_night,
+                              design=~1)
+dds_cuf_day <- DESeqDataSetFromMatrix(countData = round(kremling_cuf_expression_v5_filtered_day),
+                              colData = genotype_plot_day_association_day,
+                              design=~1)
+dds_cuf_night <- DESeqDataSetFromMatrix(countData = round(kremling_cuf_expression_v5_filtered_night),
+                              colData = genotype_plot_day_association_night,
+                              design=~1)
+
+# Generating the DESeq2 object for OTU data
+dds_otu_cpm_day <- DESeqDataSetFromMatrix(countData = round(wallace_cpm_otu_filtered_day),
+                              colData = genotype_plot_day_association_day,
+                              design=~1)
+dds_otu_cpm_night <- DESeqDataSetFromMatrix(countData = round(wallace_cpm_otu_filtered_night),
+                              colData = genotype_plot_day_association_night,
+                              design=~1)
+
+
+# Applying variance stabilizing transformation
+
+## Within sample normalization (VST)
+dds_tpm_day_vst <- varianceStabilizingTransformation(dds_tpm_day)
+dds_tpm_day_vst_df <- assay(dds_tpm_day_vst)
+dds_tpm_night_vst <- varianceStabilizingTransformation(dds_tpm_night)
+dds_tpm_night_vst_df <- assay(dds_tpm_night_vst)
+dds_rpkm_day_vst <- varianceStabilizingTransformation(dds_rpkm_day)
+dds_rpkm_day_vst_df <- assay(dds_rpkm_day_vst)
+dds_rpkm_night_vst <- varianceStabilizingTransformation(dds_rpkm_night)
+dds_rpkm_night_vst_df <- assay(dds_rpkm_night_vst)
+dds_cpm_day_vst <- varianceStabilizingTransformation(dds_cpm_day)
+dds_cpm_day_vst_df <- assay(dds_cpm_day_vst)
+dds_cpm_night_vst <- varianceStabilizingTransformation(dds_cpm_night)
+dds_cpm_night_vst_df <- assay(dds_cpm_night_vst)
+
+## Between sample normalization (VST)
+dds_tmm_day_vst <- varianceStabilizingTransformation(dds_tmm_day)
+dds_tmm_day_vst_df <- assay(dds_tmm_day_vst)
+dds_tmm_night_vst <- varianceStabilizingTransformation(dds_tmm_night)
+dds_tmm_night_vst_df <- assay(dds_tmm_night_vst)
+dds_uq_day_vst <- varianceStabilizingTransformation(dds_uq_day)
+dds_uq_day_vst_df <- assay(dds_uq_day_vst)
+dds_uq_night_vst <- varianceStabilizingTransformation(dds_uq_night)
+dds_uq_night_vst_df <- assay(dds_uq_night_vst)
+dds_ctf_day_vst <- varianceStabilizingTransformation(dds_ctf_day)
+dds_ctf_day_vst_df <- assay(dds_ctf_day_vst)
+dds_ctf_night_vst <- varianceStabilizingTransformation(dds_ctf_night)
+dds_ctf_night_vst_df <- assay(dds_ctf_night_vst)
+dds_cuf_day_vst <- varianceStabilizingTransformation(dds_cuf_day)
+dds_cuf_day_vst_df <- assay(dds_cuf_day_vst)
+dds_cuf_night_vst <- varianceStabilizingTransformation(dds_cuf_night)
+dds_cuf_night_vst_df <- assay(dds_cuf_night_vst)
+
+## OTU data (VST)
+dds_otu_cpm_day_vst <- varianceStabilizingTransformation(dds_otu_cpm_day)
+dds_otu_cpm_night_vst <- varianceStabilizingTransformation(dds_otu_cpm_night)
+
+# Writing transformed data to file
+# I (RACS) had to make small changes in the output file to make columns match the identifiers (without X starting columns names and adding "Name" to column with genes); using vim :%s/^IX/^I/g (replace X with tab by tab)
+write.table(dds_tpm_day_vst_df, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/dds_tpm_day_vst.tsv',
+            sep = "\t", quote = FALSE)
+write.table(dds_tpm_night_vst_df, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/dds_tpm_night_vst.tsv',
+            sep = "\t", quote = FALSE)
+write.table(dds_cpm_day_vst_df, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/dds_cpm_day_vst.tsv',
+            sep = "\t", quote = FALSE)
+write.table(dds_cpm_night_vst_df, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/dds_cpm_night_vst.tsv',
+            sep = "\t", quote = FALSE)
+write.table(dds_rpkm_day_vst_df, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/dds_rpkm_day_vst.tsv',
+            sep = "\t", quote = FALSE)
+write.table(dds_rpkm_night_vst_df, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/dds_rpkm_night_vst.tsv',
+            sep = "\t", quote = FALSE)
+write.table(dds_tmm_day_vst_df, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/dds_tmm_day_vst.tsv',
+            sep = "\t", quote = FALSE)
+write.table(dds_tmm_night_vst_df, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/dds_tmm_night_vst.tsv',
+            sep = "\t", quote = FALSE)
+write.table(dds_uq_day_vst_df, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/dds_uq_day_vst.tsv',
+            sep = "\t", quote = FALSE)
+write.table(dds_uq_night_vst_df, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/dds_uq_night_vst.tsv',
+            sep = "\t", quote = FALSE)
+write.table(dds_ctf_day_vst_df, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/dds_ctf_day_vst.tsv',
+            sep = "\t", quote = FALSE)
+write.table(dds_ctf_night_vst_df, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/dds_ctf_night_vst.tsv',
+            sep = "\t", quote = FALSE)
+write.table(dds_cuf_day_vst_df, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/dds_cuf_day_vst.tsv',
+            sep = "\t", quote = FALSE)
+write.table(dds_cuf_night_vst_df, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/rnaseq_kremling2018/quantification/dds_cuf_night_vst.tsv',
+            sep = "\t", quote = FALSE)
+
+write.table(dds_cuf_day_vst_df, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/16S_wallace2018/combine_day_night_samples/dds_otu_cpm_day_vst.tsv',
+            sep = "\t", quote = FALSE)
+write.table(dds_cuf_night_vst_df, file = '/home/rsantos/Repositories/maize_microbiome_transcriptomics/16S_wallace2018/combine_day_night_samples/dds_otu_cpm_night_vst.tsv',
+            sep = "\t", quote = FALSE)
+
+```
+
+## rlog transformation
+
+
+```{r}
+
+
+```
