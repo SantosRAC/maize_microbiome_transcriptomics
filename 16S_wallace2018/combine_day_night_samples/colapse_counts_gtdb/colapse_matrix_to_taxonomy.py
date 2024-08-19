@@ -76,7 +76,6 @@ with open(classification_file, 'r') as file:
 genus2count = {}
 family2count = {}
 sample_names = []
-first_column_name = ''
 
 with open(counts_file, 'r') as file:
     header = file.readline().strip()
@@ -124,7 +123,7 @@ with open(counts_file, 'r') as file:
 
 if genus_count_matrix:
     with open(genus_count_matrix, 'w') as outfile:
-        outfile.write(f'{first_column_name}')
+        outfile.write(f'Genus')
         for sample_name in sample_names:
             outfile.write(f'\t{sample_name}')
         outfile.write('\n')
@@ -136,7 +135,7 @@ if genus_count_matrix:
 
 if family_count_matrix:
     with open(family_count_matrix, 'w') as outfile:
-        outfile.write(f'{first_column_name}')
+        outfile.write(f'Family')
         for sample_name in sample_names:
             outfile.write(f'\t{sample_name}')
         outfile.write('\n')
