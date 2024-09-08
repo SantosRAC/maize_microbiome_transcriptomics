@@ -1,0 +1,277 @@
+Genotype	Plot_Day	State/Country	Pedigree	NSS	SS	TS	Pop A	Sweet A	Subpopulation
+33-16	X14A0309_26	Indiana	Lux Johnson Country white	0.972	0.014	0.014	0	0	nss
+38-11	X14A0233_8	Indiana	Outcross in line from 176A	0.993	0.003	0.004	0	0	nss
+4226	X14A0079_26	Illinois	Funk 90 Day	0.917	0.071	0.012	0	0	nss
+4722	X14A0311_8	Indiana	SA x Ohio yel.	0	0	0	1	0	popcorn
+A188	X14A0021_8	Minnesota	[(4-29*64)4-29(4)]	0.982	0.013	0.006	0	0	nss
+A214N	X14A0451_26	South Africa	(B68*HtN)B68(3)	0.017	0.762	0.221	0	0	mixed
+A239	X14A0125_8	Minnesota	A73*A347	0.963	0.035	0.002	0	0	nss
+A272	X14A0099_8	South Africa	Yellow Boesman	0.122	0.019	0.859	0	0	ts
+A441-5	X14A0307_26	South Africa	Robyn*Leamming yellow dent	0.531	0.005	0.464	0	0	mixed
+A554	X14A0035_8	Minnesota	[(WD*Wf9)WD(2))]	0.979	0.019	0.002	0	0	nss
+A556	X14A0031_8	Minnesota	B164-886*A237	0.994	0.004	0.002	0	0	nss
+A619	X14A0063_8	Minnesota	[(A171*Oh43)Oh43]	0.99	0.009	0.001	0	0	nss
+A632	X14A0101_8	Minnesota	[(Mt42*B14)B14(3)]	0.004	0.993	0.004	0	0	ss
+A634	X14A0107_8	Minnesota	[(Mt42*B14)B14(2)]	0.1	0.897	0.004	0	0	ss
+A635	X14A0111_8	Minnesota	ND203xB14(3)	0.171	0.825	0.004	0	0	ss
+A641	X14A0083_8	Minnesota	ND203*B14	0.481	0.517	0.002	0	0	mixed
+A654	X14A0013_8	Minnesota	A116*Wf9	0.915	0.083	0.002	0	0	nss
+A659	X14A0023_8	Minnesota	Minnesota Synthetic 3	0.991	0.006	0.002	0	0	nss
+A661	X14A0045_8	Minnesota	Minnesota Synthetic AS-A	0.852	0.111	0.037	0	0	nss
+A679	X14A0085_8	Minnesota	[(A662*B73) B73(3)]	0.127	0.862	0.011	0	0	ss
+A680	X14A0145_8	Minnesota	[(A662*B73) B73(3)]	0.004	0.993	0.002	0	0	ss
+A682	X14A0091_8	Minnesota	[(AS-D*Mo17) Mo17 (2)]	0.997	0.002	0.001	0	0	nss
+A6	X14A0513_26	Pioneer	Cuban Flint	0.03	0.003	0.967	0	0	ts
+Ab28A	X14A0425_26	Alabama	GT152*38-11	0.776	0.002	0.222	0	0	mixed
+B103	X14A0089_8	Iowa	CIMMYT Pool 41 [Northern Temperate Ranges -1 (NTR-1)]	0.829	0.163	0.009	0	0	nss
+B104	X14A0263_8	Iowa	BS13(S)C5	0.305	0.694	0.002	0	0	mixed
+B105	X14A0287_8	Iowa	BSSS®C9	0.566	0.397	0.037	0	0	mixed
+B109	X14A0165_8	Iowa	[B73 * BS20(S)C1]B73	0.003	0.995	0.002	0	0	ss
+B10	X14A0279_8	Iowa	Iowa Stiff Stalk Synthetic	0.57	0.429	0.002	0	0	mixed
+B14A	X14A0163_8	Iowa	Cuzco*B14(8)	0.001	0.998	0.001	0	0	ss
+B164	X14A0133_8	Minnesota	Indiana Reid (Pioneer)	0.756	0.233	0.011	0	0	mixed
+B2	X14A0249_8	Missouri	Reid Yellow Dent	0.988	0.007	0.005	0	0	nss
+B37	X14A0241_8	Iowa	Iowa Stiff Stalk Synthetic	0.002	0.997	0.001	0	0	ss
+B46	X14A0157_26	Iowa	W22*B10	0.784	0.214	0.002	0	0	mixed
+B52	X14A0193_26	Iowa	Segregating material from a private breeder	0.985	0.012	0.003	0	0	nss
+B57	X14A0199_8	Iowa	Midland	0.996	0.002	0.002	0	0	nss
+B64	X14A0041_26	Iowa	41.2504B*B14(3)	0.002	0.988	0.01	0	0	ss
+B68	X14A0281_8	Iowa	41.2504B*B14(3)	0.001	0.998	0.001	0	0	ss
+B73Htrhm	X14A0235_8	Iowa	Ht1 and rhm1 conversion of B73	0.001	0.999	0.001	0	0	ss
+B73	X14A0029_26	Iowa	Iowa Stiff Stalk Synthetic C5	0.001	0.999	0.001	0	0	ss
+B73	X14A0029_8	Iowa	Iowa Stiff Stalk Synthetic C5	0.001	0.999	0.001	0	0	ss
+B73	X14A0113_26	Iowa	Iowa Stiff Stalk Synthetic C5	0.001	0.999	0.001	0	0	ss
+B73	X14A0113_8	Iowa	Iowa Stiff Stalk Synthetic C5	0.001	0.999	0.001	0	0	ss
+B73	X14A0185_26	Iowa	Iowa Stiff Stalk Synthetic C5	0.001	0.999	0.001	0	0	ss
+B73	X14A0185_8	Iowa	Iowa Stiff Stalk Synthetic C5	0.001	0.999	0.001	0	0	ss
+B73	X14A0195_8	Iowa	Iowa Stiff Stalk Synthetic C5	0.001	0.999	0.001	0	0	ss
+B73	X14A0239_26	Iowa	Iowa Stiff Stalk Synthetic C5	0.001	0.999	0.001	0	0	ss
+B73	X14A0239_8	Iowa	Iowa Stiff Stalk Synthetic C5	0.001	0.999	0.001	0	0	ss
+B73	X14A0303_26	Iowa	Iowa Stiff Stalk Synthetic C5	0.001	0.999	0.001	0	0	ss
+B73	X14A0381_26	Iowa	Iowa Stiff Stalk Synthetic C5	0.001	0.999	0.001	0	0	ss
+B73	X14A0381_8	Iowa	Iowa Stiff Stalk Synthetic C5	0.001	0.999	0.001	0	0	ss
+B73	X14A0455_26	Iowa	Iowa Stiff Stalk Synthetic C5	0.001	0.999	0.001	0	0	ss
+B75	X14A0151_8	Iowa	Iowa Corn Borer Synthetic No. 3 (BSCB3)	0.993	0.005	0.002	0	0	nss
+B76	X14A0059_8	Iowa	[(CI.31A*B37)B37]	0.087	0.912	0.001	0	0	ss
+B77	X14A0171_26	Iowa	Pioneer Two-Ear composite(BS11)	0.915	0.083	0.002	0	0	nss
+B79	X14A0147_8	Iowa	Iowa Two-Ear Synthetic No.1(BSTE)	0.693	0.305	0.002	0	0	mixed
+B84	X14A0155_26	Iowa	BS13(S2)C0	0.003	0.996	0.001	0	0	ss
+B97	X14A0229_8	Iowa	BSCB1®C9	0.981	0.016	0.003	0	0	nss
+C103	X14A0149_8	Connecticut	Lancaster Surecrop (from Noah Hershey)	0.997	0.002	0.001	0	0	nss
+C123	X14A0081_8	Connecticut	C102*C103	0.952	0.047	0.002	0	0	nss
+C49A	X14A0037_8	Minnesota	Minn 13	0.869	0.127	0.004	0	0	nss
+CH701-30	X14A0095_8	Canada - Harrow	unknown	0.993	0.004	0.003	0	0	nss
+CH9	X14A0183_8	Canada - Harrow	Funk’s G176	0.992	0.003	0.006	0	0	nss
+CI187-2	X14A0503_8	USDA	Krug	0.992	0.006	0.002	0	0	nss
+CI21E	X14A0253_26	USDA	Hy*C.I.21	0.866	0.119	0.014	0	0	nss
+CI28A	X14A0403_26	USDA	Recovered Blight Resistance B2	0.749	0.004	0.247	0	0	mixed
+CI31A	X14A0355_26	USDA	Midland OP	0.994	0.002	0.004	0	0	nss
+CI3A	X14A0219_8	USDA	[(C.I.3*related inbred) C.I.3 (2)]	0.905	0.083	0.012	0	0	nss
+CI64	X14A0293_26	USDA	K64*Mo21A	0.986	0.012	0.002	0	0	nss
+CI66	X14A0467_26	USDA	L97*K55 (2)	0.935	0.011	0.054	0	0	nss
+CI7	X14A0259_26	USDA	[(L317*33-16)33-16(2)]	0.994	0.004	0.001	0	0	nss
+CI90C	X14A0401_26	USDA	CI90A = L97*M14	0.737	0.003	0.26	0	0	mixed
+CI91B	X14A0383_26	USDA	L97*A71	0.997	0.002	0.002	0	0	nss
+CM105	X14A0039_8	Canada-Morden	CMV3xB14(2)	0.004	0.995	0.001	0	0	ss
+CM37	X14A0001_8	Canada-Morden	KE3	0.969	0.013	0.017	0	0	nss
+CM7	X14A0007_8	Canada-Morden	W85*CMV3	0.939	0.059	0.002	0	0	nss
+CML103	X14A0369_26	Mexico	Pop. 44	0.005	0.003	0.992	0	0	ts
+CML108	X14A0415_26	Mexico	Pop. 44	0.099	0.002	0.899	0	0	ts
+CML10	X14A0169_26	Mexico	Pop.21 = Tuxpeño 	0.002	0.002	0.995	0	0	ts
+CML11	X14A0511_26	Mexico	Pop. 21	0.002	0.003	0.995	0	0	ts
+CML154Q	X14A0351_26	Mexico	Pop. 62	0.005	0.002	0.993	0	0	ts
+CML157Q	X14A0449_26	Mexico	Pop. 62	0.018	0.004	0.978	0	0	ts
+CML158Q	X14A0487_26	Mexico	Pop. 62	0.018	0.01	0.971	0	0	ts
+CML206	X14A0564_26								
+CML218	X14A0501_26	Mexico	EV = Streak resist. source	0.301	0.01	0.689	0	0	mixed
+CML220	X14A0469_26	Mexico	EV = Streak resist. source	0.053	0.059	0.887	0	0	ts
+CML228	X14A0533_26	Mexico	Suwan-1/SR	0.002	0.003	0.995	0	0	ts
+CML238	X14A0505_26	Mexico	LB/SR	0.004	0.001	0.995	0	0	ts
+CML261	X14A0539_26	Mexico	Pop. 21	0.004	0.016	0.981	0	0	ts
+CML277	X14A0523_26	Mexico	Pop. 43 = La Posta (Tux.)	0.004	0.001	0.995	0	0	ts
+CML314	X14A0519_26	Mexico	Pop. 600 = Late Mat. Wh. Dent Mix	0.002	0.003	0.995	0	0	ts
+CML322	X14A0427_26	Mexico	Recyc. US + Mex	0.005	0.01	0.985	0	0	ts
+CML323	X14A0473_26	Mexico	Pop. 33 Amar. Subtrop. Mix	0.34	0.007	0.653	0	0	mixed
+CML328	X14A0435_8	Mexico	Recycled Lines	0.357	0.002	0.641	0	0	mixed
+CML330	X14A0565_26								
+CML331	X14A0547_26	Mexico	Suwan/Pop.47 * Mp78:518	0.003	0.002	0.994	0	0	ts
+CML333	X14A0457_26	Mexico	Pop. 590 	0.029	0.013	0.959	0	0	ts
+CML341	X14A0549_26	Mexico	Pop. 43 = La Posta (Tux.)	0.004	0.002	0.995	0	0	ts
+CML38	X14A0497_26	Mexico	Pop. 32	0.002	0.001	0.997	0	0	ts
+CML411	X14A0566_26								
+CML418	X14A0567_8								
+CML504	X14A0569_26								
+CML505	X14A0570_8								
+CML511	X14A0571_26								
+CML69	X14A0439_26	Mexico	Pop. 36 = Cogollero (Caribbean)	0.028	0.006	0.966	0	0	ts
+CML77	X14A0273_26	Mexico	Pool 32 = Subtrop. Wh. Mix	0.302	0.005	0.693	0	0	mixed
+CML84	X14A0572_26								
+CML85	X14A0573_26								
+CML91	X14A0453_26	Mexico	Pop. 42 Northern Temp./German Mix	0.218	0.015	0.767	0	0	mixed
+CML92	X14A0409_26	Mexico	Pop. 42 Northern Temp./German Mix	0.275	0.096	0.629	0	0	mixed
+CML96	X14A0574_26								
+CMV3	X14A0025_8	Minnesota	A21*W185	0.847	0.147	0.006	0	0	nss
+CO106	X14A0015_8	Canada-Ottawa	University of Wisconsin CR11	0.973	0.016	0.011	0	0	nss
+CO125	X14A0027_8	Canada-Ontario	unknown	0.967	0.021	0.012	0	0	nss
+CO255	X14A0005_8	Canada-Ottawa	INRA 258	0.647	0.009	0.344	0	0	mixed
+D940Y	X14A0483_26	South Africa	BO60W(A166NxB566Y-B560Y)B557Y	0.614	0.004	0.382	0	0	mixed
+DE1	X14A0289_8	Delaware B	P3140*P3751	0.98	0.018	0.002	0	0	nss
+DE811	X14A0245_26	Delaware	[B68*[B37Ht*(C103*Mp3204 double cross) Selection]]	0.218	0.779	0.003	0	0	mixed
+E2558W	X14A0345_8	South Africa	N6*M162W^3	0.923	0.006	0.07	0	0	nss
+EP1	X14A0019_8	Spain	Spanish population ‘Lizargarate’	0.461	0.001	0.537	0	0	mixed
+F2834T	X14A0267_8	South Africa	Teko Yellow	0.421	0.026	0.553	0	0	mixed
+F6	X14A0459_26	Florida	Hastings white Prolific * Florida flint	0.745	0.005	0.25	0	0	mixed
+F7	X14A0009_8	France-Peronne	OP Lacaune	0.608	0.07	0.322	0	0	mixed
+GA209	X14A0493_26	Georgia	T61*NC37	0.979	0.004	0.017	0	0	nss
+GT112	X14A0471_26	Georgia	Multiple cross (includes Whatley, Cuban, Garrick, Creole, and 12% other)	0.839	0.008	0.153	0	0	nss
+H105W	X14A0115_8	Indiana	33-16*A632(3)	0.209	0.753	0.038	0	0	mixed
+H49	X14A0131_8	Indiana	[(Wf9*L97)Wf9]	0.995	0.002	0.003	0	0	nss
+H84	X14A0153_8	Indiana	[B37*GE440)Ht Ht	0.281	0.714	0.004	0	0	mixed
+H91	X14A0305_8	Indiana	[B37*GE440)B14(4)]Ht Ht	0.002	0.997	0.001	0	0	ss
+H95	X14A0213_8	Indiana	Oh43*C.I.90A	0.898	0.001	0.101	0	0	nss
+H99	X14A0065_8	Indiana	Illinois Synthetic 60C	0.997	0.001	0.002	0	0	nss
+Hi27	X14A0495_26	Hawaii	[CM104(India)*MV source]BC6	0.019	0.207	0.774	0	0	mixed
+HP301	X14A0251_8	Indiana	Supergold	0	0	0	1	0	popcorn
+I137TN	X14A0299_26	South Africa	Natal Yellow Horsetooth x Teko Yellow	0.539	0.002	0.459	0	0	mixed
+I205	X14A0175_8	Iowa	Iodent	0.767	0.23	0.003	0	0	mixed
+I29	X14A0047_8	Iowa	unknown white pearl popcorn; Received from Ashman as I29	0	0	0	1	0	popcorn
+IA2132	X14A0049_8	Iowa	[(TSR * 45 ) * 4329 ]	0	0	0	0	1	sweet
+Ia5125	X14A0075_8	Iowa	[(IP39*Tendermost)*IP39]	0	0	0	0	1	sweet
+IDS28	X14A0179_8	Iowa	Yellow Pearl	0	0	0	1	0	popcorn
+IDS69	X14A0343_8	Iowa	South American Popcorn	0	0	0	1	0	popcorn
+IDS91	X14A0173_8	Iowa	South American Popcorn	0	0	0	1	0	popcorn
+Il101T	X14A0139_8								
+Il14H	X14A0077_8	Illinois	White Narrow Grain Evergreen	0	0	0	0	1	sweet
+Il677a	X14A0393_8	Illinois	[(Bolivia 1035*IL44b)*IL422a]	0	0	0	0	1	sweet
+IllHy	X14A0243_26								
+K148	X14A0313_8	Kansas	Yellow selection No. 1 (Pride of Saline, yellow strain)	0.886	0.087	0.027	0	0	nss
+K4	X14A0365_26	Kansas	Kansas Sunflower	0.873	0.11	0.017	0	0	nss
+K55	X14A0283_8	Kansas	Pride of Saline	0.98	0.01	0.01	0	0	nss
+K64	X14A0333_26	Kansas	Pride of Saline	0.965	0.033	0.002	0	0	nss
+Ki11	X14A0507_26	Thailand	Suwan 1(S)C4-S8-18-7	0.017	0.003	0.98	0	0	ts
+Ki14	X14A0521_26	Thailand	Suwan 1(S)C4-S8-19-5	0.003	0.003	0.994	0	0	ts
+Ki21	X14A0367_26	Thailand	Pacific 9-S8-45	0.393	0.001	0.606	0	0	mixed
+Ki3	X14A0447_26	Thailand	Suwan 1(S)C4-S8-5-3	0.002	0.001	0.997	0	0	ts
+Ki44	X14A0529_26	Thailand	KS 6(S)C2-S7-366	0.018	0.001	0.981	0	0	ts
+Ky21	X14A0413_26	Kentucky	Boone County White	0.859	0.008	0.133	0	0	nss
+Ky226	X14A0325_8	Kentucky	NCLauDA*Coahuila 8	0.732	0.011	0.258	0	0	mixed
+Ky228	X14A0385_26	Kentucky	Pride of Saline	0.709	0.134	0.157	0	0	mixed
+L317	X14A0357_8	Iowa	Lancaster surecrop (from Noah Hershey)	0.99	0.001	0.009	0	0	nss
+L578	X14A0433_26	Louisiana	Unknown	0.297	0.007	0.696	0	0	mixed
+M14	X14A0117_8	Illinois C	Lancaster * A, where A is a line from Funk’s Yellow Dent	0.849	0.012	0.139	0	0	nss
+M162W	X14A0387_26	South Africa	K64R**2 x B1138T	0.996	0.002	0.002	0	0	nss
+M37W	X14A0319_26	South Africa	21A**2 x Jellicorse	0.404	0.012	0.584	0	0	mixed
+MEF156-55-2	X14A0033_8	Maine?	Unknown	0.854	0.007	0.139	0	0	nss
+Mo17	X14A0177_8	Missouri	C.I.187-2*C103	0.998	0.001	0.001	0	0	nss
+Mo18W	X14A0485_26	Missouri	Wf9*Mo22(2)	0.307	0.011	0.683	0	0	mixed
+Mo1W	X14A0225_8	Missouri	[Mo22*Wf9(2)]	0.828	0.004	0.168	0	0	nss
+Mo44	X14A0203_8	Missouri	Mo22*Pioneer Mexican Synthetic 17	0.996	0.002	0.002	0	0	nss
+Mo45	X14A0339_8	Missouri	Race Negro de Tierra Caliente (Guatemala) 	0.516	0.252	0.232	0	0	mixed
+Mo46	X14A0217_8	Missouri	Race Cravo Paulista (Brazil) 	0.838	0.152	0.011	0	0	nss
+Mo47	X14A0103_8	Missouri	Race Candela (Ecuador) 	0.624	0.18	0.196	0	0	mixed
+Mp339	X14A0323_26	Mississippi	T61*Hill Yellow Dent	0.641	0.102	0.258	0	0	mixed
+MR19_Santo_Domingo	X14A0576_8								
+MR20_Shoepeg	X14A0577_8								
+MS1334	X14A0053_8	Michigan	[(Golden glow * Maize Amargo)*Golden Glow]	0.884	0.002	0.114	0	0	nss
+MS153	X14A0097_8	Michigan	Iowa stiff stalk synthetic	0.865	0.063	0.073	0	0	nss
+MS71	X14A0071_8	Michigan	A619*R168	0.997	0.002	0.001	0	0	nss
+Mt42	X14A0003_8	Minnesota	Minnesota No.13 (Owen’s)	0.765	0.004	0.231	0	0	mixed
+N192	X14A0055_8	Nebraska	CM105*B73	0.001	0.998	0.001	0	0	ss
+N28Ht	X14A0215_26	Nebraska	N28= BSSS	0.447	0.551	0.002	0	0	mixed
+N6	X14A0123_8	Nebraska	Hays Golden	0.98	0.017	0.003	0	0	nss
+NC222	X14A0411_26	North Carolina	Jarvis Golden Prolific	0.874	0.004	0.122	0	0	nss
+NC230	X14A0373_26	North Carolina	K55*Yellow line or inbred	0.994	0.004	0.002	0	0	nss
+NC232	X14A0397_26	North Carolina	[(T204*Low Ear outcross) T204 (2)]	0.839	0.068	0.094	0	0	nss
+NC236	X14A0431_26	North Carolina	[NC7 (Huffman Variety*Illinois Low Ear)]	0.974	0.023	0.002	0	0	nss
+NC238	X14A0461_26	North Carolina	[(GT112*NC601)GT112]	0.989	0.004	0.007	0	0	nss
+NC250	X14A0137_26	North Carolina	[(Nigeria Composite ARb*B37)B37)	0.057	0.941	0.002	0	0	ss
+NC258	X14A0341_26	North Carolina	TZ(2)*[(NC248*246)*C103]	0.997	0.001	0.001	0	0	nss
+NC260	X14A0187_8	North Carolina	[(Mo44*Mo17)Mo44(3)]	0.992	0.005	0.003	0	0	nss
+NC262	X14A0093_26	North Carolina	TZ (TZ=McNair 14*18)	0.991	0.007	0.001	0	0	nss
+NC264	X14A0265_8	North Carolina	[(SC76*Gaspe)Gaspe]SC76(3)	0.018	0.015	0.967	0	0	ts
+NC290A	X14A0291_8	North Carolina	McNair inbred lines 14*18 (largely of C103 origin); sister line of NC290	0.984	0.015	0.001	0	0	nss
+NC294	X14A0297_8	North Carolina	[(B73*NC250) B73]	0.001	0.998	0.001	0	0	ss
+NC296A	X14A0359_26	North Carolina	PioneerX105A * H-5	0.001	0.002	0.997	0	0	ts
+NC296	X14A0437_26	North Carolina	PioneerX105A * H-5	0.001	0.002	0.997	0	0	ts
+NC300	X14A0417_26	North Carolina	PioneerX105A * H-5 * PioneerX306B	0.003	0.002	0.995	0	0	ts
+NC302	X14A0405_26	North Carolina	(PioneerX105A*H5)*H101	0.003	0.002	0.996	0	0	ts
+NC304	X14A0429_26	North Carolina	(H5*PioneerX105A)*H101	0.002	0.001	0.997	0	0	ts
+NC306	X14A0209_26	North Carolina	(B73*NC250)*B73	0.001	0.998	0.001	0	0	ss
+NC310	X14A0201_8	North Carolina	improved B73-type derived from NC250*B73^3	0.001	0.999	0.001	0	0	ss
+NC314	X14A0167_26	North Carolina	B73*NC250	0.001	0.998	0.001	0	0	ss
+NC318	X14A0327_26	North Carolina	[(SC76*B52)SC76(3)]	0.032	0.002	0.966	0	0	ts
+NC320	X14A0363_26	North Carolina	[(SC76*B52)SC76(3)]	0.005	0.004	0.991	0	0	ts
+NC324	X14A0227_8	North Carolina	B73*NC250	0.001	0.999	0.001	0	0	ss
+NC326	X14A0211_26	North Carolina	[(B73*NC250)*B73(3)]	0.001	0.998	0.001	0	0	ss
+NC328	X14A0231_8	North Carolina	[(B73*NC250)*B73(3)]	0.001	0.998	0.001	0	0	ss
+NC336	X14A0465_26	North Carolina	PioneerX105A*H5	0.001	0.002	0.997	0	0	ts
+NC338	X14A0441_26	North Carolina	[PioneerX105A*H5] * [Pioneer304B*Agroceres504]	0.003	0.002	0.995	0	0	ts
+NC33	X14A0479_26	North Carolina	Weekley’s Improved	0.862	0.129	0.01	0	0	nss
+NC340	X14A0445_8	North Carolina	PioneerX105A * [Pioneer306B*H5]	0.004	0.009	0.987	0	0	ts
+NC342	X14A0223_26	North Carolina	McNair inbreds 14*18(of Coker 811A x C103 origin)	0.994	0.005	0.001	0	0	nss
+NC344	X14A0335_26	North Carolina	TZ(2)*[(NC248*246)*C103]; Sister line of NC258	0.997	0.002	0.001	0	0	nss
+NC346	X14A0361_26	North Carolina	PioneerX105A*H5	0.001	0.002	0.997	0	0	ts
+NC348	X14A0399_26	North Carolina	PioneerX105A * H-5 * Agroceres155	0.001	0.001	0.997	0	0	ts
+NC350	X14A0389_26	North Carolina	(H5*PioneerX105A)*H101	0.002	0.003	0.995	0	0	ts
+NC352	X14A0421_26	North Carolina	PioneerX105A*H5	0.001	0.003	0.996	0	0	ts
+NC354	X14A0353_26	North Carolina	[PioneerX105A*H5] * [PioneerX304A*H101]	0.001	0.01	0.989	0	0	ts
+NC356	X14A0337_26	North Carolina	TROPHY SYN	0.031	0.001	0.968	0	0	ts
+NC358	X14A0295_8	North Carolina	TROPHY SYN	0.143	0.001	0.856	0	0	ts
+NC360	X14A0269_26	North Carolina	Agroceres155*PioneerX105A/NC262	0.475	0.001	0.523	0	0	mixed
+NC362	X14A0205_8	North Carolina	Agroceres155*PioneerX105A/NC262	0.54	0.002	0.458	0	0	mixed
+NC364	X14A0161_8	North Carolina	Agroceres155*PioneerX105A/NC262	0.507	0.002	0.492	0	0	mixed
+NC366	X14A0481_26	North Carolina	FLA Syn	0.467	0.018	0.514	0	0	mixed
+NC368	X14A0261_8	North Carolina	[B73*NC250]/[(B73*NC250)*B73]	0.003	0.996	0.001	0	0	ss
+ND246	X14A0011_8	North Dakota	W755*W771	0.76	0.004	0.236	0	0	mixed
+Oh40B	X14A0189_8	Ohio	Eight line composite of Lancaster Surecrop lines	0.996	0.002	0.002	0	0	nss
+Oh43E	X14A0207_8	Ohio	ERF/Oh43; ERF=LeamingxReid + other Pioneer inbreds	0.997	0.002	0.001	0	0	nss
+Oh43	X14A0073_8	Ohio	Oh40B*W8	0.998	0.001	0.001	0	0	nss
+Oh603	X14A0271_8	Ohio	« Syn of Va58, OhS3267, H95, Va26, Coas. Trop. FL. »	0.669	0.002	0.329	0	0	mixed
+Oh7B	X14A0371_26	Ohio	[(Oh07*38-11)Oh07]	0.967	0.031	0.002	0	0	nss
+Os420	X14A0087_26	Iowa	Osterland yellow dent	0.983	0.016	0.001	0	0	nss
+P39	X14A0057_8	Indiana	Purdue Bantam	0	0	0	0	1	sweet
+Pa762	X14A0135_8	Pennsylvania	Oh43*Pa70L	0.998	0.001	0.001	0	0	nss
+Pa875	X14A0277_8	Pennsylvania	Wf9 Synthetic (original)	0.979	0.002	0.02	0	0	nss
+Pa880	X14A0329_26	Pennsylvania	Wf9 Synthetic C3	0.993	0.002	0.005	0	0	nss
+Pa91	X14A0377_8	Pennsylvania	(Wf9*Oh43)S4*[(38-11*L317)38-11]S4	0.997	0.001	0.002	0	0	nss
+R168	X14A0067_8	Illinois	Illinois Synthetic 60C	0.996	0.002	0.002	0	0	nss
+R177	X14A0143_8	Illinois	Germplasm 230B(Snelling Corn Borer Synthetic)	0.875	0.122	0.002	0	0	nss
+R229	X14A0275_8	Illinois	[(479*B73)B73(2)]S6; 479 is a Brazilian inbred of Tuxpeño type	0.002	0.991	0.007	0	0	ss
+R4	X14A0221_26	Illinois	Funk Yellow dent	0.979	0.019	0.003	0	0	nss
+SA24	X14A0237_8	Indiana	South American Popcorn	0	0	0	1	0	popcorn
+SC213R	X14A0499_26	South Carolina	(GT112*NC33)GT112] backcrossed with a CMS-T restorer	0.579	0.002	0.419	0	0	mixed
+SC357	X14A0407_26	South Carolina	[(Whately yellow * Tennessee Redcob) Young]	0.622	0.003	0.375	0	0	mixed
+SC55	X14A0475_26	South Carolina	[(L501*L503)*(L548*L569)]	0.626	0.046	0.328	0	0	mixed
+SD40	X14A0141_8	South Dakota	Pioneer hybrid 3709	0.581	0.417	0.002	0	0	mixed
+SD44	X14A0051_8	South Dakota	SDp309*SD30	0.993	0.006	0.001	0	0	nss
+Sg1533	X14A0317_26	Indiana	Super gold	0	0	0	1	0	popcorn
+SG18	X14A0321_8	Indiana	Super gold	0	0	0	1	0	popcorn
+T232	X14A0285_26	Tennessee	Jellicorse*Teko yellow	0.459	0.14	0.402	0	0	mixed
+T234	X14A0349_26	Tennessee	[T111*RB.L*III.A)]T111(4)	0.985	0.003	0.012	0	0	nss
+T8	X14A0255_8	Tennessee	Jarvis Golden Prolific	0.989	0.003	0.007	0	0	nss
+Tx303	X14A0443_26	Texas	Yellow Surcropper	0.36	0.065	0.575	0	0	mixed
+Tzi11	X14A0491_26	Nigeria	Mo17 x RppSR	0.184	0.002	0.814	0	0	ts
+Tzi16	X14A0423_26	Nigeria	PI 540747 = N28/RPPTZSR-Y	0.351	0.248	0.401	0	0	mixed
+Tzi18	X14A0477_26	Nigeria	Sete Lagoas 7728 x TZSR	0.003	0.002	0.995	0	0	ts
+Tzi25	X14A0419_26	Nigeria	[(B73*RPPSR-TZ)*B73(2)]	0.086	0.305	0.608	0	0	mixed
+Tzi9	X14A0463_26	Nigeria	SIDS7734/TZSR	0.011	0.008	0.982	0	0	ts
+U267Y	X14A0331_26	South Africa	WF9r*Mex.155^3	0.595	0.002	0.403	0	0	mixed
+Va102	X14A0119_8	Virginia	Va59*Va60	0.994	0.001	0.005	0	0	nss
+Va14	X14A0395_8	Virginia	[(VaCBS selection*Va17)Va17]	0.995	0.002	0.003	0	0	nss
+Va17	X14A0257_8	Virginia	Wf9*T8	0.997	0.002	0.001	0	0	nss
+Va22	X14A0247_8	Virginia	Va17*C103 backcross	0.995	0.001	0.003	0	0	nss
+Va26	X14A0109_8	Virginia	Oh43*K155	0.983	0.005	0.011	0	0	nss
+Va35	X14A0159_8	Virginia	[(C103*T8)T8]	0.996	0.002	0.002	0	0	nss
+Va59	X14A0105_8	Virginia	[(C103*T8(2))*(K4*C103(2))]	0.994	0.003	0.003	0	0	nss
+Va85	X14A0391_26	Virginia	Virginia Long Ear Synthetic	0.983	0.014	0.003	0	0	nss
+Va99	X14A0191_8	Virginia	Oh07B*Pa91	0.84	0.158	0.002	0	0	nss
+VaW6	X14A0197_8	Virginia	unknown	0.724	0.02	0.256	0	0	mixed
+W117HT	X14A0043_8	Wisconsin	W117=643*Minnesota No.13	0.617	0.159	0.224	0	0	mixed
+W153R	X14A0069_8	Wisconsin	[(la153*W8)la153]	0.853	0.145	0.002	0	0	nss
+W182B	X14A0017_8	Wisconsin	WD*W22	0.845	0.153	0.002	0	0	nss
+W22R-rstd	X14A0240_26								
+W22R-rstd	X14A0240_8								
+W22	X14A0181_8	Wisconsin	III.B10*W25	0.931	0.063	0.006	0	0	nss
+W64A	X14A0121_8	Wisconsin	Wf9*CI.187-2	0.998	0.001	0.001	0	0	nss
+Wf9	X14A0129_8	Indiana	Reid yellow dent (Indiana station strain)	0.994	0.005	0.001	0	0	nss
+Yu796NS	X14A0127_8								
