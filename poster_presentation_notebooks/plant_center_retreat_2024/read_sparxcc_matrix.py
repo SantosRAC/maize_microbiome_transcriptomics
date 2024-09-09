@@ -2,7 +2,8 @@
 
 import argparse
 
-parser = argparse.ArgumentParser(description='SparXCC output matrix (\$cor object from R list)')
+parser = argparse.ArgumentParser(description="Get correlated pairs from SparXCC output matrix\
+                                 ($cor object from R list generated in SparXCC)")
 parser.add_argument('--input', type=str, metavar='SparXCC_output.txt',
                     dest='sparxcc_matrix_file',
                     help='The TSV file with the cross-correlation matrix output from SparXCC',
@@ -19,6 +20,8 @@ output_file = args.output_file
 
 output_file_obj = open(output_file, 'w')
 
+output_file_obj.write("OTU\tGene\tCorrelationCoefficient\n")
+
 with open(sparxcc_matrix, 'r') as fin:
 
     colnames = fin.readline().rstrip().split()
@@ -27,6 +30,7 @@ with open(sparxcc_matrix, 'r') as fin:
 
     for line in fin:
         otu_name, *line_fields = line.rstrip().split()
+        otu_name = otu_name.replace('"', '')
 
         # Retrieve the correlation matrix, the m value and the boolean matrix
         correlations_matrix = line_fields[:halfmatrix]
@@ -36,6 +40,6 @@ with open(sparxcc_matrix, 'r') as fin:
         # Get significant correlations
         for i, val in enumerate(m_boolean_matrix):
             if val == 'TRUE':
-                output_file_obj.write(otu_name, gene_names[i], correlations_matrix[i], "\n")
+                output_file_obj.write(otu_name+"\t"+gene_names[i]+"\t"+correlations_matrix[i]+"\n")
 
 output_file_obj.close()
