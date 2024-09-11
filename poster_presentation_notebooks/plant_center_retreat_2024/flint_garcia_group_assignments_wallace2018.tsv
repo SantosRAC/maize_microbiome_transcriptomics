@@ -82,7 +82,7 @@ CML11	X14A0511_26	Mexico	Pop. 21	0.002	0.003	0.995	0	0	ts
 CML154Q	X14A0351_26	Mexico	Pop. 62	0.005	0.002	0.993	0	0	ts
 CML157Q	X14A0449_26	Mexico	Pop. 62	0.018	0.004	0.978	0	0	ts
 CML158Q	X14A0487_26	Mexico	Pop. 62	0.018	0.01	0.971	0	0	ts
-CML206	X14A0564_26								
+CML206	X14A0564_26								ts
 CML218	X14A0501_26	Mexico	EV = Streak resist. source	0.301	0.01	0.689	0	0	mixed
 CML220	X14A0469_26	Mexico	EV = Streak resist. source	0.053	0.059	0.887	0	0	ts
 CML228	X14A0533_26	Mexico	Suwan-1/SR	0.002	0.003	0.995	0	0	ts
@@ -93,13 +93,13 @@ CML314	X14A0519_26	Mexico	Pop. 600 = Late Mat. Wh. Dent Mix	0.002	0.003	0.995	0	
 CML322	X14A0427_26	Mexico	Recyc. US + Mex	0.005	0.01	0.985	0	0	ts
 CML323	X14A0473_26	Mexico	Pop. 33 Amar. Subtrop. Mix	0.34	0.007	0.653	0	0	mixed
 CML328	X14A0435_8	Mexico	Recycled Lines	0.357	0.002	0.641	0	0	mixed
-CML330	X14A0565_26								
+CML330	X14A0565_26								ts
 CML331	X14A0547_26	Mexico	Suwan/Pop.47 * Mp78:518	0.003	0.002	0.994	0	0	ts
 CML333	X14A0457_26	Mexico	Pop. 590 	0.029	0.013	0.959	0	0	ts
 CML341	X14A0549_26	Mexico	Pop. 43 = La Posta (Tux.)	0.004	0.002	0.995	0	0	ts
 CML38	X14A0497_26	Mexico	Pop. 32	0.002	0.001	0.997	0	0	ts
 CML411	X14A0566_26								
-CML418	X14A0567_8								
+CML418	X14A0567_8								ts
 CML504	X14A0569_26								
 CML505	X14A0570_8								
 CML511	X14A0571_26								
@@ -140,10 +140,10 @@ Ia5125	X14A0075_8	Iowa	[(IP39*Tendermost)*IP39]	0	0	0	0	1	sweet
 IDS28	X14A0179_8	Iowa	Yellow Pearl	0	0	0	1	0	popcorn
 IDS69	X14A0343_8	Iowa	South American Popcorn	0	0	0	1	0	popcorn
 IDS91	X14A0173_8	Iowa	South American Popcorn	0	0	0	1	0	popcorn
-Il101T	X14A0139_8								
+Il101T	X14A0139_8								sweet
 Il14H	X14A0077_8	Illinois	White Narrow Grain Evergreen	0	0	0	0	1	sweet
 Il677a	X14A0393_8	Illinois	[(Bolivia 1035*IL44b)*IL422a]	0	0	0	0	1	sweet
-IllHy	X14A0243_26								
+IllHy	X14A0243_26								ss
 K148	X14A0313_8	Kansas	Yellow selection No. 1 (Pride of Saline, yellow strain)	0.886	0.087	0.027	0	0	nss
 K4	X14A0365_26	Kansas	Kansas Sunflower	0.873	0.11	0.017	0	0	nss
 K55	X14A0283_8	Kansas	Pride of Saline	0.98	0.01	0.01	0	0	nss
@@ -170,7 +170,7 @@ Mo45	X14A0339_8	Missouri	Race Negro de Tierra Caliente (Guatemala) 	0.516	0.252	
 Mo46	X14A0217_8	Missouri	Race Cravo Paulista (Brazil) 	0.838	0.152	0.011	0	0	nss
 Mo47	X14A0103_8	Missouri	Race Candela (Ecuador) 	0.624	0.18	0.196	0	0	mixed
 Mp339	X14A0323_26	Mississippi	T61*Hill Yellow Dent	0.641	0.102	0.258	0	0	mixed
-MR19_Santo_Domingo	X14A0576_8								
+MR19_Santo_Domingo	X14A0576_8								landraces
 MR20_Shoepeg	X14A0577_8								
 MS1334	X14A0053_8	Michigan	[(Golden glow * Maize Amargo)*Golden Glow]	0.884	0.002	0.114	0	0	nss
 MS153	X14A0097_8	Michigan	Iowa stiff stalk synthetic	0.865	0.063	0.073	0	0	nss
@@ -274,4 +274,4 @@ W22R-rstd	X14A0240_8
 W22	X14A0181_8	Wisconsin	III.B10*W25	0.931	0.063	0.006	0	0	nss
 W64A	X14A0121_8	Wisconsin	Wf9*CI.187-2	0.998	0.001	0.001	0	0	nss
 Wf9	X14A0129_8	Indiana	Reid yellow dent (Indiana station strain)	0.994	0.005	0.001	0	0	nss
-Yu796NS	X14A0127_8								
+Yu796NS	X14A0127_8								unclassified
