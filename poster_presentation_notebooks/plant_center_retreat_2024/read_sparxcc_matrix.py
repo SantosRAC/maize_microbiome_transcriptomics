@@ -8,6 +8,12 @@ parser.add_argument('--input', type=str, metavar='SparXCC_output.txt',
                     dest='sparxcc_matrix_file',
                     help='The TSV file with the cross-correlation matrix output from SparXCC',
                     required=True)
+parser.add_argument('--cor_threshold', type=float, metavar='0.5',
+                    dest='cor_threshold', default=0.5,
+                    help='The threshold for the correlation coefficient to consider significant (default: 0.5).\
+                        Any correlation value greater than or equal to the positive threshold or less than or\
+                            equal to the negative threshold will be considered significant.',
+                    required=False)
 parser.add_argument('--output', type=str, metavar='output.txt',
                     dest='output_file',
                     help='Output file with the significant correlations (pairs of OTUs and genes passing the permutation threshold)',
@@ -17,6 +23,7 @@ args = parser.parse_args()
 
 sparxcc_matrix = args.sparxcc_matrix_file
 output_file = args.output_file
+correlation_threshold = args.cor_threshold
 
 output_file_obj = open(output_file, 'w')
 
@@ -39,7 +46,7 @@ with open(sparxcc_matrix, 'r') as fin:
 
         # Get significant correlations
         for i, val in enumerate(m_boolean_matrix):
-            if val == 'TRUE':
+            if val == 'TRUE' and abs(float(correlations_matrix[i])) >= correlation_threshold:
                 output_file_obj.write(otu_name+"\t"+gene_names[i]+"\t"+correlations_matrix[i]+"\n")
 
 output_file_obj.close()
