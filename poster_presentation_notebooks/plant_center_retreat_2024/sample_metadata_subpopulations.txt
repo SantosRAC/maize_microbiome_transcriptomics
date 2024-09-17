@@ -1,0 +1,549 @@
+sample_id	subpopulation
+14A0309_26_d	non-stiff stalk
+14A0233_8_d	non-stiff stalk
+14A0079_26_d	non-stiff stalk
+14A0311_8_d	popcorn
+14A0021_8_d	non-stiff stalk
+14A0451_26_d	mixed
+14A0125_8_d	non-stiff stalk
+14A0099_8_d	tropical-subtropical
+14A0307_26_d	mixed
+14A0035_8_d	non-stiff stalk
+14A0031_8_d	non-stiff stalk
+14A0063_8_d	non-stiff stalk
+14A0101_8_d	stiff stalk
+14A0107_8_d	stiff stalk
+14A0111_8_d	stiff stalk
+14A0083_8_d	mixed
+14A0013_8_d	non-stiff stalk
+14A0023_8_d	non-stiff stalk
+14A0045_8_d	non-stiff stalk
+14A0085_8_d	stiff stalk
+14A0145_8_d	stiff stalk
+14A0091_8_d	non-stiff stalk
+14A0513_26_d	tropical-subtropical
+14A0425_26_d	mixed
+14A0089_8_d	non-stiff stalk
+14A0263_8_d	mixed
+14A0287_8_d	mixed
+14A0165_8_d	stiff stalk
+14A0279_8_d	mixed
+14A0163_8_d	stiff stalk
+14A0133_8_d	mixed
+14A0249_8_d	non-stiff stalk
+14A0241_8_d	stiff stalk
+14A0157_26_d	mixed
+14A0193_26_d	non-stiff stalk
+14A0199_8_d	non-stiff stalk
+14A0041_26_d	stiff stalk
+14A0281_8_d	stiff stalk
+14A0235_8_d	stiff stalk
+14A0029_26_d	stiff stalk
+14A0029_8_d	stiff stalk
+14A0113_26_d	stiff stalk
+14A0113_8_d	stiff stalk
+14A0185_26_d	stiff stalk
+14A0185_8_d	stiff stalk
+14A0195_8_d	stiff stalk
+14A0239_26_d	stiff stalk
+14A0239_8_d	stiff stalk
+14A0303_26_d	stiff stalk
+14A0381_26_d	stiff stalk
+14A0381_8_d	stiff stalk
+14A0455_26_d	stiff stalk
+14A0151_8_d	non-stiff stalk
+14A0059_8_d	stiff stalk
+14A0171_26_d	non-stiff stalk
+14A0147_8_d	mixed
+14A0155_26_d	stiff stalk
+14A0229_8_d	non-stiff stalk
+14A0149_8_d	non-stiff stalk
+14A0081_8_d	non-stiff stalk
+14A0037_8_d	non-stiff stalk
+14A0095_8_d	non-stiff stalk
+14A0183_8_d	non-stiff stalk
+14A0503_8_d	non-stiff stalk
+14A0253_26_d	non-stiff stalk
+14A0403_26_d	mixed
+14A0355_26_d	non-stiff stalk
+14A0219_8_d	non-stiff stalk
+14A0293_26_d	non-stiff stalk
+14A0467_26_d	non-stiff stalk
+14A0259_26_d	non-stiff stalk
+14A0401_26_d	mixed
+14A0383_26_d	non-stiff stalk
+14A0039_8_d	stiff stalk
+14A0001_8_d	non-stiff stalk
+14A0007_8_d	non-stiff stalk
+14A0369_26_d	tropical-subtropical
+14A0415_26_d	tropical-subtropical
+14A0169_26_d	tropical-subtropical
+14A0511_26_d	tropical-subtropical
+14A0351_26_d	tropical-subtropical
+14A0449_26_d	tropical-subtropical
+14A0487_26_d	tropical-subtropical
+14A0564_26_d	tropical-subtropical
+14A0501_26_d	mixed
+14A0469_26_d	tropical-subtropical
+14A0533_26_d	tropical-subtropical
+14A0505_26_d	tropical-subtropical
+14A0539_26_d	tropical-subtropical
+14A0523_26_d	tropical-subtropical
+14A0519_26_d	tropical-subtropical
+14A0427_26_d	tropical-subtropical
+14A0473_26_d	mixed
+14A0435_8_d	mixed
+14A0565_26_d	tropical-subtropical
+14A0547_26_d	tropical-subtropical
+14A0457_26_d	tropical-subtropical
+14A0549_26_d	tropical-subtropical
+14A0497_26_d	tropical-subtropical
+14A0566_26_d	unclassified
+14A0567_8_d	tropical-subtropical
+14A0569_26_d	unclassified
+14A0439_26_d	tropical-subtropical
+14A0273_26_d	mixed
+14A0572_26_d	unclassified
+14A0573_26_d	unclassified
+14A0453_26_d	mixed
+14A0409_26_d	mixed
+14A0574_26_d	unclassified
+14A0025_8_d	non-stiff stalk
+14A0015_8_d	non-stiff stalk
+14A0027_8_d	non-stiff stalk
+14A0005_8_d	mixed
+14A0483_26_d	mixed
+14A0289_8_d	non-stiff stalk
+14A0245_26_d	mixed
+14A0345_8_d	non-stiff stalk
+14A0019_8_d	mixed
+14A0267_8_d	mixed
+14A0459_26_d	mixed
+14A0009_8_d	mixed
+14A0493_26_d	non-stiff stalk
+14A0471_26_d	non-stiff stalk
+14A0115_8_d	mixed
+14A0131_8_d	non-stiff stalk
+14A0153_8_d	mixed
+14A0305_8_d	stiff stalk
+14A0213_8_d	non-stiff stalk
+14A0065_8_d	non-stiff stalk
+14A0495_26_d	mixed
+14A0251_8_d	popcorn
+14A0299_26_d	mixed
+14A0175_8_d	mixed
+14A0047_8_d	popcorn
+14A0049_8_d	sweet
+14A0075_8_d	sweet
+14A0179_8_d	popcorn
+14A0343_8_d	popcorn
+14A0173_8_d	popcorn
+14A0139_8_d	sweet
+14A0077_8_d	sweet
+14A0393_8_d	sweet
+14A0243_26_d	stiff stalk
+14A0313_8_d	non-stiff stalk
+14A0365_26_d	non-stiff stalk
+14A0283_8_d	non-stiff stalk
+14A0333_26_d	non-stiff stalk
+14A0507_26_d	tropical-subtropical
+14A0521_26_d	tropical-subtropical
+14A0367_26_d	mixed
+14A0447_26_d	tropical-subtropical
+14A0529_26_d	tropical-subtropical
+14A0413_26_d	non-stiff stalk
+14A0325_8_d	mixed
+14A0385_26_d	mixed
+14A0357_8_d	non-stiff stalk
+14A0433_26_d	mixed
+14A0117_8_d	non-stiff stalk
+14A0387_26_d	non-stiff stalk
+14A0319_26_d	mixed
+14A0033_8_d	non-stiff stalk
+14A0177_8_d	non-stiff stalk
+14A0485_26_d	mixed
+14A0225_8_d	non-stiff stalk
+14A0203_8_d	non-stiff stalk
+14A0339_8_d	mixed
+14A0217_8_d	non-stiff stalk
+14A0103_8_d	mixed
+14A0323_26_d	mixed
+14A0576_8_d	landraces
+14A0577_8_d	landraces
+14A0053_8_d	non-stiff stalk
+14A0097_8_d	non-stiff stalk
+14A0071_8_d	non-stiff stalk
+14A0003_8_d	mixed
+14A0055_8_d	stiff stalk
+14A0215_26_d	mixed
+14A0123_8_d	non-stiff stalk
+14A0411_26_d	non-stiff stalk
+14A0373_26_d	non-stiff stalk
+14A0397_26_d	non-stiff stalk
+14A0431_26_d	non-stiff stalk
+14A0461_26_d	non-stiff stalk
+14A0137_26_d	stiff stalk
+14A0341_26_d	non-stiff stalk
+14A0187_8_d	non-stiff stalk
+14A0093_26_d	non-stiff stalk
+14A0265_8_d	tropical-subtropical
+14A0291_8_d	non-stiff stalk
+14A0297_8_d	stiff stalk
+14A0359_26_d	tropical-subtropical
+14A0437_26_d	tropical-subtropical
+14A0417_26_d	tropical-subtropical
+14A0405_26_d	tropical-subtropical
+14A0429_26_d	tropical-subtropical
+14A0209_26_d	stiff stalk
+14A0201_8_d	stiff stalk
+14A0167_26_d	stiff stalk
+14A0327_26_d	tropical-subtropical
+14A0363_26_d	tropical-subtropical
+14A0227_8_d	stiff stalk
+14A0211_26_d	stiff stalk
+14A0231_8_d	stiff stalk
+14A0465_26_d	tropical-subtropical
+14A0441_26_d	tropical-subtropical
+14A0479_26_d	non-stiff stalk
+14A0445_8_d	tropical-subtropical
+14A0223_26_d	non-stiff stalk
+14A0335_26_d	non-stiff stalk
+14A0361_26_d	tropical-subtropical
+14A0399_26_d	tropical-subtropical
+14A0389_26_d	tropical-subtropical
+14A0421_26_d	tropical-subtropical
+14A0353_26_d	tropical-subtropical
+14A0337_26_d	tropical-subtropical
+14A0295_8_d	tropical-subtropical
+14A0269_26_d	mixed
+14A0205_8_d	mixed
+14A0161_8_d	mixed
+14A0481_26_d	mixed
+14A0261_8_d	stiff stalk
+14A0011_8_d	mixed
+14A0189_8_d	non-stiff stalk
+14A0207_8_d	non-stiff stalk
+14A0073_8_d	non-stiff stalk
+14A0271_8_d	mixed
+14A0371_26_d	non-stiff stalk
+14A0087_26_d	non-stiff stalk
+14A0057_8_d	sweet
+14A0135_8_d	non-stiff stalk
+14A0277_8_d	non-stiff stalk
+14A0329_26_d	non-stiff stalk
+14A0377_8_d	non-stiff stalk
+14A0067_8_d	non-stiff stalk
+14A0143_8_d	non-stiff stalk
+14A0275_8_d	stiff stalk
+14A0221_26_d	non-stiff stalk
+14A0237_8_d	popcorn
+14A0499_26_d	mixed
+14A0407_26_d	mixed
+14A0475_26_d	mixed
+14A0141_8_d	mixed
+14A0051_8_d	non-stiff stalk
+14A0317_26_d	popcorn
+14A0321_8_d	popcorn
+14A0285_26_d	mixed
+14A0349_26_d	non-stiff stalk
+14A0255_8_d	non-stiff stalk
+14A0443_26_d	mixed
+14A0491_26_d	tropical-subtropical
+14A0423_26_d	mixed
+14A0477_26_d	tropical-subtropical
+14A0419_26_d	mixed
+14A0463_26_d	tropical-subtropical
+14A0331_26_d	mixed
+14A0119_8_d	non-stiff stalk
+14A0395_8_d	non-stiff stalk
+14A0257_8_d	non-stiff stalk
+14A0247_8_d	non-stiff stalk
+14A0109_8_d	non-stiff stalk
+14A0159_8_d	non-stiff stalk
+14A0105_8_d	non-stiff stalk
+14A0391_26_d	non-stiff stalk
+14A0191_8_d	non-stiff stalk
+14A0197_8_d	mixed
+14A0043_8_d	mixed
+14A0069_8_d	non-stiff stalk
+14A0017_8_d	non-stiff stalk
+14A0240_26_d	non-stiff stalk
+14A0240_8_d	non-stiff stalk
+14A0181_8_d	non-stiff stalk
+14A0121_8_d	non-stiff stalk
+14A0129_8_d	non-stiff stalk
+14A0127_8_d	unclassified
+14A0309_26_n	non-stiff stalk
+14A0233_8_n	non-stiff stalk
+14A0079_26_n	non-stiff stalk
+14A0311_8_n	popcorn
+14A0021_8_n	non-stiff stalk
+14A0451_26_n	mixed
+14A0125_8_n	non-stiff stalk
+14A0099_8_n	tropical-subtropical
+14A0307_26_n	mixed
+14A0035_8_n	non-stiff stalk
+14A0031_8_n	non-stiff stalk
+14A0063_8_n	non-stiff stalk
+14A0101_8_n	stiff stalk
+14A0107_8_n	stiff stalk
+14A0111_8_n	stiff stalk
+14A0083_8_n	mixed
+14A0013_8_n	non-stiff stalk
+14A0023_8_n	non-stiff stalk
+14A0045_8_n	non-stiff stalk
+14A0085_8_n	stiff stalk
+14A0145_8_n	stiff stalk
+14A0091_8_n	non-stiff stalk
+14A0513_26_n	tropical-subtropical
+14A0425_26_n	mixed
+14A0089_8_n	non-stiff stalk
+14A0263_8_n	mixed
+14A0287_8_n	mixed
+14A0165_8_n	stiff stalk
+14A0279_8_n	mixed
+14A0163_8_n	stiff stalk
+14A0133_8_n	mixed
+14A0249_8_n	non-stiff stalk
+14A0241_8_n	stiff stalk
+14A0157_26_n	mixed
+14A0193_26_n	non-stiff stalk
+14A0199_8_n	non-stiff stalk
+14A0041_26_n	stiff stalk
+14A0281_8_n	stiff stalk
+14A0235_8_n	stiff stalk
+14A0029_26_n	stiff stalk
+14A0029_8_n	stiff stalk
+14A0113_26_n	stiff stalk
+14A0113_8_n	stiff stalk
+14A0185_26_n	stiff stalk
+14A0185_8_n	stiff stalk
+14A0195_8_n	stiff stalk
+14A0239_26_n	stiff stalk
+14A0239_8_n	stiff stalk
+14A0303_26_n	stiff stalk
+14A0381_26_n	stiff stalk
+14A0381_8_n	stiff stalk
+14A0455_26_n	stiff stalk
+14A0151_8_n	non-stiff stalk
+14A0059_8_n	stiff stalk
+14A0171_26_n	non-stiff stalk
+14A0147_8_n	mixed
+14A0155_26_n	stiff stalk
+14A0229_8_n	non-stiff stalk
+14A0149_8_n	non-stiff stalk
+14A0081_8_n	non-stiff stalk
+14A0037_8_n	non-stiff stalk
+14A0095_8_n	non-stiff stalk
+14A0183_8_n	non-stiff stalk
+14A0503_8_n	non-stiff stalk
+14A0253_26_n	non-stiff stalk
+14A0403_26_n	mixed
+14A0355_26_n	non-stiff stalk
+14A0219_8_n	non-stiff stalk
+14A0293_26_n	non-stiff stalk
+14A0467_26_n	non-stiff stalk
+14A0259_26_n	non-stiff stalk
+14A0401_26_n	mixed
+14A0383_26_n	non-stiff stalk
+14A0039_8_n	stiff stalk
+14A0001_8_n	non-stiff stalk
+14A0007_8_n	non-stiff stalk
+14A0369_26_n	tropical-subtropical
+14A0415_26_n	tropical-subtropical
+14A0169_26_n	tropical-subtropical
+14A0511_26_n	tropical-subtropical
+14A0351_26_n	tropical-subtropical
+14A0449_26_n	tropical-subtropical
+14A0487_26_n	tropical-subtropical
+14A0564_26_n	tropical-subtropical
+14A0501_26_n	mixed
+14A0469_26_n	tropical-subtropical
+14A0533_26_n	tropical-subtropical
+14A0505_26_n	tropical-subtropical
+14A0539_26_n	tropical-subtropical
+14A0523_26_n	tropical-subtropical
+14A0519_26_n	tropical-subtropical
+14A0427_26_n	tropical-subtropical
+14A0473_26_n	mixed
+14A0435_8_n	mixed
+14A0565_26_n	tropical-subtropical
+14A0547_26_n	tropical-subtropical
+14A0457_26_n	tropical-subtropical
+14A0549_26_n	tropical-subtropical
+14A0497_26_n	tropical-subtropical
+14A0566_26_n	unclassified
+14A0567_8_n	tropical-subtropical
+14A0569_26_n	unclassified
+14A0439_26_n	tropical-subtropical
+14A0273_26_n	mixed
+14A0572_26_n	unclassified
+14A0573_26_n	unclassified
+14A0453_26_n	mixed
+14A0409_26_n	mixed
+14A0574_26_n	unclassified
+14A0025_8_n	non-stiff stalk
+14A0015_8_n	non-stiff stalk
+14A0027_8_n	non-stiff stalk
+14A0005_8_n	mixed
+14A0483_26_n	mixed
+14A0289_8_n	non-stiff stalk
+14A0245_26_n	mixed
+14A0345_8_n	non-stiff stalk
+14A0019_8_n	mixed
+14A0267_8_n	mixed
+14A0459_26_n	mixed
+14A0009_8_n	mixed
+14A0493_26_n	non-stiff stalk
+14A0471_26_n	non-stiff stalk
+14A0115_8_n	mixed
+14A0131_8_n	non-stiff stalk
+14A0153_8_n	mixed
+14A0305_8_n	stiff stalk
+14A0213_8_n	non-stiff stalk
+14A0065_8_n	non-stiff stalk
+14A0495_26_n	mixed
+14A0251_8_n	popcorn
+14A0299_26_n	mixed
+14A0175_8_n	mixed
+14A0047_8_n	popcorn
+14A0049_8_n	sweet
+14A0075_8_n	sweet
+14A0179_8_n	popcorn
+14A0343_8_n	popcorn
+14A0173_8_n	popcorn
+14A0139_8_n	sweet
+14A0077_8_n	sweet
+14A0393_8_n	sweet
+14A0243_26_n	stiff stalk
+14A0313_8_n	non-stiff stalk
+14A0365_26_n	non-stiff stalk
+14A0283_8_n	non-stiff stalk
+14A0333_26_n	non-stiff stalk
+14A0507_26_n	tropical-subtropical
+14A0521_26_n	tropical-subtropical
+14A0367_26_n	mixed
+14A0447_26_n	tropical-subtropical
+14A0529_26_n	tropical-subtropical
+14A0413_26_n	non-stiff stalk
+14A0325_8_n	mixed
+14A0385_26_n	mixed
+14A0357_8_n	non-stiff stalk
+14A0433_26_n	mixed
+14A0117_8_n	non-stiff stalk
+14A0387_26_n	non-stiff stalk
+14A0319_26_n	mixed
+14A0033_8_n	non-stiff stalk
+14A0177_8_n	non-stiff stalk
+14A0485_26_n	mixed
+14A0225_8_n	non-stiff stalk
+14A0203_8_n	non-stiff stalk
+14A0339_8_n	mixed
+14A0217_8_n	non-stiff stalk
+14A0103_8_n	mixed
+14A0323_26_n	mixed
+14A0576_8_n	landraces
+14A0577_8_n	landraces
+14A0053_8_n	non-stiff stalk
+14A0097_8_n	non-stiff stalk
+14A0071_8_n	non-stiff stalk
+14A0003_8_n	mixed
+14A0055_8_n	stiff stalk
+14A0215_26_n	mixed
+14A0123_8_n	non-stiff stalk
+14A0411_26_n	non-stiff stalk
+14A0373_26_n	non-stiff stalk
+14A0397_26_n	non-stiff stalk
+14A0431_26_n	non-stiff stalk
+14A0461_26_n	non-stiff stalk
+14A0137_26_n	stiff stalk
+14A0341_26_n	non-stiff stalk
+14A0187_8_n	non-stiff stalk
+14A0093_26_n	non-stiff stalk
+14A0265_8_n	tropical-subtropical
+14A0291_8_n	non-stiff stalk
+14A0297_8_n	stiff stalk
+14A0359_26_n	tropical-subtropical
+14A0437_26_n	tropical-subtropical
+14A0417_26_n	tropical-subtropical
+14A0405_26_n	tropical-subtropical
+14A0429_26_n	tropical-subtropical
+14A0209_26_n	stiff stalk
+14A0201_8_n	stiff stalk
+14A0167_26_n	stiff stalk
+14A0327_26_n	tropical-subtropical
+14A0363_26_n	tropical-subtropical
+14A0227_8_n	stiff stalk
+14A0211_26_n	stiff stalk
+14A0231_8_n	stiff stalk
+14A0465_26_n	tropical-subtropical
+14A0441_26_n	tropical-subtropical
+14A0479_26_n	non-stiff stalk
+14A0445_8_n	tropical-subtropical
+14A0223_26_n	non-stiff stalk
+14A0335_26_n	non-stiff stalk
+14A0361_26_n	tropical-subtropical
+14A0399_26_n	tropical-subtropical
+14A0389_26_n	tropical-subtropical
+14A0421_26_n	tropical-subtropical
+14A0353_26_n	tropical-subtropical
+14A0337_26_n	tropical-subtropical
+14A0295_8_n	tropical-subtropical
+14A0269_26_n	mixed
+14A0205_8_n	mixed
+14A0161_8_n	mixed
+14A0481_26_n	mixed
+14A0261_8_n	stiff stalk
+14A0011_8_n	mixed
+14A0189_8_n	non-stiff stalk
+14A0207_8_n	non-stiff stalk
+14A0073_8_n	non-stiff stalk
+14A0271_8_n	mixed
+14A0371_26_n	non-stiff stalk
+14A0087_26_n	non-stiff stalk
+14A0057_8_n	sweet
+14A0135_8_n	non-stiff stalk
+14A0277_8_n	non-stiff stalk
+14A0329_26_n	non-stiff stalk
+14A0377_8_n	non-stiff stalk
+14A0067_8_n	non-stiff stalk
+14A0143_8_n	non-stiff stalk
+14A0275_8_n	stiff stalk
+14A0221_26_n	non-stiff stalk
+14A0237_8_n	popcorn
+14A0499_26_n	mixed
+14A0407_26_n	mixed
+14A0475_26_n	mixed
+14A0141_8_n	mixed
+14A0051_8_n	non-stiff stalk
+14A0317_26_n	popcorn
+14A0321_8_n	popcorn
+14A0285_26_n	mixed
+14A0349_26_n	non-stiff stalk
+14A0255_8_n	non-stiff stalk
+14A0443_26_n	mixed
+14A0491_26_n	tropical-subtropical
+14A0423_26_n	mixed
+14A0477_26_n	tropical-subtropical
+14A0419_26_n	mixed
+14A0463_26_n	tropical-subtropical
+14A0331_26_n	mixed
+14A0119_8_n	non-stiff stalk
+14A0395_8_n	non-stiff stalk
+14A0257_8_n	non-stiff stalk
+14A0247_8_n	non-stiff stalk
+14A0109_8_n	non-stiff stalk
+14A0159_8_n	non-stiff stalk
+14A0105_8_n	non-stiff stalk
+14A0391_26_n	non-stiff stalk
+14A0191_8_n	non-stiff stalk
+14A0197_8_n	mixed
+14A0043_8_n	mixed
+14A0069_8_n	non-stiff stalk
+14A0017_8_n	non-stiff stalk
+14A0240_26_n	non-stiff stalk
+14A0240_8_n	non-stiff stalk
+14A0181_8_n	non-stiff stalk
+14A0121_8_n	non-stiff stalk
+14A0129_8_n	non-stiff stalk
+14A0127_8_n	unclassified
