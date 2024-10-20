@@ -1,0 +1,98 @@
+# Network generation for Wallace et al. 2018
+
+
+## SPRING in NetCoMi
+
+Using NetCoMi to generate networks.
+
+```{r}
+library(NetCoMi)
+
+original_matrix_wallace2018 <- read.csv('/home/santosrac/Projects/UGA_RACS/16S/otu_matrices/original_counts/2f_otu_table.sample_filtered.no_mitochondria_chloroplast.tsv',
+    sep='\t', header=TRUE, row.names=1)
+original_matrix_wallace2018_transposed <- t(original_matrix_wallace2018)
+column_sums <- colSums(original_matrix_wallace2018_transposed)
+
+sorted_column_sums <- sort(column_sums, decreasing = FALSE)
+
+last_300_column_sums <- tail(sorted_column_sums, 300)
+print(last_300_column_sums)
+
+hist(last_300_column_sums, 
+    main="Histogram of Column Sums", 
+    xlab="Column Sums", 
+    ylab="Frequency", 
+    col="blue", 
+    border="black")
+
+row_sums <- rowSums(original_matrix_wallace2018_transposed)
+
+sorted_row_sums <- sort(row_sums, decreasing = FALSE)
+
+last_300_row_sums <- tail(sorted_row_sums, 300)
+print(last_300_row_sums)
+
+hist(last_300_row_sums, 
+    main="Histogram of Row Sums", 
+    xlab="Row Sums", 
+    ylab="Frequency", 
+    col="green", 
+    border="black",
+    breaks=100)
+
+net_spring <- netConstruct(original_matrix_wallace2018_transposed,
+                           filtTax = "highestFreq",
+                           filtTaxPar = list(highestFreq = 300),
+                           #filtSamp = "totalReads", # Will not be used, since all samples have more than 1,000 reads
+                                                    # Curently, I (RACS) will not filter samples
+                           #filtSampPar = list(totalReads = 1000),
+                           measure = "spring",
+                           measurePar = list(nlambda=100, 
+                                             rep.num=100,
+                                             Rmethod = "approx"),
+                           normMethod = "none", # Normalization as well as zero handling is performed internally in SPRING
+                           zeroMethod = "none",
+                           sparsMethod = "none", 
+                           dissFunc = "signed",
+                           verbose = 3, # Shows all messages, including those from SPRING
+                           seed = 123456)
+```
+
+The first time trying to run SPRING method in NetCoMi, I (RACS) got the following warning:
+
+```bash
+Warning messages:
+1: In Matrix::nearPD(R, corr = TRUE) :
+  'nearPD()' did not converge in 100 iterations
+2: 101 jobs had warning: "'nearPD()' did not converge in 100 iterations"
+```
+
+It is important to consider filtering out rare species by limiting the number of species based on frequency in the whole dataset or filtering samples by total reads count.
+See the following issue for more information: [NetCoMi issue 22](https://github.com/stefpeschel/NetCoMi/issues/22)
+
+The following code did not display any warning:
+
+```{r}
+net_spring <- netConstruct(original_matrix_wallace2018_transposed,
+                           filtTax = "highestFreq",
+                           filtTaxPar = list(highestFreq = 250),
+                           filtSamp = "totalReads", # Will not be used, since all samples have more than 1,000 reads
+                                                    # Curently, I (RACS) will not filter samples
+                           filtSampPar = list(totalReads = 10000),
+                           measure = "spring",
+                           measurePar = list(nlambda=100,
+                                             rep.num=100,
+                                             Rmethod = "approx"),
+                           normMethod = "none", # Normalization as well as zero handling is performed internally in SPRING
+                           zeroMethod = "none",
+                           sparsMethod = "none",
+                           dissFunc = "signed",
+                           verbose = 3, # Shows all messages, including those from SPRING
+                           seed = 123456)
+```
+
+## SpiecEasi
+
+```{r}
+se.mb.wallace2018 <- spiec.easi(original_matrix_wallace2018_transposed, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=100, ncores=12))
+```
