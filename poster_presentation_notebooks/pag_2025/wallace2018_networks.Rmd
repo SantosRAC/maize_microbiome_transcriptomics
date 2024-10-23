@@ -1,12 +1,50 @@
 # Network generation for Wallace et al. 2018
 
+I (RACS) will use two datasets for the OTU counts:
 
-## SPRING in NetCoMi
+ * Merged day and night (used in cross-correlation analyses)
+ * The original dataset with all samples (day and night samples considered separately)
+
+## First tests with SPRING in NetCoMi
 
 Using NetCoMi to generate networks.
 
+### Using merged datasets Wallace et al (2018) - day and night samples
+
+For Dr. Santos internship abroad, cross-correlation analyses were carried out after merging OTU counts from day and night samples in the same plot, as suggested by Dr. Jason Wallace.
+
 ```{r}
 library(NetCoMi)
+
+merged_matrix_wallace2018 <- read.csv('/home/rsantos/Repositories/maize_microbiome_transcriptomics/16S_wallace2018/combine_day_night_samples/summed_day_night_otu_counts.tsv', sep='\t', header=TRUE, row.names=1)
+merged_matrix_wallace2018_transposed <- t(merged_matrix_wallace2018)
+
+
+```
+
+### Using Wallace et al (2018) - original and merged data
+
+```{r}
+library(NetCoMi)
+
+merged_matrix_wallace2018 <- read.csv('/home/rsantos/Repositories/maize_microbiome_transcriptomics/16S_wallace2018/combine_day_night_samples/summed_day_night_otu_counts.tsv', sep='\t', header=TRUE, row.names=1)
+merged_matrix_wallace2018_transposed <- t(merged_matrix_wallace2018)
+	
+net_spring_merged <- netConstruct(merged_matrix_wallace2018_transposed,
+                           filtTax = "highestFreq",
+                           filtTaxPar = list(highestFreq = 200),
+                           filtSamp = "totalReads",
+                           filtSampPar = list(totalReads = 10000),
+                           measure = "spring",
+                           measurePar = list(nlambda=100,
+                                             rep.num=100,
+                                             Rmethod = "approx"),
+                           normMethod = "none", # Normalization as well as zero handling is performed internally in SPRING
+                           zeroMethod = "none",
+                           sparsMethod = "none",
+                           dissFunc = "signed",
+                           verbose = 3, # Shows all messages, including those from SPRING
+                           seed = 123456)
 
 original_matrix_wallace2018 <- read.csv('/home/santosrac/Projects/UGA_RACS/16S/otu_matrices/original_counts/2f_otu_table.sample_filtered.no_mitochondria_chloroplast.tsv',
     sep='\t', header=TRUE, row.names=1)
@@ -42,17 +80,16 @@ hist(last_300_row_sums,
 
 net_spring <- netConstruct(original_matrix_wallace2018_transposed,
                            filtTax = "highestFreq",
-                           filtTaxPar = list(highestFreq = 300),
-                           #filtSamp = "totalReads", # Will not be used, since all samples have more than 1,000 reads
-                                                    # Curently, I (RACS) will not filter samples
-                           #filtSampPar = list(totalReads = 1000),
+                           filtTaxPar = list(highestFreq = 255),
+                           filtSamp = "totalReads",
+                           filtSampPar = list(totalReads = 5000),
                            measure = "spring",
-                           measurePar = list(nlambda=100, 
+                           measurePar = list(nlambda=100,
                                              rep.num=100,
                                              Rmethod = "approx"),
                            normMethod = "none", # Normalization as well as zero handling is performed internally in SPRING
                            zeroMethod = "none",
-                           sparsMethod = "none", 
+                           sparsMethod = "none",
                            dissFunc = "signed",
                            verbose = 3, # Shows all messages, including those from SPRING
                            seed = 123456)
@@ -70,29 +107,63 @@ Warning messages:
 It is important to consider filtering out rare species by limiting the number of species based on frequency in the whole dataset or filtering samples by total reads count.
 See the following issue for more information: [NetCoMi issue 22](https://github.com/stefpeschel/NetCoMi/issues/22)
 
-The following code did not display any warning:
+Runs show above are final runs, after testing different values for OTU and sample depth/counts.
+
+Exporting the edges and nodes to analyze the networks in softwares like Cytoscape and Gephi (adapted from NetCoMi guidelines):
 
 ```{r}
-net_spring <- netConstruct(original_matrix_wallace2018_transposed,
+# Exporting edges and nodes for the original matrix
+edges <- dplyr::select(net_spring$edgelist1, v1, v2)
+edges$Source <- as.numeric(factor(edges$v1))
+edges$Target <- as.numeric(factor(edges$v2))
+edges$Type <- "Undirected"
+edges$Weight <- net_spring$edgelist1$adja
+nodes <- unique(edges[,c('v1','Source')])
+colnames(nodes) <- c("Label", "Id")
+nodes$Category <- props_spring$clustering$clust1[nodes$Label]
+edges <- dplyr::select(edges, Source, Target, Type, Weight)
+write.csv(nodes, file = "nodes.csv", row.names = FALSE)
+write.csv(edges, file = "edges.csv", row.names = FALSE)
+
+# Exporting edges and nodes for the merged matrix
+edges_merged <- dplyr::select(net_spring_merged$edgelist1, v1, v2)
+edges_merged$Source <- as.numeric(factor(edges_merged$v1))
+edges_merged$Target <- as.numeric(factor(edges_merged$v2))
+edges_merged$Type <- "Undirected"
+edges_merged$Weight <- net_spring_merged$edgelist1$adja
+nodes_merged <- unique(edges_merged[,c('v1','Source')])
+colnames(nodes_merged) <- c("Label", "Id")
+nodes_merged$Category <- props_spring$clustering$clust1[nodes_merged$Label]
+edges_merged <- dplyr::select(edges_merged, Source, Target, Type, Weight)
+write.csv(nodes_merged, file = "nodes_merged.csv", row.names = FALSE)
+write.csv(edges_merged, file = "edges_merged.csv", row.names = FALSE)
+```
+
+## First tests with SparCC in NetCoMi
+
+
+```
+net_sparcc <- netConstruct(,
                            filtTax = "highestFreq",
-                           filtTaxPar = list(highestFreq = 250),
-                           filtSamp = "totalReads", # Will not be used, since all samples have more than 1,000 reads
-                                                    # Curently, I (RACS) will not filter samples
-                           filtSampPar = list(totalReads = 10000),
-                           measure = "spring",
-                           measurePar = list(nlambda=100,
-                                             rep.num=100,
-                                             Rmethod = "approx"),
-                           normMethod = "none", # Normalization as well as zero handling is performed internally in SPRING
+                           filtTaxPar = list(highestFreq = 50),
+                           filtSamp = "totalReads",
+                           filtSampPar = list(totalReads = 1000),
+                           measure = "sparcc",
+                           measurePar = NULL,
+                           normMethod = "clr", # SparCC uses CLR data as input
                            zeroMethod = "none",
-                           sparsMethod = "none",
+                           sparsMethod = "threshold", # in case of SparCC, an arbitrary value for sparsification was used like in Spiec-Easi example
+                           thresh = 0.3,
                            dissFunc = "signed",
-                           verbose = 3, # Shows all messages, including those from SPRING
+                           verbose = 2,
                            seed = 123456)
 ```
 
 ## SpiecEasi
 
+First tests with a low rep.num value:
+
 ```{r}
-se.mb.wallace2018 <- spiec.easi(original_matrix_wallace2018_transposed, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=100, ncores=12))
+library(SpiecEasi)
+se.mb.wallace2018_original <- spiec.easi(original_matrix_wallace2018_transposed, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=5, ncores=4))
 ```
