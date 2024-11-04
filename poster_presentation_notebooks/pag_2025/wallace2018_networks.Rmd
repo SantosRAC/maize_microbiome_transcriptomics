@@ -5,22 +5,19 @@ I (RACS) will use two datasets for the OTU counts:
  * Merged day and night (used in cross-correlation analyses)
  * The original dataset with all samples (day and night samples considered separately)
 
+To reduce the number of OTUs used in the analyses, I (RACS) will use the same OTUs used in the SparXCC analyses (cross-correlations between genes and OTUs).
+
+##
+
+ * `summed_day_night_otu_counts_filtered_sparxcc_data.tsv` is the table with OTU counts, but after selecting only the OTUs used in the SparXCC analyses.
+ * `original_otu_counts_filtered_sparxcc_data.tsv` is the original OTU table counts, after selecting only the OTUs used in the SparXCC analyses.
+
+
+
 ## First tests with SPRING in NetCoMi
 
 Using NetCoMi to generate networks.
 
-### Using merged datasets Wallace et al (2018) - day and night samples
-
-For Dr. Santos internship abroad, cross-correlation analyses were carried out after merging OTU counts from day and night samples in the same plot, as suggested by Dr. Jason Wallace.
-
-```{r}
-library(NetCoMi)
-
-merged_matrix_wallace2018 <- read.csv('/home/rsantos/Repositories/maize_microbiome_transcriptomics/16S_wallace2018/combine_day_night_samples/summed_day_night_otu_counts.tsv', sep='\t', header=TRUE, row.names=1)
-merged_matrix_wallace2018_transposed <- t(merged_matrix_wallace2018)
-
-
-```
 
 ### Using Wallace et al (2018) - original and merged data
 
@@ -46,7 +43,7 @@ net_spring_merged <- netConstruct(merged_matrix_wallace2018_transposed,
                            verbose = 3, # Shows all messages, including those from SPRING
                            seed = 123456)
 
-original_matrix_wallace2018 <- read.csv('/home/santosrac/Projects/UGA_RACS/16S/otu_matrices/original_counts/2f_otu_table.sample_filtered.no_mitochondria_chloroplast.tsv',
+original_matrix_wallace2018 <- read.csv('/home/rsantos/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/original_otu_counts_filtered_sparxcc_data.tsv',
     sep='\t', header=TRUE, row.names=1)
 original_matrix_wallace2018_transposed <- t(original_matrix_wallace2018)
 column_sums <- colSums(original_matrix_wallace2018_transposed)
@@ -141,6 +138,9 @@ write.csv(edges_merged, file = "edges_merged.csv", row.names = FALSE)
 
 ## First tests with SparCC in NetCoMi
 
+SparCC method is better than Pearson because it considers the compositional nature of metataxonomic data.
+
+Spiec-Easi implemented a otimized version of SparCC, which is used in NetcoMi netContruct function.
 
 ```
 net_sparcc <- netConstruct(,
@@ -160,6 +160,8 @@ net_sparcc <- netConstruct(,
 ```
 
 ## SpiecEasi
+
+Compared to SparCC (that do take into account the compositional nature of sequencing data), SpiecEasi uses a graphical model to analyze directly correlated nodes (while SparCC does not account for populations indirectly correlated).
 
 First tests with a low rep.num value:
 
