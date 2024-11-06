@@ -161,9 +161,10 @@ net_sparcc <- netConstruct(,
                            seed = 123456)
 ```
 
-## SpiecEasi
+## SpiecEasi with MB model
 
 Using SpiecEasi, which uses a graphical model to analyze directly correlated nodes (SparCC does not account for populations indirectly correlated).
+[Birt and Dennis, 2021](https://doi.org/10.1007/978-1-0716-1040-4_14) provides a great starting point for the analysis of co-occurrence networks with Spiec-Easi, that I (RACS) will follow.
 
 ### SpiecEasi with all samples
 
@@ -175,8 +176,6 @@ merged_matrix_wallace2018 <- read.csv('/home/rsantos/Repositories/maize_microbio
 merged_matrix_wallace2018_transposed <- t(merged_matrix_wallace2018)
 # Using Meinshausen-Bühlman method (node wise regression model)
 se.mb.wallace2018_merged <- spiec.easi(merged_matrix_wallace2018_transposed, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=4))
-se.gl.wallace2018_merged <- spiec.easi(merged_matrix_wallace2018_transposed, method='glasso', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=4))
-se.sparcc.wallace2018_merged <- sparcc(merged_matrix_wallace2018_transposed)
 ```
 
 Generating the network from the Spiec-Easi object (with MB model)
@@ -256,4 +255,29 @@ se.mb.wallace2018_merged_mixed <- spiec.easi(filtered_merged_matrix_mixed_transp
 se.mb.wallace2018_merged_ss <- spiec.easi(filtered_merged_matrix_ss_transpose, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=4))
 se.mb.wallace2018_merged_nss <- spiec.easi(filtered_merged_matrix_nss_transpose, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=4))
 se.mb.wallace2018_merged_ts <- spiec.easi(filtered_merged_matrix_ts_transpose, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=4))
+```
+
+## SpiecEasi with glasso
+
+Previous analyses were carried out with the MB model. Following [Layeghifard et al (2018)](https://doi.org/10.1007/978-1-4939-8728-3_16), here I use the glasso alternative.
+
+```{r}
+se.gl.wallace2018_merged <- spiec.easi(merged_matrix_wallace2018_transposed, method='glasso', lambda.min.ratio=1e-2, nlambda=20, icov.select.params=list(rep.num=50, ncores=4))
+
+secor <- cov2cor(getOptCov(se.gl.wallace2018_merged))
+elist.gl <- summary(triu(secor*getRefit(se.gl.wallace2018_merged), k=1))
+
+#TODO: finish se gl and revise everything
+#se.gl.wallace2018_merged.net <- graph.adjacency(, mode="undirected", diag=FALSE)
+```
+
+## Running the optimized SparCC implementation in Spiec-Easi
+
+```{r}
+sparcc.wallace2018_merged.matrix <- sparcc(merged_matrix_wallace2018_transposed)
+sparcc.cutoff <- 0.3
+sparcc.adj <- ifelse(abs(sparcc.wallace2018_merged.matrix$Cor) >= sparcc.cutoff, 1, 0)
+rownames(sparcc.adj) <- colnames(merged_matrix_wallace2018_transposed)
+colnames(sparcc.adj) <- colnames(merged_matrix_wallace2018_transposed)
+sparcc.net <- graph.adjacency(sparcc.adj, mode="undirected", diag=FALSE)
 ```
