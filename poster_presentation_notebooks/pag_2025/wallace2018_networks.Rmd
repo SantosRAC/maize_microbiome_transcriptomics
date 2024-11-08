@@ -174,8 +174,19 @@ Running spiec.easi with the merged dataset:
 library(SpiecEasi)
 merged_matrix_wallace2018 <- read.csv('/home/rsantos/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/summed_day_night_otu_counts_filtered_sparxcc_data.tsv', sep='\t', header=TRUE, row.names=1)
 merged_matrix_wallace2018_transposed <- t(merged_matrix_wallace2018)
-# Using Meinshausen-Bühlman method (node wise regression model)
+# Using Meinshausen-Bühlman (MB) method (node wise regression model)
 se.mb.wallace2018_merged <- spiec.easi(merged_matrix_wallace2018_transposed, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=4))
+```
+
+Visualizing the network with igraph:
+
+```{r}
+library(igraph)
+ig.mb     <- adj2igraph(getRefit(se.mb.wallace2018_merged))
+## set size of vertex proportional to clr-mean (from [spiec-easi tutorial](https://github.com/zdk123/SpiecEasi))
+vsize    <- rowMeans(clr(merged_matrix_wallace2018_transposed, 1))+6
+am.coord <- layout.fruchterman.reingold(ig.mb)
+plot(ig.mb, layout=am.coord, vertex.size=vsize, vertex.label=NA, main="MB")
 ```
 
 Generating the network from the Spiec-Easi object (with MB model)
@@ -263,12 +274,20 @@ Previous analyses were carried out with the MB model. Following [Layeghifard et 
 
 ```{r}
 se.gl.wallace2018_merged <- spiec.easi(merged_matrix_wallace2018_transposed, method='glasso', lambda.min.ratio=1e-2, nlambda=20, icov.select.params=list(rep.num=50, ncores=4))
-
 secor <- cov2cor(getOptCov(se.gl.wallace2018_merged))
 elist.gl <- summary(triu(secor*getRefit(se.gl.wallace2018_merged), k=1))
-
-#TODO: finish se gl and revise everything
 #se.gl.wallace2018_merged.net <- graph.adjacency(, mode="undirected", diag=FALSE)
+```
+
+Visualizing the network with igraph:
+
+```{r}
+library(igraph)
+ig.gl     <- adj2igraph(getRefit(se.gl.wallace2018_merged))
+## set size of vertex proportional to clr-mean (from [spiec-easi tutorial](https://github.com/zdk123/SpiecEasi))
+vsize    <- rowMeans(clr(merged_matrix_wallace2018_transposed, 1))+6
+am.coord <- layout.fruchterman.reingold(ig.gl)
+plot(ig.gl, layout=am.coord, vertex.size=vsize, vertex.label=NA, main="glasso")
 ```
 
 ## Running the optimized SparCC implementation in Spiec-Easi
@@ -280,4 +299,15 @@ sparcc.adj <- ifelse(abs(sparcc.wallace2018_merged.matrix$Cor) >= sparcc.cutoff,
 rownames(sparcc.adj) <- colnames(merged_matrix_wallace2018_transposed)
 colnames(sparcc.adj) <- colnames(merged_matrix_wallace2018_transposed)
 sparcc.net <- graph.adjacency(sparcc.adj, mode="undirected", diag=FALSE)
+```
+
+Visualizing the network with igraph:
+
+```{r}
+library(igraph)
+ig.sparcc     <- adj2igraph(sparcc.adj)
+## set size of vertex proportional to clr-mean (from [spiec-easi tutorial](https://github.com/zdk123/SpiecEasi))
+vsize    <- rowMeans(clr(merged_matrix_wallace2018_transposed, 1))+6
+am.coord <- layout.fruchterman.reingold(ig.sparcc)
+plot(ig.sparcc, layout=am.coord, vertex.size=vsize, vertex.label=NA, main="SparCC")
 ```
