@@ -1,172 +1,29 @@
 # Network generation for Wallace et al. 2018
 
-I (RACS) will use two datasets for the OTU counts:
+I (RACS) will use different datasets for the OTU counts:
 
- * Merged day and night (used in cross-correlation analyses)
+ * Merged day and night (used in cross-correlation analyses, selecting samples with RNA-Seq pairs)
  * The original dataset with all samples (day and night samples considered separately)
+ * The original dataset with all samples (day and night samples considered separately, still selecting samples with RNA-Seq pairs)
 
-To reduce the number of OTUs used in the analyses, I (RACS) will use the same OTUs used in the SparXCC analyses (cross-correlations between genes and OTUs).
-
-##
+To reduce the number of OTUs used in the analyses, I (RACS) will use the same OTUs used in the SparXCC analyses (cross-correlations between genes and OTUs) for some analyses:
 
  * `summed_day_night_otu_counts_filtered_sparxcc_data.tsv` is the table with OTU counts, but after selecting only the OTUs used in the SparXCC analyses.
  * `original_otu_counts_filtered_sparxcc_data.tsv` is the original OTU table counts (with all samples, not only the paired), after selecting only the OTUs used in the SparXCC analyses.
 
-
 `summed_day_night_otu_counts_filtered_sparxcc_data.tsv` is different from the matrix used in SparXCC, because that way preserved the 'day' and 'night' labels in matrix columns just for the purpose of matching names in the RNA-seq (but they had the same values).
 Since we are now interested ONLY in the relations among the OTU nodes (co-occurrence networks), we will keep the names referring only to plot and day (e.g., 14A0199_8).
 
-## First tests with SPRING in NetCoMi
+Additionally, I (RACS) will also use the original OTU table counts (with all samples, not only the paired), to compare networks between day and night samples:
+ * `original_otu_filtered_day.tsv`
+ * `original_otu_filtered_night.tsv`
 
-Using NetCoMi to generate networks.
+These datasets were obtained as described in `co_occurrence_matrix_day_periods.ipynb` (PAG 25 folder).
 
-
-### Using Wallace et al (2018) - original and merged data
-
-```{r}
-library(NetCoMi)
-
-merged_matrix_wallace2018 <- read.csv('/home/rsantos/Repositories/maize_microbiome_transcriptomics/16S_wallace2018/combine_day_night_samples/summed_day_night_otu_counts.tsv', sep='\t', header=TRUE, row.names=1)
-merged_matrix_wallace2018_transposed <- t(merged_matrix_wallace2018)
-	
-net_spring_merged <- netConstruct(merged_matrix_wallace2018_transposed,
-                           filtTax = "highestFreq",
-                           filtTaxPar = list(highestFreq = 200),
-                           filtSamp = "totalReads",
-                           filtSampPar = list(totalReads = 10000),
-                           measure = "spring",
-                           measurePar = list(nlambda=100,
-                                             rep.num=100,
-                                             Rmethod = "approx"),
-                           normMethod = "none", # Normalization as well as zero handling is performed internally in SPRING
-                           zeroMethod = "none",
-                           sparsMethod = "none",
-                           dissFunc = "signed",
-                           verbose = 3, # Shows all messages, including those from SPRING
-                           seed = 123456)
-
-original_matrix_wallace2018 <- read.csv('/home/rsantos/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/original_otu_counts_filtered_sparxcc_data.tsv',
-    sep='\t', header=TRUE, row.names=1)
-original_matrix_wallace2018_transposed <- t(original_matrix_wallace2018)
-column_sums <- colSums(original_matrix_wallace2018_transposed)
-
-sorted_column_sums <- sort(column_sums, decreasing = FALSE)
-
-last_300_column_sums <- tail(sorted_column_sums, 300)
-print(last_300_column_sums)
-
-hist(last_300_column_sums, 
-    main="Histogram of Column Sums", 
-    xlab="Column Sums", 
-    ylab="Frequency", 
-    col="blue", 
-    border="black")
-
-row_sums <- rowSums(original_matrix_wallace2018_transposed)
-
-sorted_row_sums <- sort(row_sums, decreasing = FALSE)
-
-last_300_row_sums <- tail(sorted_row_sums, 300)
-print(last_300_row_sums)
-
-hist(last_300_row_sums, 
-    main="Histogram of Row Sums", 
-    xlab="Row Sums", 
-    ylab="Frequency", 
-    col="green", 
-    border="black",
-    breaks=100)
-
-net_spring <- netConstruct(original_matrix_wallace2018_transposed,
-                           filtTax = "highestFreq",
-                           filtTaxPar = list(highestFreq = 255),
-                           filtSamp = "totalReads",
-                           filtSampPar = list(totalReads = 5000),
-                           measure = "spring",
-                           measurePar = list(nlambda=100,
-                                             rep.num=100,
-                                             Rmethod = "approx"),
-                           normMethod = "none", # Normalization as well as zero handling is performed internally in SPRING
-                           zeroMethod = "none",
-                           sparsMethod = "none",
-                           dissFunc = "signed",
-                           verbose = 3, # Shows all messages, including those from SPRING
-                           seed = 123456)
-```
-
-The first time trying to run SPRING method in NetCoMi, I (RACS) got the following warning:
-
-```bash
-Warning messages:
-1: In Matrix::nearPD(R, corr = TRUE) :
-  'nearPD()' did not converge in 100 iterations
-2: 101 jobs had warning: "'nearPD()' did not converge in 100 iterations"
-```
-
-It is important to consider filtering out rare species by limiting the number of species based on frequency in the whole dataset or filtering samples by total reads count.
-See the following issue for more information: [NetCoMi issue 22](https://github.com/stefpeschel/NetCoMi/issues/22)
-
-Runs show above are final runs, after testing different values for OTU and sample depth/counts.
-
-Exporting the edges and nodes to analyze the networks in softwares like Cytoscape and Gephi (adapted from NetCoMi guidelines):
-
-```{r}
-# Exporting edges and nodes for the original matrix
-edges <- dplyr::select(net_spring$edgelist1, v1, v2)
-edges$Source <- as.numeric(factor(edges$v1))
-edges$Target <- as.numeric(factor(edges$v2))
-edges$Type <- "Undirected"
-edges$Weight <- net_spring$edgelist1$adja
-nodes <- unique(edges[,c('v1','Source')])
-colnames(nodes) <- c("Label", "Id")
-nodes$Category <- props_spring$clustering$clust1[nodes$Label]
-edges <- dplyr::select(edges, Source, Target, Type, Weight)
-write.csv(nodes, file = "nodes.csv", row.names = FALSE)
-write.csv(edges, file = "edges.csv", row.names = FALSE)
-
-# Exporting edges and nodes for the merged matrix
-edges_merged <- dplyr::select(net_spring_merged$edgelist1, v1, v2)
-edges_merged$Source <- as.numeric(factor(edges_merged$v1))
-edges_merged$Target <- as.numeric(factor(edges_merged$v2))
-edges_merged$Type <- "Undirected"
-edges_merged$Weight <- net_spring_merged$edgelist1$adja
-nodes_merged <- unique(edges_merged[,c('v1','Source')])
-colnames(nodes_merged) <- c("Label", "Id")
-nodes_merged$Category <- props_spring$clustering$clust1[nodes_merged$Label]
-edges_merged <- dplyr::select(edges_merged, Source, Target, Type, Weight)
-write.csv(nodes_merged, file = "nodes_merged.csv", row.names = FALSE)
-write.csv(edges_merged, file = "edges_merged.csv", row.names = FALSE)
-```
-
-## First tests with SparCC in NetCoMi
-
-SparCC method is better than Pearson because it considers the compositional nature of metataxonomic data.
-
-Spiec-Easi implemented a otimized version of SparCC, which is used in NetcoMi netContruct function.
-
-```
-net_sparcc <- netConstruct(,
-                           filtTax = "highestFreq",
-                           filtTaxPar = list(highestFreq = 50),
-                           filtSamp = "totalReads",
-                           filtSampPar = list(totalReads = 1000),
-                           measure = "sparcc",
-                           measurePar = NULL,
-                           normMethod = "clr", # SparCC uses CLR data as input
-                           zeroMethod = "none",
-                           sparsMethod = "threshold", # in case of SparCC, an arbitrary value for sparsification was used like in Spiec-Easi example
-                           thresh = 0.3,
-                           dissFunc = "signed",
-                           verbose = 2,
-                           seed = 123456)
-```
-
-## SpiecEasi with MB model
+## SpiecEasi with MB model (merged datasets)
 
 Using SpiecEasi, which uses a graphical model to analyze directly correlated nodes (SparCC does not account for populations indirectly correlated).
 [Birt and Dennis, 2021](https://doi.org/10.1007/978-1-0716-1040-4_14) provides a great starting point for the analysis of co-occurrence networks with Spiec-Easi, that I (RACS) will follow.
-
-### SpiecEasi with all samples
 
 Running spiec.easi with the merged dataset:
 
@@ -268,7 +125,7 @@ se.mb.wallace2018_merged_nss <- spiec.easi(filtered_merged_matrix_nss_transpose,
 se.mb.wallace2018_merged_ts <- spiec.easi(filtered_merged_matrix_ts_transpose, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=4))
 ```
 
-## SpiecEasi with glasso
+## SpiecEasi with glasso (merged datasets)
 
 Previous analyses were carried out with the MB model. Following [Layeghifard et al (2018)](https://doi.org/10.1007/978-1-4939-8728-3_16), here I use the glasso alternative.
 
@@ -290,7 +147,7 @@ am.coord <- layout.fruchterman.reingold(ig.gl)
 plot(ig.gl, layout=am.coord, vertex.size=vsize, vertex.label=NA, main="glasso")
 ```
 
-## Running the optimized SparCC implementation in Spiec-Easi
+## Running the optimized SparCC implementation in Spiec-Easi (merged datasets)
 
 ```{r}
 sparcc.wallace2018_merged.matrix <- sparcc(merged_matrix_wallace2018_transposed)
@@ -310,4 +167,132 @@ ig.sparcc     <- adj2igraph(sparcc.adj)
 vsize    <- rowMeans(clr(merged_matrix_wallace2018_transposed, 1))+6
 am.coord <- layout.fruchterman.reingold(ig.sparcc)
 plot(ig.sparcc, layout=am.coord, vertex.size=vsize, vertex.label=NA, main="SparCC")
+```
+
+
+## SpiecEasi with MB model (separated day and night matrices from the original OTU table after filtering by relative abundance)
+
+Running spiec.easi with the day and night datasets (filtering steps are described in `co_occurrence_matrix_day_periods.ipynb`):
+
+```{r}
+library(SpiecEasi)
+otu_day_filtered_wallace2018 <- read.csv('/Users/renat/Downloads/tmp/pag_2025/original_otu_filtered_day.tsv', sep='\t', header=TRUE, row.names=1)
+otu_night_filtered_wallace2018 <- read.csv('/Users/renat/Downloads/tmp/pag_2025/original_otu_filtered_night.tsv', sep='\t', header=TRUE, row.names=1)
+# Transposing the matrices
+otu_day_filtered_wallace2018_transposed <- t(otu_day_filtered_wallace2018)
+otu_night_filtered_wallace2018_transposed <- t(otu_night_filtered_wallace2018)
+# Using Meinshausen-Bühlman (MB) method (node wise regression model)
+se.mb.day_filtered_wallace2018 <- spiec.easi(otu_day_filtered_wallace2018_transposed, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=1))
+se.mb.night_filtered_wallace2018 <- spiec.easi(otu_night_filtered_wallace2018_transposed, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=1))
+```
+
+Visualizing the network with igraph:
+
+```{r}
+library(igraph)
+
+# Adding OTU names to the adjacency matrix
+se.mb.night_filtered_wallace2018_matrix <- getRefit(se.mb.night_filtered_wallace2018)
+se.mb.day_filtered_wallace2018_matrix <- getRefit(se.mb.day_filtered_wallace2018)
+rownames(se.mb.day_filtered_wallace2018_matrix) <- colnames(otu_day_filtered_wallace2018_transposed)
+rownames(se.mb.night_filtered_wallace2018_matrix) <- colnames(otu_night_filtered_wallace2018_transposed)
+
+ig.day.mb <- adj2igraph(se.mb.day_filtered_wallace2018_matrix, vertex.attr=list(name=rownames(se.mb.day_filtered_wallace2018_matrix)))
+ig.night.mb <- adj2igraph(se.mb.night_filtered_wallace2018_matrix, vertex.attr=list(name=rownames(se.mb.night_filtered_wallace2018_matrix)))
+
+## set size of vertex proportional to clr-mean (from [spiec-easi tutorial](https://github.com/zdk123/SpiecEasi))
+vsize.night    <- rowMeans(clr(otu_night_filtered_wallace2018_transposed, 1))+6
+vsize.day    <- rowMeans(clr(otu_day_filtered_wallace2018_transposed, 1))+6
+
+```
+
+Using Fruchterman-Reingold layout (a force-directed layout) for node placement.
+Strongly connected nodes are close together; nodes with low edge weight are far apart.
+See [Lahti et al. 2021. Orchestrating Microbiome Analysis with Bioconductor](https://microbiome.github.io/OMA/docs/devel/pages/60_network_learning.html)
+See also [this link from sciencedirect](https://www.sciencedirect.com/topics/computer-science/reingold-layout)
+
+```{r}
+am.night.coord <- layout.fruchterman.reingold(ig.night.mb)
+am.day.coord <- layout.fruchterman.reingold(ig.day.mb)
+
+plot(ig.night.mb, layout=am.night.coord, vertex.size=vsize.night, main="MB - night")
+plot(ig.day.mb, layout=am.day.coord, vertex.size=vsize.day, main="MB - day")
+```
+
+Computing centrality measures for day and night networks:
+
+Defining a function to compute centrality measures:
+
+```{r}
+# From Lahti et al. 2021. Orchestrating Microbiome Analysis with Bioconductor (https://microbiome.github.io/OMA/docs/devel/pages/60_network_learning.html)
+get_centr <- function(graph_obj) {
+  df <- data.frame(Degree = igraph::degree(graph_obj))
+  df$Betweenness <- betweenness(graph_obj)
+  df$Closeness <- closeness(graph_obj, normalized = TRUE)
+  df$Eigenvector <- eigen_centrality(graph_obj)$vector
+  return(df)
+}
+```
+
+
+```{r}
+centr_day_df <- get_centr(ig.day.mb)
+centr_night_df <- get_centr(ig.night.mb)
+
+# Plotting with node size proportional to degree centrality
+day_lay_fr <- layout_with_fr(ig.day.mb)
+plot(ig.day.mb, layout = day_lay_fr, vertex.size = centr_day_df$Degree, main = "Day - Degree centrality", vertex.label.cex = 0.3)
+night_lay_fr <- layout_with_fr(ig.night.mb)
+plot(ig.night.mb, layout = night_lay_fr, vertex.size = centr_night_df$Degree, main = "Night - Degree centrality", vertex.label.cex = 0.3)
+```
+
+Plotting the degree distributions for day and night networks:
+
+```{r}
+ddist_day <- igraph::degree.distribution(ig.day.mb)
+ddist_night <- igraph::degree.distribution(ig.night.mb)
+
+day_ggplot_df <- data.frame(Degree = as.factor((seq_along(ddist_day)) - 1),
+                 Fraction = ddist_day)
+night_ggplot_df <- data.frame(Degree = as.factor((seq_along(ddist_night)) - 1),
+                 Fraction = ddist_night)
+
+library(gridExtra)
+night_plot <- ggplot(data = night_ggplot_df, aes(x = Degree, y = Fraction, group = 1)) +
+     geom_line() +
+     geom_point() +
+     theme_bw()
+day_plot <- ggplot(data = day_ggplot_df, aes(x = Degree, y = Fraction, group = 1)) +
+     geom_line() +
+     geom_point() +
+     theme_bw()
+grid.arrange(day_plot, night_plot, ncol = 2)
+```
+
+Comparing networks with NetCoMi. Currently, only comparing the main statistics, the main centrality metrics (normalized).
+For detecting hubs, we will use the degree centrality metric just to compare the list between these two networks.
+
+```{r}
+# 
+adjma_se_mb_day <- as.matrix(symBeta(getOptBeta(se.mb.day_filtered_wallace2018)))
+adjma_se_mb_night <- as.matrix(symBeta(getOptBeta(se.mb.night_filtered_wallace2018)))
+
+colnames(adjma_se_mb_day) <- colnames(otu_day_filtered_wallace2018_transposed)
+rownames(adjma_se_mb_day) <- colnames(otu_day_filtered_wallace2018_transposed)
+colnames(adjma_se_mb_night) <- colnames(otu_night_filtered_wallace2018_transposed)
+rownames(adjma_se_mb_night) <- colnames(otu_night_filtered_wallace2018_transposed)
+
+se_mb_day_night_net <- netConstruct(data = adjma_se_mb_day,
+                               data2 = adjma_se_mb_night,
+                               dataType = "condDependence", normMethod = "none", 
+                               sparsMethod = "none", zeroMethod = "none", 
+                               verbose = 3, seed = 1234)
+
+se_mb_day_night_netprops <- netAnalyze(se_mb_day_night_net, avDissIgnoreInf = TRUE,
+                                    clustMethod = "cluster_fast_greedy",
+                                    hubPar = c("degree"), hubQuant = 0.95,
+                                    normDeg = TRUE, centrLCC = FALSE, normBetw = TRUE,
+                                    normEigen = TRUE)
+
+summary(se_mb_day_night_netprops, groupNames = c("Day period", "Night period"))
 ```
