@@ -295,4 +295,18 @@ se_mb_day_night_netprops <- netAnalyze(se_mb_day_night_net, avDissIgnoreInf = TR
                                     normEigen = TRUE)
 
 summary(se_mb_day_night_netprops, groupNames = c("Day period", "Night period"))
+
+plot(se_mb_day_night_netprops, 
+      sameLayout = TRUE, 
+      layoutGroup = 1,
+      rmSingles = "inboth", 
+      nodeSize = "degree", 
+      nodeColor = "cluster",
+      labelScale = FALSE,
+      cexNodes = 0.5, 
+      cexLabels = 0.1,
+      cexHubLabels = 0.2,
+      cexTitle = 1.0,
+      groupNames = c("Day period", "Night period"),
+      hubBorderCol  = "gray40")
 ```
