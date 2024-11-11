@@ -1,4 +1,4 @@
-corals==0.1.6
+corals==0.1.7
 mantel==2.2.1
 pandas==2.2.2
 bioinfokit==2.1.4
