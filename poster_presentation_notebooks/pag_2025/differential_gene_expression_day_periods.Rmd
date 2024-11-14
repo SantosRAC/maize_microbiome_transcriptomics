@@ -101,10 +101,27 @@ resMF <- results(ddsMF)
 summary(resMF)
 ```
 
+```{r}
+resultsNames(ddsMF)
+resMF_LFC <- lfcShrink(ddsMF, coef="DayPeriod_night_vs_day", type="apeglm")
+resMF_LFC
+```
+
 
 ```{r}
 head(resMF)
 resMFOrdered <- resMF[order(resMF$pvalue),]
 head(resMFOrdered)
-plotCounts(ddsMF, gene="Zm00001eb256520_T003", intgroup="DayPeriod")
+```
+
+Mapping between clock or clock-related genes in [Lai et al 2020](https://link.springer.com/article/10.1186/s12864-020-06824-3) and the maize v4 (used in transcript quantification) was done in Phytozome. Identifiers identified in maize v4 were mapped to IDs in maize genome v5 using a mapping file provided by MaizeGDB [here](https://download.maizegdb.org/Pan-genes/B73_gene_xref/).
+
+```{r}
+plotCounts(ddsMF, gene="Zm00001eb397240_T001", intgroup="DayPeriod")
+plotCounts(ddsMF, gene="Zm00001eb122110_T003", intgroup="DayPeriod")
+plotCounts(ddsMF, gene="Zm00001eb228670_T002", intgroup="DayPeriod")
+plotCounts(ddsMF, gene="Zm00001eb273260_T002", intgroup="DayPeriod")
+plotCounts(ddsMF, gene="Zm00001eb274210_T002", intgroup="DayPeriod")
+plotCounts(ddsMF, gene="Zm00001eb379300_T001", intgroup="DayPeriod")
+plotCounts(ddsMF, gene="Zm00001eb389960_T001", intgroup="DayPeriod")
 ```
