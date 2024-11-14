@@ -1,0 +1,110 @@
+---
+title: "Differential gene expression analysis"
+output: html_notebook
+---
+
+Differential gene expression analysis will be carried out to get up and down regulated genes in the day and night periods.
+
+# Importing data
+
+Importing the matrix (same used in SparXCC, filtered based on CV and expression levels) and sample annotation.
+Filtering steps will not be necessary, since it was previously carried out for SparXCC.
+
+```{r}
+cts <- as.matrix(read.csv("/home/rsantos/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/plant_center_retreat_2024/expression_counts_day_night_filtered_cv_filtered.tsv", sep="\t",row.names="Name"))
+coldata <- read.csv("/home/rsantos/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/sample_annotation.txt", row.names=1, sep="\t")
+```
+
+Some checking steps and fixing column orders, as described in DESeq2 quick start:
+
+```{r}
+dim(cts)
+dim(coldata)
+head(cts)
+head(coldata)
+all(rownames(coldata) %in% colnames(cts)) # Check if all samples are present in the count matrix
+all(rownames(coldata) == colnames(cts)) # Check if the order of samples is the same in the count matrix and the coldata
+cts <- cts[, rownames(coldata)]
+all(rownames(coldata) == colnames(cts))
+```
+
+Checking the column data. Object for DESeq2 will use DayPeriod as the design formula.
+
+```{r}
+head(coldata)
+```
+
+```{r}
+library("DESeq2")
+dds <- DESeqDataSetFromMatrix(countData = cts,
+                              colData = coldata,
+                              design = ~ DayPeriod)
+dds
+colData(dds)
+```
+
+
+# Differential gene expression analysis
+
+
+```{r}
+dds <- DESeq(dds)
+res_day_periods_dea <- results(dds, contrast=c("DayPeriod","day","night"))
+res_day_periods_dea
+```
+
+
+```{r}
+resultsNames(dds)
+resLFC <- lfcShrink(dds, coef="DayPeriod_night_vs_day", type="apeglm")
+resLFC
+```
+
+
+```{r}
+resOrdered <- res_day_periods_dea[order(res_day_periods_dea$pvalue),]
+resOrdered
+```
+
+```{r}
+summary(resOrdered)
+sum(resOrdered$padj < 0.01, na.rm=TRUE)
+```
+
+
+
+```{r}
+plotMA(resLFC, ylim=c(-4,4))
+```
+
+```{r}
+plotCounts(dds, gene="Zm00001eb032990_T001", intgroup="DayPeriod")
+```
+
+## Multi-factor design formula
+
+Using multi-factor design formula to account for the effect of the genotype:
+
+
+```{r}
+ddsMF <- dds # Making a copy of the DESeq2 object
+colData(ddsMF)
+colData(ddsMF)$Genotype <- as.factor(colData(ddsMF)$Genotype)
+levels(ddsMF$Genotype) <- gsub("-", "_", levels(ddsMF$Genotype)) # Replacing hyphens by underscores in all their occurrences
+levels(ddsMF$Genotype)
+```
+
+```{r}
+design(ddsMF) <- formula(~ Genotype + DayPeriod)
+ddsMF <- DESeq(ddsMF)
+resMF <- results(ddsMF)
+summary(resMF)
+```
+
+
+```{r}
+head(resMF)
+resMFOrdered <- resMF[order(resMF$pvalue),]
+head(resMFOrdered)
+plotCounts(ddsMF, gene="Zm00001eb256520_T003", intgroup="DayPeriod")
+```
