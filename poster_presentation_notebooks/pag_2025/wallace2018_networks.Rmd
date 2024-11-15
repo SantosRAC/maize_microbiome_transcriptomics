@@ -4,7 +4,6 @@ I (RACS) will use different datasets for the OTU counts:
 
  * Merged day and night (used in cross-correlation analyses, selecting samples with RNA-Seq pairs)
  * The original dataset with all samples (day and night samples considered separately)
- * The original dataset with all samples (day and night samples considered separately, still selecting samples with RNA-Seq pairs)
 
 To reduce the number of OTUs used in the analyses, I (RACS) will use the same OTUs used in the SparXCC analyses (cross-correlations between genes and OTUs) for some analyses:
 
@@ -19,6 +18,173 @@ Additionally, I (RACS) will also use the original OTU table counts (with all sam
  * `original_otu_filtered_night.tsv`
 
 These datasets were obtained as described in `co_occurrence_matrix_day_periods.ipynb` (PAG 25 folder).
+
+## Testing if networks for day and night samples are similar
+
+To test if if networks for day and night samples are similar, I (RACS) used SpiecEasi with MB model to reconstruct separate networks for the day and the night matrices from the original OTU table after filtering by relative abundance (keeping OTUs with 0.001 relative abundance for at least half samples, approx. 270 samples). Filtering steps are described in `co_occurrence_matrix_day_periods.ipynb`.
+
+Running spiec.easi with the day and night datasets:
+
+```{r}
+library(SpiecEasi)
+otu_day_filtered_wallace2018 <- read.csv('/home/rsantos/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/original_otu_filtered_day.tsv', sep='\t', header=TRUE, row.names=1)
+otu_night_filtered_wallace2018 <- read.csv('/home/rsantos/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/original_otu_filtered_night.tsv', sep='\t', header=TRUE, row.names=1)
+head(otu_day_filtered_wallace2018)
+head(otu_night_filtered_wallace2018)
+# Transposing the matrices
+otu_day_filtered_wallace2018_transposed <- t(otu_day_filtered_wallace2018)
+otu_night_filtered_wallace2018_transposed <- t(otu_night_filtered_wallace2018)
+# Using Meinshausen-Bühlman (MB) method (node wise regression model)
+se.mb.day_filtered_wallace2018 <- spiec.easi(otu_day_filtered_wallace2018_transposed, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=1))
+se.mb.night_filtered_wallace2018 <- spiec.easi(otu_night_filtered_wallace2018_transposed, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=1))
+```
+
+Visualizing the network with igraph:
+
+```{r}
+# Adding OTU names to the adjacency matrix
+se.mb.night_filtered_wallace2018_matrix <- getRefit(se.mb.night_filtered_wallace2018)
+se.mb.day_filtered_wallace2018_matrix <- getRefit(se.mb.day_filtered_wallace2018)
+rownames(se.mb.day_filtered_wallace2018_matrix) <- colnames(otu_day_filtered_wallace2018_transposed)
+rownames(se.mb.night_filtered_wallace2018_matrix) <- colnames(otu_night_filtered_wallace2018_transposed)
+
+ig.day.mb <- adj2igraph(se.mb.day_filtered_wallace2018_matrix, vertex.attr=list(name=rownames(se.mb.day_filtered_wallace2018_matrix)))
+ig.night.mb <- adj2igraph(se.mb.night_filtered_wallace2018_matrix, vertex.attr=list(name=rownames(se.mb.night_filtered_wallace2018_matrix)))
+
+## set size of vertex proportional to clr-mean (from [spiec-easi tutorial](https://github.com/zdk123/SpiecEasi))
+vsize.night    <- rowMeans(clr(otu_night_filtered_wallace2018_transposed, 1))+6
+vsize.day    <- rowMeans(clr(otu_day_filtered_wallace2018_transposed, 1))+6
+
+```
+
+Using Fruchterman-Reingold layout (a force-directed layout) for node placement.
+Strongly connected nodes are close together; nodes with low edge weight are far apart.
+See [Lahti et al. 2021. Orchestrating Microbiome Analysis with Bioconductor](https://microbiome.github.io/OMA/docs/devel/pages/60_network_learning.html)
+See also [this link from sciencedirect](https://www.sciencedirect.com/topics/computer-science/reingold-layout)
+
+```{r}
+library(igraph)
+
+am.night.coord <- layout.fruchterman.reingold(ig.night.mb)
+am.day.coord <- layout.fruchterman.reingold(ig.day.mb)
+
+edges_g1 <- unique(apply(as_edgelist(ig.day.mb), 1, function(x) paste(sort(x), collapse = "-")))
+edges_g2 <- unique(apply(as_edgelist(ig.night.mb), 1, function(x) paste(sort(x), collapse = "-")))
+unique_edges <- length(unique(c(edges_g1, edges_g2)))
+shared_edges <- intersect(edges_g1, edges_g2)
+
+length(edges_g1) # Number of edges in day network
+length(edges_g2) # Number of edges in night network
+# Number of shared edges
+length(shared_edges)
+
+plot(ig.night.mb, layout=am.night.coord, vertex.size=vsize.night, main="MB - night")
+plot(ig.day.mb, layout=am.day.coord, vertex.size=vsize.day, main="MB - day")
+```
+
+Computing centrality measures for day and night networks:
+
+Defining a function to compute centrality measures:
+
+```{r}
+# From Lahti et al. 2021. Orchestrating Microbiome Analysis with Bioconductor (https://microbiome.github.io/OMA/docs/devel/pages/60_network_learning.html)
+get_centr <- function(graph_obj) {
+  df <- data.frame(Degree = igraph::degree(graph_obj))
+  df$Betweenness <- betweenness(graph_obj)
+  df$Closeness <- closeness(graph_obj, normalized = TRUE)
+  df$Eigenvector <- eigen_centrality(graph_obj)$vector
+  return(df)
+}
+```
+
+
+```{r}
+centr_day_df <- get_centr(ig.day.mb)
+centr_night_df <- get_centr(ig.night.mb)
+
+# Plotting with node size proportional to degree centrality
+day_lay_fr <- layout_with_fr(ig.day.mb)
+plot(ig.day.mb, layout = day_lay_fr, vertex.size = centr_day_df$Degree, main = "Day - Degree centrality", vertex.label.cex = 0.3)
+night_lay_fr <- layout_with_fr(ig.night.mb)
+plot(ig.night.mb, layout = night_lay_fr, vertex.size = centr_night_df$Degree, main = "Night - Degree centrality", vertex.label.cex = 0.3)
+```
+
+Plotting the degree distributions for day and night networks:
+
+```{r}
+ddist_day <- igraph::degree.distribution(ig.day.mb)
+ddist_night <- igraph::degree.distribution(ig.night.mb)
+
+day_ggplot_df <- data.frame(Degree = as.factor((seq_along(ddist_day)) - 1),
+                 Fraction = ddist_day)
+night_ggplot_df <- data.frame(Degree = as.factor((seq_along(ddist_night)) - 1),
+                 Fraction = ddist_night)
+
+library(gridExtra)
+night_plot <- ggplot(data = night_ggplot_df, aes(x = Degree, y = Fraction, group = 1)) +
+     geom_line() +
+     geom_point() +
+     theme_bw()
+day_plot <- ggplot(data = day_ggplot_df, aes(x = Degree, y = Fraction, group = 1)) +
+     geom_line() +
+     geom_point() +
+     theme_bw()
+grid.arrange(day_plot, night_plot, ncol = 2)
+```
+
+Comparing networks with NetCoMi. Currently, only comparing the main statistics, the main centrality metrics (normalized).
+For detecting hubs, we will use the degree centrality metric just to compare the list between these two networks.
+
+```{r}
+# 
+adjma_se_mb_day <- as.matrix(symBeta(getOptBeta(se.mb.day_filtered_wallace2018)))
+adjma_se_mb_night <- as.matrix(symBeta(getOptBeta(se.mb.night_filtered_wallace2018)))
+
+colnames(adjma_se_mb_day) <- colnames(otu_day_filtered_wallace2018_transposed)
+rownames(adjma_se_mb_day) <- colnames(otu_day_filtered_wallace2018_transposed)
+colnames(adjma_se_mb_night) <- colnames(otu_night_filtered_wallace2018_transposed)
+rownames(adjma_se_mb_night) <- colnames(otu_night_filtered_wallace2018_transposed)
+
+se_mb_day_night_net <- netConstruct(data = adjma_se_mb_day,
+                               data2 = adjma_se_mb_night,
+                               dataType = "condDependence", normMethod = "none", 
+                               sparsMethod = "none", zeroMethod = "none", 
+                               verbose = 3, seed = 1234)
+
+se_mb_day_night_netprops <- netAnalyze(se_mb_day_night_net, avDissIgnoreInf = TRUE,
+                                    clustMethod = "cluster_fast_greedy",
+                                    hubPar = c("degree"), hubQuant = 0.95,
+                                    normDeg = TRUE, centrLCC = FALSE, normBetw = TRUE,
+                                    normEigen = TRUE)
+
+summary(se_mb_day_night_netprops, groupNames = c("Day period", "Night period"))
+
+plot(se_mb_day_night_netprops, 
+      sameLayout = TRUE, 
+      layoutGroup = 1,
+      rmSingles = "inboth", 
+      nodeSize = "degree", 
+      nodeColor = "cluster",
+      labelScale = FALSE,
+      cexNodes = 0.5, 
+      cexLabels = 0.1,
+      cexHubLabels = 0.2,
+      cexTitle = 1.0,
+      groupNames = c("Day period", "Night period"),
+      hubBorderCol  = "gray40")
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## SpiecEasi with MB model (merged datasets)
 
@@ -169,144 +335,3 @@ am.coord <- layout.fruchterman.reingold(ig.sparcc)
 plot(ig.sparcc, layout=am.coord, vertex.size=vsize, vertex.label=NA, main="SparCC")
 ```
 
-
-## SpiecEasi with MB model (separated day and night matrices from the original OTU table after filtering by relative abundance)
-
-Running spiec.easi with the day and night datasets (filtering steps are described in `co_occurrence_matrix_day_periods.ipynb`):
-
-```{r}
-library(SpiecEasi)
-otu_day_filtered_wallace2018 <- read.csv('/Users/renat/Downloads/tmp/pag_2025/original_otu_filtered_day.tsv', sep='\t', header=TRUE, row.names=1)
-otu_night_filtered_wallace2018 <- read.csv('/Users/renat/Downloads/tmp/pag_2025/original_otu_filtered_night.tsv', sep='\t', header=TRUE, row.names=1)
-# Transposing the matrices
-otu_day_filtered_wallace2018_transposed <- t(otu_day_filtered_wallace2018)
-otu_night_filtered_wallace2018_transposed <- t(otu_night_filtered_wallace2018)
-# Using Meinshausen-Bühlman (MB) method (node wise regression model)
-se.mb.day_filtered_wallace2018 <- spiec.easi(otu_day_filtered_wallace2018_transposed, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=1))
-se.mb.night_filtered_wallace2018 <- spiec.easi(otu_night_filtered_wallace2018_transposed, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=1))
-```
-
-Visualizing the network with igraph:
-
-```{r}
-library(igraph)
-
-# Adding OTU names to the adjacency matrix
-se.mb.night_filtered_wallace2018_matrix <- getRefit(se.mb.night_filtered_wallace2018)
-se.mb.day_filtered_wallace2018_matrix <- getRefit(se.mb.day_filtered_wallace2018)
-rownames(se.mb.day_filtered_wallace2018_matrix) <- colnames(otu_day_filtered_wallace2018_transposed)
-rownames(se.mb.night_filtered_wallace2018_matrix) <- colnames(otu_night_filtered_wallace2018_transposed)
-
-ig.day.mb <- adj2igraph(se.mb.day_filtered_wallace2018_matrix, vertex.attr=list(name=rownames(se.mb.day_filtered_wallace2018_matrix)))
-ig.night.mb <- adj2igraph(se.mb.night_filtered_wallace2018_matrix, vertex.attr=list(name=rownames(se.mb.night_filtered_wallace2018_matrix)))
-
-## set size of vertex proportional to clr-mean (from [spiec-easi tutorial](https://github.com/zdk123/SpiecEasi))
-vsize.night    <- rowMeans(clr(otu_night_filtered_wallace2018_transposed, 1))+6
-vsize.day    <- rowMeans(clr(otu_day_filtered_wallace2018_transposed, 1))+6
-
-```
-
-Using Fruchterman-Reingold layout (a force-directed layout) for node placement.
-Strongly connected nodes are close together; nodes with low edge weight are far apart.
-See [Lahti et al. 2021. Orchestrating Microbiome Analysis with Bioconductor](https://microbiome.github.io/OMA/docs/devel/pages/60_network_learning.html)
-See also [this link from sciencedirect](https://www.sciencedirect.com/topics/computer-science/reingold-layout)
-
-```{r}
-am.night.coord <- layout.fruchterman.reingold(ig.night.mb)
-am.day.coord <- layout.fruchterman.reingold(ig.day.mb)
-
-plot(ig.night.mb, layout=am.night.coord, vertex.size=vsize.night, main="MB - night")
-plot(ig.day.mb, layout=am.day.coord, vertex.size=vsize.day, main="MB - day")
-```
-
-Computing centrality measures for day and night networks:
-
-Defining a function to compute centrality measures:
-
-```{r}
-# From Lahti et al. 2021. Orchestrating Microbiome Analysis with Bioconductor (https://microbiome.github.io/OMA/docs/devel/pages/60_network_learning.html)
-get_centr <- function(graph_obj) {
-  df <- data.frame(Degree = igraph::degree(graph_obj))
-  df$Betweenness <- betweenness(graph_obj)
-  df$Closeness <- closeness(graph_obj, normalized = TRUE)
-  df$Eigenvector <- eigen_centrality(graph_obj)$vector
-  return(df)
-}
-```
-
-
-```{r}
-centr_day_df <- get_centr(ig.day.mb)
-centr_night_df <- get_centr(ig.night.mb)
-
-# Plotting with node size proportional to degree centrality
-day_lay_fr <- layout_with_fr(ig.day.mb)
-plot(ig.day.mb, layout = day_lay_fr, vertex.size = centr_day_df$Degree, main = "Day - Degree centrality", vertex.label.cex = 0.3)
-night_lay_fr <- layout_with_fr(ig.night.mb)
-plot(ig.night.mb, layout = night_lay_fr, vertex.size = centr_night_df$Degree, main = "Night - Degree centrality", vertex.label.cex = 0.3)
-```
-
-Plotting the degree distributions for day and night networks:
-
-```{r}
-ddist_day <- igraph::degree.distribution(ig.day.mb)
-ddist_night <- igraph::degree.distribution(ig.night.mb)
-
-day_ggplot_df <- data.frame(Degree = as.factor((seq_along(ddist_day)) - 1),
-                 Fraction = ddist_day)
-night_ggplot_df <- data.frame(Degree = as.factor((seq_along(ddist_night)) - 1),
-                 Fraction = ddist_night)
-
-library(gridExtra)
-night_plot <- ggplot(data = night_ggplot_df, aes(x = Degree, y = Fraction, group = 1)) +
-     geom_line() +
-     geom_point() +
-     theme_bw()
-day_plot <- ggplot(data = day_ggplot_df, aes(x = Degree, y = Fraction, group = 1)) +
-     geom_line() +
-     geom_point() +
-     theme_bw()
-grid.arrange(day_plot, night_plot, ncol = 2)
-```
-
-Comparing networks with NetCoMi. Currently, only comparing the main statistics, the main centrality metrics (normalized).
-For detecting hubs, we will use the degree centrality metric just to compare the list between these two networks.
-
-```{r}
-# 
-adjma_se_mb_day <- as.matrix(symBeta(getOptBeta(se.mb.day_filtered_wallace2018)))
-adjma_se_mb_night <- as.matrix(symBeta(getOptBeta(se.mb.night_filtered_wallace2018)))
-
-colnames(adjma_se_mb_day) <- colnames(otu_day_filtered_wallace2018_transposed)
-rownames(adjma_se_mb_day) <- colnames(otu_day_filtered_wallace2018_transposed)
-colnames(adjma_se_mb_night) <- colnames(otu_night_filtered_wallace2018_transposed)
-rownames(adjma_se_mb_night) <- colnames(otu_night_filtered_wallace2018_transposed)
-
-se_mb_day_night_net <- netConstruct(data = adjma_se_mb_day,
-                               data2 = adjma_se_mb_night,
-                               dataType = "condDependence", normMethod = "none", 
-                               sparsMethod = "none", zeroMethod = "none", 
-                               verbose = 3, seed = 1234)
-
-se_mb_day_night_netprops <- netAnalyze(se_mb_day_night_net, avDissIgnoreInf = TRUE,
-                                    clustMethod = "cluster_fast_greedy",
-                                    hubPar = c("degree"), hubQuant = 0.95,
-                                    normDeg = TRUE, centrLCC = FALSE, normBetw = TRUE,
-                                    normEigen = TRUE)
-
-summary(se_mb_day_night_netprops, groupNames = c("Day period", "Night period"))
-
-plot(se_mb_day_night_netprops, 
-      sameLayout = TRUE, 
-      layoutGroup = 1,
-      rmSingles = "inboth", 
-      nodeSize = "degree", 
-      nodeColor = "cluster",
-      labelScale = FALSE,
-      cexNodes = 0.5, 
-      cexLabels = 0.1,
-      cexHubLabels = 0.2,
-      cexTitle = 1.0,
-      groupNames = c("Day period", "Night period"),
-      hubBorderCol  = "gray40")
-```
