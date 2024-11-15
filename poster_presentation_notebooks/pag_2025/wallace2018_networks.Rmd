@@ -19,6 +19,9 @@ Additionally, I (RACS) will also use the original OTU table counts (with all sam
 
 These datasets were obtained as described in `co_occurrence_matrix_day_periods.ipynb` (PAG 25 folder).
 
+Using SpiecEasi, which uses a graphical model to analyze directly correlated nodes (SparCC does not account for populations indirectly correlated).
+[Birt and Dennis, 2021](https://doi.org/10.1007/978-1-0716-1040-4_14) provides a great starting point for the analysis of co-occurrence networks with Spiec-Easi, that I (RACS) will follow.
+
 ## Testing if networks for day and night samples are similar
 
 To test if if networks for day and night samples are similar, I (RACS) used SpiecEasi with MB model to reconstruct separate networks for the day and the night matrices from the original OTU table after filtering by relative abundance (keeping OTUs with 0.001 relative abundance for at least half samples, approx. 270 samples). Filtering steps are described in `co_occurrence_matrix_day_periods.ipynb`.
@@ -72,6 +75,7 @@ edges_g1 <- unique(apply(as_edgelist(ig.day.mb), 1, function(x) paste(sort(x), c
 edges_g2 <- unique(apply(as_edgelist(ig.night.mb), 1, function(x) paste(sort(x), collapse = "-")))
 unique_edges <- length(unique(c(edges_g1, edges_g2)))
 shared_edges <- intersect(edges_g1, edges_g2)
+# E(ig.day.mb %s% ig.night.mb) is an alternative way of finding the shared edges
 
 length(edges_g1) # Number of edges in day network
 length(edges_g2) # Number of edges in night network
@@ -176,162 +180,97 @@ plot(se_mb_day_night_netprops,
 
 
 
-
-
-
-
-
-
-
-
-
-
-## SpiecEasi with MB model (merged datasets)
-
-Using SpiecEasi, which uses a graphical model to analyze directly correlated nodes (SparCC does not account for populations indirectly correlated).
-[Birt and Dennis, 2021](https://doi.org/10.1007/978-1-0716-1040-4_14) provides a great starting point for the analysis of co-occurrence networks with Spiec-Easi, that I (RACS) will follow.
-
-Running spiec.easi with the merged dataset:
-
-```{r}
-library(SpiecEasi)
-merged_matrix_wallace2018 <- read.csv('/home/rsantos/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/summed_day_night_otu_counts_filtered_sparxcc_data.tsv', sep='\t', header=TRUE, row.names=1)
-merged_matrix_wallace2018_transposed <- t(merged_matrix_wallace2018)
-# Using Meinshausen-Bühlman (MB) method (node wise regression model)
-se.mb.wallace2018_merged <- spiec.easi(merged_matrix_wallace2018_transposed, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=4))
-```
-
-Visualizing the network with igraph:
-
-```{r}
-library(igraph)
-ig.mb     <- adj2igraph(getRefit(se.mb.wallace2018_merged))
-## set size of vertex proportional to clr-mean (from [spiec-easi tutorial](https://github.com/zdk123/SpiecEasi))
-vsize    <- rowMeans(clr(merged_matrix_wallace2018_transposed, 1))+6
-am.coord <- layout.fruchterman.reingold(ig.mb)
-plot(ig.mb, layout=am.coord, vertex.size=vsize, vertex.label=NA, main="MB")
-```
-
-Generating the network from the Spiec-Easi object (with MB model)
-
 ```{r}
 # Extracting the adjacency matrix from spiec.easi object
-se.mb.wallace2018_merged.matrix <- symBeta(getOptBeta(se.mb.wallace2018_merged), mode='maxabs')
-se.mb.wallace2018_merged.matrix.dsc <-  se.mb.wallace2018_merged.matrix
-se.mb.wallace2018_merged.matrix < as.matrix(se.mb.wallace2018_merged.matrix)
+se.mb.day_filtered_wallace2018.matrix <- symBeta(getOptBeta(se.mb.day_filtered_wallace2018), mode='maxabs')
+se.mb.day_filtered_wallace2018.matrix.dsc <-  se.mb.day_filtered_wallace2018.matrix
+se.mb.day_filtered_wallace2018.matrix < as.matrix(se.mb.day_filtered_wallace2018.matrix)
+
+se.mb.night_filtered_wallace2018.matrix <- symBeta(getOptBeta(se.mb.night_filtered_wallace2018), mode='maxabs')
+se.mb.night_filtered_wallace2018.matrix.dsc <-  se.mb.night_filtered_wallace2018.matrix
+se.mb.night_filtered_wallace2018.matrix < as.matrix(se.mb.night_filtered_wallace2018.matrix)
 
 # Renaming rows and columns of the adjacency matrix
-rownames(se.mb.wallace2018_merged.matrix) <- colnames(merged_matrix_wallace2018_transposed)
-colnames(se.mb.wallace2018_merged.matrix) <- colnames(merged_matrix_wallace2018_transposed)
-otu.names <- colnames(merged_matrix_wallace2018_transposed)
+rownames(se.mb.day_filtered_wallace2018.matrix) <- colnames(otu_day_filtered_wallace2018_transposed)
+colnames(se.mb.day_filtered_wallace2018.matrix) <- colnames(otu_day_filtered_wallace2018_transposed)
+day.otu.names <- colnames(otu_day_filtered_wallace2018_transposed)
+
+rownames(se.mb.night_filtered_wallace2018.matrix) <- colnames(otu_night_filtered_wallace2018_transposed)
+colnames(se.mb.night_filtered_wallace2018.matrix) <- colnames(otu_night_filtered_wallace2018_transposed)
+night.otu.names <- colnames(otu_night_filtered_wallace2018_transposed)
 
 # Generating the graph from the adjacency matrix
-library(igraph)
-se.mb.wallace2018_merged.net <- graph_from_adjacency_matrix(se.mb.wallace2018_merged.matrix, mode = c("undirected"), weighted = TRUE, diag = FALSE)
-V(se.mb.wallace2018_merged.net)$name <- otu.names
-se.mb.wallace2018_merged.net.dist <- se.mb.wallace2018_merged.net
-weights.dist <- 1 - abs(E(se.mb.wallace2018_merged.net.dist)$weight)
-E(se.mb.wallace2018_merged.net.dist)$weight <- weights.dist
-se.mb.wallace2018_merged.net.abs <- se.mb.wallace2018_merged.net
-E(se.mb.wallace2018_merged.net.abs)$weight <- abs(E(se.mb.wallace2018_merged.net.abs)$weight)
+se.mb.day_filtered_wallace2018.matrix_net <- graph_from_adjacency_matrix(se.mb.day_filtered_wallace2018.matrix, mode = c("undirected"), weighted = TRUE, diag = FALSE)
+V(se.mb.day_filtered_wallace2018.matrix_net)$name <- day.otu.names
+se.mb.day_filtered_wallace2018.matrix_net.dist <- se.mb.day_filtered_wallace2018.matrix_net
+max(abs(E(se.mb.day_filtered_wallace2018.matrix_net.dist)$weight))
+day.weights.dist <- 1 - abs(E(se.mb.day_filtered_wallace2018.matrix_net.dist)$weight)
+E(se.mb.day_filtered_wallace2018.matrix_net.dist)$weight <- day.weights.dist
+se.mb.day_filtered_wallace2018.matrix_net.abs <- se.mb.day_filtered_wallace2018.matrix_net
+E(se.mb.day_filtered_wallace2018.matrix_net.abs)$weight <- abs(E(se.mb.day_filtered_wallace2018.matrix_net.abs)$weight)
+
+se.mb.night_filtered_wallace2018.matrix_net <- graph_from_adjacency_matrix(se.mb.night_filtered_wallace2018.matrix, mode = c("undirected"), weighted = TRUE, diag = FALSE)
+V(se.mb.night_filtered_wallace2018.matrix_net)$name <- night.otu.names
+se.mb.night_filtered_wallace2018.matrix_net.dist <- se.mb.night_filtered_wallace2018.matrix_net
+max(abs(E(se.mb.night_filtered_wallace2018.matrix_net.dist)$weight))
+night.weights.dist <- 1 - abs(E(se.mb.night_filtered_wallace2018.matrix_net.dist)$weight)
+E(se.mb.night_filtered_wallace2018.matrix_net.dist)$weight <- night.weights.dist
+se.mb.night_filtered_wallace2018.matrix_net.abs <- se.mb.night_filtered_wallace2018.matrix_net
+E(se.mb.night_filtered_wallace2018.matrix_net.abs)$weight <- abs(E(se.mb.night_filtered_wallace2018.matrix_net.abs)$weight)
 ```
 
-Computing centrality metrics and create summary:
+Computing centrality metrics:
 
 ```{r}
 # Calculating alpha centrality of vertices
-net.alpha <- alpha_centrality(se.mb.wallace2018_merged.net)
+day.net.alpha <- alpha_centrality(se.mb.day_filtered_wallace2018.matrix_net)
+night.net.alpha <- alpha_centrality(se.mb.night_filtered_wallace2018.matrix_net)
 # degree distribution
-net.strength <- strength(se.mb.wallace2018_merged.net.abs)
+day.net.strength <- strength(se.mb.day_filtered_wallace2018.matrix_net.abs)
+night.net.strength <- strength(se.mb.night_filtered_wallace2018.matrix_net.abs)
 # betweenness centrality
-bet <- betweenness(se.mb.wallace2018_merged.net.dist, v = V(se.mb.wallace2018_merged.net.dist))
+day.bet <- betweenness(se.mb.day_filtered_wallace2018.matrix_net.dist, v = V(se.mb.day_filtered_wallace2018.matrix_net.dist))
+night.bet <- betweenness(se.mb.night_filtered_wallace2018.matrix_net.dist, v = V(se.mb.night_filtered_wallace2018.matrix_net.dist))
+```
 
+Creating summaries:
 
-summary_cent <- as.data.frame(net.alpha)
-colnames(summary_cent) <- ("Alpha_centrality")
-rownames(summary_cent) <- colnames(merged_matrix_wallace2018_transposed)
-summary_cent$Weighted_vertex_degree <- net.strength
-summary_cent$Betweenness_centrality <- bet
-metrics <- summary_cent
+```{r}
+day.summary_cent <- as.data.frame(day.net.alpha)
+colnames(day.summary_cent) <- ("Alpha_centrality")
+rownames(day.summary_cent) <- colnames(otu_day_filtered_wallace2018_transposed)
+day.summary_cent$Weighted_vertex_degree <- day.net.strength
+day.summary_cent$Betweenness_centrality <- day.bet
+day.metrics <- day.summary_cent
+day.metrics
+```
+
+```{r}
+night.summary_cent <- as.data.frame(night.net.alpha)
+colnames(night.summary_cent) <- ("Alpha_centrality")
+rownames(night.summary_cent) <- colnames(otu_night_filtered_wallace2018_transposed)
+night.summary_cent$Weighted_vertex_degree <- night.net.strength
+night.summary_cent$Betweenness_centrality <- night.bet
+night.metrics <- night.summary_cent
+night.metrics
 ```
 
 Clustering the network:
 
 ```{r}
-wt <- cluster_louvain(se.mb.wallace2018_merged.net, weights = E(se.mb.wallace2018_merged.net.dist)$weight)
-temp <- V(se.mb.wallace2018_merged.net)$name
-temp <- as.data.frame(temp)
-temp$louvain <- membership(wt)
-V(se.mb.wallace2018_merged.net)$louvain <- temp$louvain
-``
+day_wt <- cluster_louvain(se.mb.day_filtered_wallace2018.matrix_net, weights = E(se.mb.day_filtered_wallace2018.matrix_net.dist)$weight)
+day_temp <- V(se.mb.day_filtered_wallace2018.matrix_net)$name
+day_temp <- as.data.frame(day_temp)
+day_temp$louvain <- membership(day_wt)
 
-### SpiecEasi with samples of each group (day and night, maize subpopulations)
+night_wt <- cluster_louvain(se.mb.night_filtered_wallace2018.matrix_net, weights = E(se.mb.night_filtered_wallace2018.matrix_net.dist)$weight)
+night_temp <- V(se.mb.night_filtered_wallace2018.matrix_net)$name
+night_temp <- as.data.frame(night_temp)
+night_temp$louvain <- membership(night_wt)
 
-```{r}
-merged_matrix_wallace2018 <- read.csv('/home/rsantos/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/summed_day_night_otu_counts_filtered_sparxcc_data.tsv', sep='\t', header=TRUE, row.names=1)
-maize_subpopulations <- read.csv('/home/rsantos/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/plant_center_retreat_2024/flint_garcia_group_assignments_wallace2018.tsv', sep='\t', header=TRUE, row.names=2)
-
-# Filter the merged matrix to keep only the columns present in the lists
-# of different maize subpopulations
-filtered_merged_matrix_mixed <- merged_matrix_wallace2018[, colnames(merged_matrix_wallace2018) %in% rownames(maize_subpopulations[maize_subpopulations$Subpopulation == 'mixed', ])]
-filtered_merged_matrix_ss <- merged_matrix_wallace2018[, colnames(merged_matrix_wallace2018) %in% rownames(maize_subpopulations[maize_subpopulations$Subpopulation == 'ss', ])]
-filtered_merged_matrix_nss <- merged_matrix_wallace2018[, colnames(merged_matrix_wallace2018) %in% rownames(maize_subpopulations[maize_subpopulations$Subpopulation == 'nss', ])]
-filtered_merged_matrix_ts <- merged_matrix_wallace2018[, colnames(merged_matrix_wallace2018) %in% rownames(maize_subpopulations[maize_subpopulations$Subpopulation == 'ts', ])]
-
-# Transposing the merged_matrix_wallace2018_transposed
-filtered_merged_matrix_mixed_transpose <- t(filtered_merged_matrix_mixed)
-filtered_merged_matrix_ts_transpose <- t(filtered_merged_matrix_ts)
-filtered_merged_matrix_ss_transpose <- t(filtered_merged_matrix_ss)
-filtered_merged_matrix_nss_transpose <- t(filtered_merged_matrix_nss)
-
-# Running spiec-easi
-se.mb.wallace2018_merged_mixed <- spiec.easi(filtered_merged_matrix_mixed_transpose, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=4))
-se.mb.wallace2018_merged_ss <- spiec.easi(filtered_merged_matrix_ss_transpose, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=4))
-se.mb.wallace2018_merged_nss <- spiec.easi(filtered_merged_matrix_nss_transpose, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=4))
-se.mb.wallace2018_merged_ts <- spiec.easi(filtered_merged_matrix_ts_transpose, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=4))
+V(se.mb.day_filtered_wallace2018.matrix_net)$louvain <- day_temp$louvain
+V(se.mb.night_filtered_wallace2018.matrix_net)$louvain <- night_temp$louvain
 ```
 
-## SpiecEasi with glasso (merged datasets)
 
-Previous analyses were carried out with the MB model. Following [Layeghifard et al (2018)](https://doi.org/10.1007/978-1-4939-8728-3_16), here I use the glasso alternative.
-
-```{r}
-se.gl.wallace2018_merged <- spiec.easi(merged_matrix_wallace2018_transposed, method='glasso', lambda.min.ratio=1e-2, nlambda=20, icov.select.params=list(rep.num=50, ncores=4))
-secor <- cov2cor(getOptCov(se.gl.wallace2018_merged))
-elist.gl <- summary(triu(secor*getRefit(se.gl.wallace2018_merged), k=1))
-#se.gl.wallace2018_merged.net <- graph.adjacency(, mode="undirected", diag=FALSE)
-```
-
-Visualizing the network with igraph:
-
-```{r}
-library(igraph)
-ig.gl     <- adj2igraph(getRefit(se.gl.wallace2018_merged))
-## set size of vertex proportional to clr-mean (from [spiec-easi tutorial](https://github.com/zdk123/SpiecEasi))
-vsize    <- rowMeans(clr(merged_matrix_wallace2018_transposed, 1))+6
-am.coord <- layout.fruchterman.reingold(ig.gl)
-plot(ig.gl, layout=am.coord, vertex.size=vsize, vertex.label=NA, main="glasso")
-```
-
-## Running the optimized SparCC implementation in Spiec-Easi (merged datasets)
-
-```{r}
-sparcc.wallace2018_merged.matrix <- sparcc(merged_matrix_wallace2018_transposed)
-sparcc.cutoff <- 0.3
-sparcc.adj <- ifelse(abs(sparcc.wallace2018_merged.matrix$Cor) >= sparcc.cutoff, 1, 0)
-rownames(sparcc.adj) <- colnames(merged_matrix_wallace2018_transposed)
-colnames(sparcc.adj) <- colnames(merged_matrix_wallace2018_transposed)
-sparcc.net <- graph.adjacency(sparcc.adj, mode="undirected", diag=FALSE)
-```
-
-Visualizing the network with igraph:
-
-```{r}
-library(igraph)
-ig.sparcc     <- adj2igraph(sparcc.adj)
-## set size of vertex proportional to clr-mean (from [spiec-easi tutorial](https://github.com/zdk123/SpiecEasi))
-vsize    <- rowMeans(clr(merged_matrix_wallace2018_transposed, 1))+6
-am.coord <- layout.fruchterman.reingold(ig.sparcc)
-plot(ig.sparcc, layout=am.coord, vertex.size=vsize, vertex.label=NA, main="SparCC")
-```
 

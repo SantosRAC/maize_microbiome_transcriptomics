@@ -34,68 +34,25 @@ Checking the column data. Object for DESeq2 will use DayPeriod as the design for
 head(coldata)
 ```
 
+# Running differential expression analysis with multi-factor design formula
+
+Using multi-factor design formula to account for the effect of the genotypes:
+
 ```{r}
 library("DESeq2")
-dds <- DESeqDataSetFromMatrix(countData = cts,
+ddsMF <- DESeqDataSetFromMatrix(countData = cts,
                               colData = coldata,
                               design = ~ DayPeriod)
-dds
-colData(dds)
-```
-
-
-# Differential gene expression analysis
-
-
-```{r}
-dds <- DESeq(dds)
-res_day_periods_dea <- results(dds, contrast=c("DayPeriod","day","night"))
-res_day_periods_dea
-```
-
-
-```{r}
-resultsNames(dds)
-resLFC <- lfcShrink(dds, coef="DayPeriod_night_vs_day", type="apeglm")
-resLFC
-```
-
-
-```{r}
-resOrdered <- res_day_periods_dea[order(res_day_periods_dea$pvalue),]
-resOrdered
-```
-
-```{r}
-summary(resOrdered)
-sum(resOrdered$padj < 0.01, na.rm=TRUE)
-```
-
-
-
-```{r}
-plotMA(resLFC, ylim=c(-4,4))
-```
-
-```{r}
-plotCounts(dds, gene="Zm00001eb032990_T001", intgroup="DayPeriod")
-```
-
-## Multi-factor design formula
-
-Using multi-factor design formula to account for the effect of the genotype:
-
-
-```{r}
-ddsMF <- dds # Making a copy of the DESeq2 object
+ddsMF
 colData(ddsMF)
 colData(ddsMF)$Genotype <- as.factor(colData(ddsMF)$Genotype)
 levels(ddsMF$Genotype) <- gsub("-", "_", levels(ddsMF$Genotype)) # Replacing hyphens by underscores in all their occurrences
-levels(ddsMF$Genotype)
+design(ddsMF) <- formula(~ Genotype + DayPeriod) # Replacing the design formula to consider genotypes as a soruce of variation
 ```
 
+Running the differential expression analysis:
+
 ```{r}
-design(ddsMF) <- formula(~ Genotype + DayPeriod)
 ddsMF <- DESeq(ddsMF)
 resMF <- results(ddsMF)
 summary(resMF)
@@ -112,16 +69,26 @@ resMF_LFC
 head(resMF)
 resMFOrdered <- resMF[order(resMF$pvalue),]
 head(resMFOrdered)
+resMFOrdered_filtered <- resMFOrdered[resMFOrdered$padj < 0.05,]
+write.csv(as.data.frame(resMFOrdered), 
+          file="day_night_results.csv")
+write.csv(as.data.frame(resMFOrdered_filtered), 
+          file="day_night_results_filtered_padj_0_05.csv")
+```
+
+```{r}
+plotCounts(ddsMF, gene="Zm00001eb049640_T001", intgroup="DayPeriod")
 ```
 
 Mapping between clock or clock-related genes in [Lai et al 2020](https://link.springer.com/article/10.1186/s12864-020-06824-3) and the maize v4 (used in transcript quantification) was done in Phytozome. Identifiers identified in maize v4 were mapped to IDs in maize genome v5 using a mapping file provided by MaizeGDB [here](https://download.maizegdb.org/Pan-genes/B73_gene_xref/).
 
 ```{r}
 plotCounts(ddsMF, gene="Zm00001eb397240_T001", intgroup="DayPeriod")
-plotCounts(ddsMF, gene="Zm00001eb122110_T003", intgroup="DayPeriod")
+plotCounts(ddsMF, gene="Zm00001eb122110_T003", intgroup="DayPeriod") # Not differentially expressed
 plotCounts(ddsMF, gene="Zm00001eb228670_T002", intgroup="DayPeriod")
-plotCounts(ddsMF, gene="Zm00001eb273260_T002", intgroup="DayPeriod")
-plotCounts(ddsMF, gene="Zm00001eb274210_T002", intgroup="DayPeriod")
-plotCounts(ddsMF, gene="Zm00001eb379300_T001", intgroup="DayPeriod")
-plotCounts(ddsMF, gene="Zm00001eb389960_T001", intgroup="DayPeriod")
+plotCounts(ddsMF, gene="Zm00001eb273260_T002", intgroup="DayPeriod") # Not differentially expressed
+plotCounts(ddsMF, gene="Zm00001eb274210_T002", intgroup="DayPeriod") # Not differentially expressed
+plotCounts(ddsMF, gene="Zm00001eb379300_T001", intgroup="DayPeriod") # Not differentially expressed
+plotCounts(ddsMF, gene="Zm00001eb389960_T001", intgroup="DayPeriod") # Not differentially expressed
 ```
+
