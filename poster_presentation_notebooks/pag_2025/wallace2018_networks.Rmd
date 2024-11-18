@@ -30,8 +30,11 @@ Running spiec.easi with the day and night datasets:
 
 ```{r}
 library(SpiecEasi)
-otu_day_filtered_wallace2018 <- read.csv('/home/rsantos/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/original_otu_filtered_day.tsv', sep='\t', header=TRUE, row.names=1)
-otu_night_filtered_wallace2018 <- read.csv('/home/rsantos/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/original_otu_filtered_night.tsv', sep='\t', header=TRUE, row.names=1)
+
+otu_day_filtered_wallace2018 <- read.csv('/home/santosrac/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/original_otu_filtered_day.tsv', sep='\t', header=TRUE, row.names=1)
+#read.csv('/home/rsantos/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/original_otu_filtered_day.tsv', sep='\t', header=TRUE, row.names=1)
+otu_night_filtered_wallace2018 <- read.csv('/home/santosrac/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/original_otu_filtered_night.tsv', sep='\t', header=TRUE, row.names=1)
+#read.csv('/home/rsantos/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/original_otu_filtered_night.tsv', sep='\t', header=TRUE, row.names=1)
 head(otu_day_filtered_wallace2018)
 head(otu_night_filtered_wallace2018)
 # Transposing the matrices
@@ -76,17 +79,75 @@ edges_g2 <- unique(apply(as_edgelist(ig.night.mb), 1, function(x) paste(sort(x),
 unique_edges <- length(unique(c(edges_g1, edges_g2)))
 shared_edges <- intersect(edges_g1, edges_g2)
 # E(ig.day.mb %s% ig.night.mb) is an alternative way of finding the shared edges
+shared_edges
 
 length(edges_g1) # Number of edges in day network
 length(edges_g2) # Number of edges in night network
 # Number of shared edges
 length(shared_edges)
 
+# Generating graphs with edges that are exclusive to only day or night
+ig.day.mb.diff.night <- difference(ig.day.mb, ig.night.mb)
+ig.night.mb.diff.day <- difference(ig.night.mb, ig.day.mb)
+edges_only_day <- unique(apply(as_edgelist(ig.day.mb.diff.night), 1, function(x) paste(sort(x), collapse = "-")))
+edges_only_night <- unique(apply(as_edgelist(ig.night.mb.diff.day), 1, function(x) paste(sort(x), collapse = "-")))
+
+write.csv(edges_only_day, "edges_only_day.csv", row.names=F, quote=F)
+write.csv(edges_only_night, "edges_only_night.csv", row.names=F, quote=F)
+write.csv(shared_edges, "shared_edges.csv", row.names=F, quote=F)
+
+am.day_only_edges.coord <- layout.fruchterman.reingold(ig.day.mb.diff.night)
+am.night_only_edges.coord <- layout.fruchterman.reingold(ig.night.mb.diff.day)
+
 plot(ig.night.mb, layout=am.night.coord, vertex.size=vsize.night, main="MB - night")
 plot(ig.day.mb, layout=am.day.coord, vertex.size=vsize.day, main="MB - day")
+plot(ig.day.mb.diff.night, layout=am.day_only_edges.coord, vertex.size=vsize.day, main="MB - only day edges")
+plot(ig.night.mb.diff.day, layout=am.night_only_edges.coord, vertex.size=vsize.night, main="MB - only night edges")
 ```
 
-Computing centrality measures for day and night networks:
+
+## Analyzing one single network with merged read counts (day and night)
+
+Using the dataframe with merged day and night samples, I generated two dataframes:
+
+ * `merged_using_otus_from_cross_cross_correlation_with_merged_otus_df.txt`: columns are individual days of merged day and night samples. Rows are OTUs that were generated in the cross-correlation analysis presented in the plant center retreat - approximately 550 OTUs filtered based on the relative abundance and coef of variation, from the matrix with microbiome data with a paired RNA-seq.  
+ * `merged_using_otus_from_co_occurrence_with_original_otus_df.txt`: columns are individual days of merged day and night samples. Rows are OTUs filtered based on relative abundance, from the original matrix with microbiome data, regardless of having paired RNA-Seq.
+
+Generation of these matrices are described in `co_occurrence_matrix_day_periods_merged.ipynb` (pag25 folder).
+
+Firstly, I (RACS) wanted to compare the centrality metrics and number of edges in the network of merged reads with the night and day separately (previously compared in this notebook).
+
+```{r}
+# Importing the matrix
+otu_merged_filtered_wallace2018 <- read.csv('/home/santosrac/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/merged_using_otus_from_co_occurrence_with_original_otus_df.txt', sep='\t', header=TRUE, row.names=1)
+head(otu_merged_filtered_wallace2018)
+dim(otu_merged_filtered_wallace2018)
+# Transposing the matrix
+otu_merged_filtered_wallace2018_transposed <- t(otu_merged_filtered_wallace2018)
+# Using Meinshausen-Bühlman (MB) method (node wise regression model)
+se.mb.merged_filtered_wallace2018 <- spiec.easi(otu_merged_filtered_wallace2018_transposed, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=1))
+
+# Adding OTU names to the adjacency matrix
+se.mb.merged_filtered_wallace2018_matrix <- getRefit(se.mb.merged_filtered_wallace2018)
+rownames(se.mb.merged_filtered_wallace2018_matrix) <- colnames(otu_merged_filtered_wallace2018_transposed)
+
+ig.merged.mb <- adj2igraph(se.mb.merged_filtered_wallace2018_matrix, vertex.attr=list(name=rownames(se.mb.merged_filtered_wallace2018_matrix)))
+
+## set size of vertex proportional to clr-mean (from [spiec-easi tutorial](https://github.com/zdk123/SpiecEasi))
+vsize.merged    <- rowMeans(clr(otu_merged_filtered_wallace2018_transposed, 1))+6
+
+am.merged.coord <- layout.fruchterman.reingold(ig.merged.mb)
+
+edges_merged <- unique(apply(as_edgelist(ig.merged.mb), 1, function(x) paste(sort(x), collapse = "-")))
+length(edges_merged) # Number of edges in merged network
+
+# Number of edges shared between different networks
+length(E(ig.day.mb %s% ig.night.mb)) # Day and night networks
+length(E(ig.day.mb %s% ig.merged.mb)) # Day and merged networks
+length(E(ig.night.mb %s% ig.merged.mb)) # Night and merged networks
+```
+
+## Computing centrality measures for day, night, and merged networks:
 
 Defining a function to compute centrality measures:
 
@@ -272,5 +333,12 @@ V(se.mb.day_filtered_wallace2018.matrix_net)$louvain <- day_temp$louvain
 V(se.mb.night_filtered_wallace2018.matrix_net)$louvain <- night_temp$louvain
 ```
 
+## Analyzing the network for the main text
+
+After comparing different networks to make sure I (RACS) can merge day and night samples, I reconstructed a network with the same OTUs used in the cross-correlation analyses. This network will be used to analyze the microbial communities for the main text. Other analyses in this notebook go to sup mat.
+
+```{r}
+
+```
 
 
