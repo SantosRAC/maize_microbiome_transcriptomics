@@ -11,7 +11,7 @@ Importing the matrix (same used in SparXCC, filtered based on CV and expression 
 Filtering steps will not be necessary, since it was previously carried out for SparXCC.
 
 ```{r}
-cts <- as.matrix(read.csv("/home/rsantos/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/plant_center_retreat_2024/expression_counts_day_night_filtered_cv_filtered.tsv", sep="\t",row.names="Name"))
+cts <- as.matrix(read.csv("/home/rsantos/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/plant_center_retreat_2024/expression_counts_day_night.tsv", sep="\t",row.names="Name"))
 coldata <- read.csv("/home/rsantos/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/sample_annotation.txt", row.names=1, sep="\t")
 ```
 
