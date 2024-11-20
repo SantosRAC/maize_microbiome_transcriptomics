@@ -11,7 +11,7 @@ Importing the matrix (same used in SparXCC, filtered based on CV and expression 
 Filtering steps will not be necessary, since it was previously carried out for SparXCC.
 
 ```{r}
-cts <- as.matrix(read.csv("/home/rsantos/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/plant_center_retreat_2024/expression_counts_day_night.tsv", sep="\t",row.names="Name"))
+cts <- read.csv("/home/rsantos/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/plant_center_retreat_2024/expression_counts_day_night.tsv", sep="\t",row.names="Name")
 coldata <- read.csv("/home/rsantos/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/sample_annotation.txt", row.names=1, sep="\t")
 ```
 
@@ -22,6 +22,12 @@ dim(cts)
 dim(coldata)
 head(cts)
 head(coldata)
+
+# Remove lines with zeros
+cts <- cts[rowSums(cts) > 0,]
+dim(cts)
+head(cts)
+
 all(rownames(coldata) %in% colnames(cts)) # Check if all samples are present in the count matrix
 all(rownames(coldata) == colnames(cts)) # Check if the order of samples is the same in the count matrix and the coldata
 cts <- cts[, rownames(coldata)]
@@ -69,8 +75,12 @@ resMF_LFC
 head(resMF)
 resMFOrdered <- resMF[order(resMF$pvalue),]
 head(resMFOrdered)
-resMFOrdered_filtered <- resMFOrdered[resMFOrdered$padj < 0.05,]
-write.csv(as.data.frame(resMFOrdered), 
+# Removing rows with NAs
+# Reasons for p-values and adj p-values to be NA are described in the DESeq2 manual
+# https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#pvaluesNA
+resMFOrderedNoNAs <- resMFOrdered[!is.na(resMFOrdered$padj),]
+resMFOrdered_filtered <- resMFOrderedNoNAs[resMFOrderedNoNAs$padj < 0.05,]
+write.csv(as.data.frame(resMFOrderedNoNAs), 
           file="day_night_results.csv")
 write.csv(as.data.frame(resMFOrdered_filtered), 
           file="day_night_results_filtered_padj_0_05.csv")
