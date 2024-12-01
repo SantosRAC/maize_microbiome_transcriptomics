@@ -1,9 +1,10 @@
 # Network generation for Wallace et al. 2018
 
-I (RACS) will use different datasets for the OTU counts:
+I (RACS) will used different datasets for the OTU counts for several TESTS shown in this notebook:
 
- * Merged day and night (used in cross-correlation analyses, selecting samples with RNA-Seq pairs)
+ * Merged day and night (used in first cross-correlation analyses, selecting samples with RNA-Seq pairs)
  * The original dataset with all samples (day and night samples considered separately)
+ * The original dataset with all samples that have paired transcriptome (RNA-seq)
 
 I (RACS) will use the original OTU table counts (with all samples, not only the paired), to compare networks between day and night samples:
  * `original_otu_filtered_day.tsv`
@@ -14,7 +15,7 @@ These datasets were obtained as described in `co_occurrence_matrix_day_periods.i
 Using SpiecEasi, which uses a graphical model to analyze directly correlated nodes (SparCC does not account for populations indirectly correlated).
 [Birt and Dennis, 2021](https://doi.org/10.1007/978-1-0716-1040-4_14) provides a great starting point for the analysis of co-occurrence networks with Spiec-Easi, that I (RACS) will follow.
 
-## Testing if networks for day and night samples are similar
+## TEST CODE Testing if networks for day and night samples are similar
 
 To test if if networks for day and night samples are similar, I (RACS) used SpiecEasi with MB model to reconstruct separate networks for the day and the night matrices from the original OTU table after filtering by relative abundance (keeping OTUs with 0.001 relative abundance for at least half samples, approx. 270 samples). Filtering steps are described in `co_occurrence_matrix_day_periods.ipynb`.
 
@@ -98,7 +99,7 @@ plot(ig.night.mb.diff.day, layout=am.night_only_edges.coord, vertex.size=vsize.n
 ```
 
 
-## Analyzing one single network with merged read counts (day and night)
+Analyzing one single network with merged read counts (day and night)
 
 Using the dataframe with merged day and night samples, I generated two dataframes:
 
@@ -139,7 +140,7 @@ length(E(ig.day.mb %s% ig.merged.mb)) # Day and merged networks
 length(E(ig.night.mb %s% ig.merged.mb)) # Night and merged networks
 ```
 
-## Computing centrality measures for day, night, and merged networks:
+Computing centrality measures for day, night, and merged networks:
 
 Defining a function to compute centrality measures:
 
@@ -234,9 +235,9 @@ plot(se_mb_day_night_netprops,
 
 
 
-## Analyzing the network for the main text
+## TEST CODE Analyzing the network with merged reads (day and night)
 
-After comparing different networks to make sure I (RACS) can merge day and night samples, I reconstructed a network with the same OTUs used in the cross-correlation analyses. This network will be used to analyze the microbial communities for the main text. Other analyses in this notebook go to sup mat.
+After comparing networks of day and night samples, I reconstructed a network with the same OTUs used in the cross-correlation analyses.
 
 ```{r}
 library(SpiecEasi)
@@ -258,8 +259,7 @@ am.merged_sparxcc.coord <- layout.fruchterman.reingold(ig.merged_sparxc.mb)
 plot(ig.merged_sparxc.mb, layout=am.merged_sparxcc.coord, vertex.size=vsize.merged_sparxcc, main="MB - SparXCC OTUs (merged D+N)")
 ```
 
-### Computing centrality metrics for the main network
-
+### TEST CODE Computing centrality metrics
 
 
 ```{r}
@@ -333,7 +333,9 @@ V(se.mb.otu_filtered_sparxcc_wallace2018.matrix_net)
 vertex_attr(se.mb.otu_filtered_sparxcc_wallace2018.matrix_net)
 ```
 
-Computing Zi and Pi with functions from the [brainGraph R library](https://cran.r-project.org/web/packages/brainGraph/index.html):
+### TEST CODE Computing Zi and Pi
+
+Using function from the [brainGraph R library](https://cran.r-project.org/web/packages/brainGraph/index.html):
 
 ```{r}
 install.packages("brainGraph")
@@ -360,3 +362,8 @@ abline(v = 0.62, col = "red", lty = 2, lwd = 2)  # Horizontal line at Pi = 0.3
 abline(h = 2.5, col = "green", lty = 2, lwd = 2)  # Vertical line at Zi = 2.5
 
 ```
+
+
+
+
+
