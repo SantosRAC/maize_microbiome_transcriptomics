@@ -1,0 +1,349 @@
+---
+title: "Co-occurrence networks for day and night samples in Wallace et al (2018) with paired RNA-Seq"
+output: html_notebook
+---
+
+This notebook describes the reconstruction and analysis of co-occurrence networks of day and night samples in [Wallace et al (2018)](https://apsjournals.apsnet.org/doi/10.1094/PBIOMES-02-18-0008-R) that have paired RNA-Seq data. Samples and OTUs are the same used in cross-correlations carried out between OTUs and maize genes.
+
+Before reconstruction of co-occurrence networks, OTUs were filtered based on relative abundance (> 0.001 in at least 50% samples) and the coefficient of variation (OTUs above the lower quartile), as described in `filter_original_otu_counts_day_periods_with_paired_rnaseq.ipynb` (PAG 25 folder).
+
+```{r}
+library(SpiecEasi)
+
+#Importing day and night tables
+day_otu_filtered_sparxcc_wallace2018 <- read.csv('C:/Users/renat/Downloads/tmp/pag25/filtered_otu_table_day_filtered_rel_abund_cv_filtered.tsv', sep='\t', header=TRUE, row.names=1)
+colnames(day_otu_filtered_sparxcc_wallace2018) <- gsub("^X", "", colnames(day_otu_filtered_sparxcc_wallace2018))
+night_otu_filtered_sparxcc_wallace2018 <- read.csv('C:/Users/renat/Downloads/tmp/pag25/filtered_otu_table_night_filtered_rel_abund_cv_filtered.tsv', sep='\t', header=TRUE, row.names=1)
+colnames(night_otu_filtered_sparxcc_wallace2018) <- gsub("^X", "", colnames(night_otu_filtered_sparxcc_wallace2018))
+
+head(day_otu_filtered_sparxcc_wallace2018)
+head(night_otu_filtered_sparxcc_wallace2018)
+
+#Transposing matrices
+day_otu_filtered_sparxcc_wallace2018_transposed <- t(day_otu_filtered_sparxcc_wallace2018)
+night_otu_filtered_sparxcc_wallace2018_transposed <- t(night_otu_filtered_sparxcc_wallace2018)
+
+#Running spiec-easi
+se.mb.day_otu_filtered_sparxcc_wallace2018 <- spiec.easi(day_otu_filtered_sparxcc_wallace2018_transposed, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=1))
+se.mb.night_otu_filtered_sparxcc_wallace2018 <- spiec.easi(night_otu_filtered_sparxcc_wallace2018_transposed, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=1))
+
+#Adding OTU names to adjacency matrices
+?getRefit
+se.mb.day_otu_filtered_sparxcc_wallace2018_matrix <- getRefit(se.mb.day_otu_filtered_sparxcc_wallace2018)
+se.mb.night_otu_filtered_sparxcc_wallace2018_matrix <- getRefit(se.mb.night_otu_filtered_sparxcc_wallace2018)
+rownames(se.mb.day_otu_filtered_sparxcc_wallace2018_matrix) <- colnames(day_otu_filtered_sparxcc_wallace2018_transposed)
+rownames(se.mb.night_otu_filtered_sparxcc_wallace2018_matrix) <- colnames(night_otu_filtered_sparxcc_wallace2018_transposed)
+
+# Creating igraph objects
+ig.day.mb <- adj2igraph(se.mb.day_otu_filtered_sparxcc_wallace2018_matrix, vertex.attr=list(name=rownames(se.mb.day_otu_filtered_sparxcc_wallace2018_matrix)))
+ig.night.mb <- adj2igraph(se.mb.night_otu_filtered_sparxcc_wallace2018_matrix, vertex.attr=list(name=rownames(se.mb.night_otu_filtered_sparxcc_wallace2018_matrix)))
+
+## set size of vertex proportional to clr-mean (from [spiec-easi tutorial](https://github.com/zdk123/SpiecEasi))
+vsize.day <- rowMeans(clr(day_otu_filtered_sparxcc_wallace2018_transposed, 1))+6
+vsize.night <- rowMeans(clr(night_otu_filtered_sparxcc_wallace2018_transposed, 1))+6
+```
+
+
+Using Fruchterman-Reingold layout (a force-directed layout) for node placement.
+Strongly connected nodes are close together; nodes with low edge weight are far apart.
+See [Lahti et al. 2021. Orchestrating Microbiome Analysis with Bioconductor](https://microbiome.github.io/OMA/docs/devel/pages/60_network_learning.html)
+See also [this link from sciencedirect](https://www.sciencedirect.com/topics/computer-science/reingold-layout)
+
+```{r}
+library(igraph)
+
+am.night.coord <- layout.fruchterman.reingold(ig.night.mb)
+am.day.coord <- layout.fruchterman.reingold(ig.day.mb)
+
+# Checking how many edges are shared by day and night networks
+edges_day <- unique(apply(as_edgelist(ig.day.mb), 1, function(x) paste(sort(x), collapse = "-")))
+edges_night <- unique(apply(as_edgelist(ig.night.mb), 1, function(x) paste(sort(x), collapse = "-")))
+length(edges_day)
+length(edges_night)
+length(E(ig.day.mb %s% ig.night.mb))
+
+# These are draft codes to plot, but need polishing to be get visually 
+#plot(ig.night.mb, layout=am.night.coord, vertex.size=vsize.night, main="MB - night")
+#plot(ig.day.mb, layout=am.day.coord, vertex.size=vsize.day, main="MB - day")
+```
+
+Computing centrality measures for day and night networks:
+
+Defining a function to compute centrality measures:
+
+```{r}
+# From Lahti et al. 2021. Orchestrating Microbiome Analysis with Bioconductor (https://microbiome.github.io/OMA/docs/devel/pages/60_network_learning.html)
+get_centr <- function(graph_obj) {
+  df <- data.frame(Degree = igraph::degree(graph_obj))
+  df$Betweenness <- betweenness(graph_obj)
+  df$Closeness <- closeness(graph_obj, normalized = TRUE)
+  df$Eigenvector <- eigen_centrality(graph_obj)$vector
+  return(df)
+}
+```
+
+Plotting the networks with vertex sizes according to the degree distributions:
+
+```{r}
+centr_day_df <- get_centr(ig.day.mb)
+centr_night_df <- get_centr(ig.night.mb)
+
+# Plotting with node size proportional to degree centrality
+day_lay_fr <- layout_with_fr(ig.day.mb)
+plot(ig.day.mb, layout = day_lay_fr, vertex.size = centr_day_df$Degree, main = "Day - Degree centrality", vertex.label.cex = 0.3)
+night_lay_fr <- layout_with_fr(ig.night.mb)
+plot(ig.night.mb, layout = night_lay_fr, vertex.size = centr_night_df$Degree, main = "Night - Degree centrality", vertex.label.cex = 0.3)
+```
+
+
+Plotting the degree distributions for day and night networks:
+
+```{r}
+library(gridExtra)
+library(ggplot2)
+
+ddist_day <- igraph::degree.distribution(ig.day.mb)
+ddist_night <- igraph::degree.distribution(ig.night.mb)
+
+day_ggplot_df <- data.frame(Degree = as.factor((seq_along(ddist_day)) - 1),
+                 Fraction = ddist_day)
+night_ggplot_df <- data.frame(Degree = as.factor((seq_along(ddist_night)) - 1),
+                 Fraction = ddist_night)
+
+
+night_plot <- ggplot(data = night_ggplot_df, aes(x = Degree, y = Fraction, group = 1)) +
+     geom_line() +
+     geom_point() +
+     theme_bw()
+day_plot <- ggplot(data = day_ggplot_df, aes(x = Degree, y = Fraction, group = 1)) +
+     geom_line() +
+     geom_point() +
+     theme_bw()
+grid.arrange(day_plot, night_plot, ncol = 2)
+```
+
+Comparing networks with NetCoMi:
+
+```{r}
+library(NetCoMi)
+
+# See https://github.com/stefpeschel/NetCoMi/issues/63
+?getOptBeta
+# getOptBeta returns the optimal coefficient matrix (mb only)
+# symBeta symmetrizes a beta (coefficient) matrix, ie. selected from MB neighborhood selection
+adjma_se_mb_day <- as.matrix(symBeta(getOptBeta(se.mb.day_otu_filtered_sparxcc_wallace2018)))
+adjma_se_mb_night <- as.matrix(symBeta(getOptBeta(se.mb.night_otu_filtered_sparxcc_wallace2018)))
+
+colnames(adjma_se_mb_day) <- colnames(day_otu_filtered_sparxcc_wallace2018_transposed)
+rownames(adjma_se_mb_day) <- colnames(day_otu_filtered_sparxcc_wallace2018_transposed)
+colnames(adjma_se_mb_night) <- colnames(night_otu_filtered_sparxcc_wallace2018_transposed)
+rownames(adjma_se_mb_night) <- colnames(night_otu_filtered_sparxcc_wallace2018_transposed)
+
+# Association matrix must be passed to netConstruct
+# An object from this function is then passed to netAnalyze
+se_mb_day_night_net <- netConstruct(data = adjma_se_mb_day,
+                               data2 = adjma_se_mb_night,
+                               dataType = "condDependence", normMethod = "none", 
+                               sparsMethod = "none", zeroMethod = "none", 
+                               verbose = 3, seed = 1234)
+
+se_mb_day_night_netprops <- netAnalyze(se_mb_day_night_net, avDissIgnoreInf = TRUE,
+                                    clustMethod = "cluster_fast_greedy",
+                                    hubPar = c("degree"), hubQuant = 0.95,
+                                    normDeg = TRUE, centrLCC = FALSE, normBetw = TRUE,
+                                    normEigen = TRUE)
+
+summary(se_mb_day_night_netprops, groupNames = c("Day period", "Night period"))
+
+plot(se_mb_day_night_netprops, 
+      sameLayout = TRUE, 
+      layoutGroup = 1,
+      rmSingles = "inboth", 
+      nodeSize = "degree", 
+      nodeColor = "cluster",
+      labelScale = FALSE,
+      cexNodes = 0.5, 
+      cexLabels = 0.1,
+      cexHubLabels = 0.2,
+      cexTitle = 1.0,
+      groupNames = c("Day period", "Night period"),
+      hubBorderCol  = "gray40")
+```
+
+
+Alternative methods for computing centrality metrics:
+
+```{r}
+# Extracting the adjacency matrix from spiec.easi object (day and night)
+se.mb.day_otu_filtered_sparxcc_wallace2018.matrix <- symBeta(getOptBeta(se.mb.day_otu_filtered_sparxcc_wallace2018), mode='maxabs')
+se.mb.day_otu_filtered_sparxcc_wallace2018.matrix.dsc <- se.mb.day_otu_filtered_sparxcc_wallace2018.matrix
+se.mb.day_otu_filtered_sparxcc_wallace2018.matrix <- as.matrix(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix)
+se.mb.night_otu_filtered_sparxcc_wallace2018.matrix <- symBeta(getOptBeta(se.mb.night_otu_filtered_sparxcc_wallace2018), mode='maxabs')
+se.mb.night_otu_filtered_sparxcc_wallace2018.matrix.dsc <- se.mb.night_otu_filtered_sparxcc_wallace2018.matrix
+se.mb.night_otu_filtered_sparxcc_wallace2018.matrix <- as.matrix(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix)
+
+# Renaming rows and columns of the adjacency matrix (day and night)
+rownames(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix) <- colnames(day_otu_filtered_sparxcc_wallace2018_transposed)
+colnames(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix) <- colnames(day_otu_filtered_sparxcc_wallace2018_transposed)
+day_sparxcc.otu.names <- colnames(day_otu_filtered_sparxcc_wallace2018_transposed)
+rownames(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix) <- colnames(night_otu_filtered_sparxcc_wallace2018_transposed)
+colnames(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix) <- colnames(night_otu_filtered_sparxcc_wallace2018_transposed)
+night_sparxcc.otu.names <- colnames(night_otu_filtered_sparxcc_wallace2018_transposed)
+
+# Generating the graph from the adjacency matrix (day and night)
+se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net <- graph_from_adjacency_matrix(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix, mode = c("undirected"), weighted = TRUE, diag = FALSE)
+V(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net)$name <- day_sparxcc.otu.names
+se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net <- graph_from_adjacency_matrix(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix, mode = c("undirected"), weighted = TRUE, diag = FALSE)
+V(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net)$name <- night_sparxcc.otu.names
+
+# Converting edge weights into distances (larger values are shorter distances)
+se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net.dist <- se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net
+se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net.dist <- se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net
+## checking the range of edge weights
+max(abs(E(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net.dist)$weight))
+min(abs(E(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net.dist)$weight))
+max(abs(E(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net.dist)$weight))
+min(abs(E(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net.dist)$weight))
+day_sparxcc.weights.dist <- 1 - abs(E(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net.dist)$weight)
+night_sparxcc.weights.dist <- 1 - abs(E(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net.dist)$weight)
+E(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net.dist)$weight <- day_sparxcc.weights.dist
+E(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net.dist)$weight <- night_sparxcc.weights.dist
+## checking the range of edge weights again
+max(abs(E(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net.dist)$weight))
+min(abs(E(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net.dist)$weight))
+max(abs(E(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net.dist)$weight))
+min(abs(E(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net.dist)$weight))
+## Generating a network with absolute values
+se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net.abs <- se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net
+E(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net.abs)$weight <- abs(E(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net.abs)$weight)
+se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net.abs <- se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net
+E(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net.abs)$weight <- abs(E(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net.abs)$weight)
+## checking the range of edge weights again
+max(abs(E(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net.abs)$weight))
+min(abs(E(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net.abs)$weight))
+max(abs(E(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net.abs)$weight))
+min(abs(E(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net.abs)$weight))
+```
+
+Computing centrality metrics:
+
+```{r}
+# Calculating alpha centrality of vertices
+day_sparxcc.net.alpha <- alpha_centrality(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net)
+night_sparxcc.net.alpha <- alpha_centrality(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net)
+# degree distribution
+day_sparxcc.net.strength <- strength(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net.abs)
+night_sparxcc.net.strength <- strength(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net.abs)
+# betweenness centrality
+day_sparxcc.bet <- betweenness(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net.dist, v = V(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net.dist))
+night_sparxcc.bet <- betweenness(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net.dist, v = V(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net.dist))
+```
+
+Creating summary:
+
+```{r}
+day_sparxcc.summary_cent <- as.data.frame(day_sparxcc.net.alpha)
+night_sparxcc.summary_cent <- as.data.frame(night_sparxcc.net.alpha)
+colnames(day_sparxcc.summary_cent) <- ("Alpha_centrality")
+colnames(night_sparxcc.summary_cent) <- ("Alpha_centrality")
+rownames(day_sparxcc.summary_cent) <- colnames(day_otu_filtered_sparxcc_wallace2018_transposed)
+rownames(night_sparxcc.summary_cent) <- colnames(night_otu_filtered_sparxcc_wallace2018_transposed)
+day_sparxcc.summary_cent$Weighted_vertex_degree <- day_sparxcc.net.strength
+day_sparxcc.summary_cent$Betweenness_centrality <- day_sparxcc.bet
+day_sparxcc.metrics <- day_sparxcc.summary_cent
+night_sparxcc.summary_cent$Weighted_vertex_degree <- night_sparxcc.net.strength
+night_sparxcc.summary_cent$Betweenness_centrality <- night_sparxcc.bet
+night_sparxcc.metrics <- night_sparxcc.summary_cent
+```
+
+```{r}
+day_sparxcc.metrics
+night_sparxcc.metrics
+```
+
+Clustering the network (Louvain):
+
+```{r}
+day_sparxcc_wt <- cluster_louvain(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net, weights = E(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net.dist)$weight)
+day_sparxcc_temp <- V(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net)$name
+day_sparxcc_temp <- as.data.frame(day_sparxcc_temp)
+day_sparxcc_temp$louvain <- membership(day_sparxcc_wt)
+
+night_sparxcc_wt <- cluster_louvain(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net, weights = E(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net.dist)$weight)
+night_sparxcc_temp <- V(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net)$name
+night_sparxcc_temp <- as.data.frame(night_sparxcc_temp)
+night_sparxcc_temp$louvain <- membership(night_sparxcc_wt)
+
+V(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net)$louvain <- day_sparxcc_temp$louvain
+V(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net)
+V(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net)$louvain <- night_sparxcc_temp$louvain
+V(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net)
+
+# Just checking vertex attributes in the graph
+vertex_attr(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net)
+vertex_attr(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net)
+```
+
+Computing Zi and Pi
+
+Using function from the [brainGraph R library](https://cran.r-project.org/web/packages/brainGraph/index.html):
+
+```{r}
+#install.packages("brainGraph")
+library(brainGraph)
+# Documentation: https://search.r-project.org/CRAN/refmans/brainGraph/html/vertex_roles.html
+# Zi (within module connectivity)
+Zi_day <- within_module_deg_z_score(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net, V(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net)$louvain)
+Zi_night <- within_module_deg_z_score(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net, V(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net)$louvain)
+
+V(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net)$Zi <- Zi_day
+V(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net)$Zi <- Zi_night
+
+# Pi (among-module connectivity)
+Pi_day <- part_coeff(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net, V(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net)$louvain)
+V(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net)$Pi <- Pi_day
+Pi_night <- part_coeff(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net, V(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net)$louvain)
+V(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net)$Pi <- Pi_night
+
+se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net_df <- data.frame(Node = V(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net)$name,
+           Louvain_Module = V(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net)$louvain,
+           Zi = V(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net)$Zi,
+           Pi = V(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net)$Pi)
+se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net_df <- data.frame(Node = V(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net)$name,
+           Louvain_Module = V(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net)$louvain,
+           Zi = V(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net)$Zi,
+           Pi = V(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net)$Pi)
+
+# Scatter plot with Pi and Zi
+plot(Pi_day, Zi_day, xlab = "Among-module connectivity (Pi)", ylab = "Within-module degree z-score (Zi)")
+# Add threshold lines
+abline(v = 0.62, col = "red", lty = 2, lwd = 2)  # Horizontal line at Pi = 0.62
+abline(h = 2.5, col = "green", lty = 2, lwd = 2)  # Vertical line at Zi = 2.5
+
+```
+
+```{r}
+se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net_df[which(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net_df$Pi < 0.62 
+                                   & se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net_df$Zi > 2.5),]
+```
+
+```{r}
+se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net_df[which(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net_df$Pi < 0.62 
+                                   & se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net_df$Zi > 2.5),]
+```
+
+```{r}
+se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net_df[which(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net_df$Pi > 0.62 
+                                   & se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net_df$Zi < 2.5),]
+```
+
+
+
+
+```{r}
+se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net_df[which(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net_df$Pi > 0.62 
+                                   & se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net_df$Zi < 2.5),]
+```
+
+
+
