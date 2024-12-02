@@ -9,8 +9,8 @@ parser.add_argument('--input', type=str, metavar='SparXCC_output.txt',
                     help='The TSV file with the cross-correlation matrix output from SparXCC',
                     required=True)
 parser.add_argument('--cor_threshold', type=float, metavar='0.5',
-                    dest='cor_threshold', default=0.5,
-                    help='The threshold for the correlation coefficient to consider significant (default: 0.5).\
+                    dest='cor_threshold', default=0,
+                    help='The threshold for the correlation coefficient to consider significant (default: 0).\
                         Any correlation value greater than or equal to the positive threshold or less than or\
                             equal to the negative threshold will be considered significant.',
                     required=False)
