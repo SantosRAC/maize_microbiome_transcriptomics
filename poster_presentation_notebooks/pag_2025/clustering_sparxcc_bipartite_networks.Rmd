@@ -1,0 +1,105 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# Analysis of bipartite networks from SparXCC (Day and Night)
+
+## Importing the edge lists for Day and Night
+
+
+Correlations were obtained with all results from SparXCC having values above m (SparXCC permutation threshold).
+
+Importing the bipartite networks from SparXCC:
+
+```{r}
+library(igraph)
+
+# Reading the edge list with node names and correlations
+day_edges <- read.csv("/media/rsantos/4TB_drive/Projects/UGA_RACS/CoNekT_Grasses_Microbiome/Transcriptome_Microbiome/SparXCC/PAG2025/SparXCC_output_day_pag25_edge_list.txt", sep="\t", header=TRUE)
+night_edges <- read.csv("/media/rsantos/4TB_drive/Projects/UGA_RACS/CoNekT_Grasses_Microbiome/Transcriptome_Microbiome/SparXCC/PAG2025/SparXCC_output_night_pag25_edge_list.txt", sep="\t", header=TRUE)
+
+# Assigning the node types
+day_node_types <- c(
+  setNames(rep(TRUE, length(unique(day_edges$OTU))), unique(day_edges$OTU)),  # OTU (TRUE)
+  setNames(rep(FALSE, length(unique(day_edges$Gene))), unique(day_edges$Gene))  # Gene (FALSE)
+)
+night_node_types <- c(
+  setNames(rep(TRUE, length(unique(night_edges$OTU))), unique(night_edges$OTU)),  # OTU (TRUE)
+  setNames(rep(FALSE, length(unique(night_edges$Gene))), unique(night_edges$Gene))  # Gene (FALSE)
+)
+
+# Creating the graph objects (considering positive and negative correlations)
+day_bipartite_graph <- graph_from_data_frame(d = day_edges, directed = FALSE)
+night_bipartite_graph <- graph_from_data_frame(d = night_edges, directed = FALSE)
+
+V(day_bipartite_graph)$type <- day_node_types[V(day_bipartite_graph)$name]
+E(day_bipartite_graph)$cor <- day_edges$CorrelationCoefficient
+print(summary(day_bipartite_graph))
+print(data.frame(name = V(day_bipartite_graph)$name, type = V(bipartite_graph)$type))
+
+day_node_colors <- ifelse(V(day_bipartite_graph)$type, "lightblue", "pink")
+
+layout <- layout_with_fr(day_bipartite_graph)  # Force-directed layout
+layout <- norm_coords(layout, ymin = -2, ymax = 2, xmin = -2, xmax = 2)  # Rescale coordinates for better spacing
+
+plot(
+  day_bipartite_graph,
+  layout = layout,
+  vertex.color = day_node_colors,
+  vertex.label = V(day_bipartite_graph)$name,
+  vertex.size = 10,
+  vertex.label.cex = 0.1,
+  edge.width = E(day_bipartite_graph)$cor  # Use weights to set edge widths
+)
+```
+
+## Analyzing networks
+
+Converting correlations to absolute values:
+
+```{r}
+# Convert correlations to absolute values
+day_edges$CorrelationCoefficient <- abs(day_edges$CorrelationCoefficient)
+night_edges$CorrelationCoefficient <- abs(night_edges$CorrelationCoefficient)
+
+# Creating the graph objects considering absolute values only (magnitude of associations are revelant)
+day_bipartite_graph_abs <- graph_from_data_frame(d = day_edges, directed = FALSE)
+night_bipartite_graph_abs <- graph_from_data_frame(d = night_edges, directed = FALSE)
+
+# Node types were carried out previously
+
+# Assigning the node types
+V(day_bipartite_graph_abs)$type <- day_node_types[V(day_bipartite_graph_abs)$name]
+E(day_bipartite_graph_abs)$cor <- day_edges$CorrelationCoefficient
+V(night_bipartite_graph_abs)$type <- night_node_types[V(night_bipartite_graph_abs)$name]
+E(night_bipartite_graph_abs)$cor <- night_edges$CorrelationCoefficient
+
+
+```
+
+
+Obtaining metrics such as connectance, modularity and robustness.
+
+```{r}
+library(bipartite)
+
+# bipartite uses a biadjacency matrix to represent the network
+# Converting the graph to a biadjacency matrix using igraph function
+day_biadjacency_abs <- as_biadjacency_matrix(day_bipartite_graph_abs,
+                      types = V(day_bipartite_graph_abs)$type, # Node types (OTU and Gene)
+                      attr="cor") # Correlations (absolute values)
+night_biadjacency_abs <- as_biadjacency_matrix(night_bipartite_graph_abs,
+                      types = V(night_bipartite_graph_abs)$type, # Node types (OTU and Gene)
+                      attr="cor") # Correlations (absolute values)
+
+# Compute network modules
+day_modules_abs <- computeModules(day_biadjacency_abs,
+                                  method="Beckett",
+                                  forceLPA=FALSE)
+night_modules_abs <- computeModules(night_biadjacency_abs,
+                                  method="Beckett",
+                                  forceLPA=FALSE)
+
+
+```
