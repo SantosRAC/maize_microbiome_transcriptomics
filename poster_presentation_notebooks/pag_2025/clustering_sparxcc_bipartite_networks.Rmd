@@ -54,6 +54,18 @@ plot(
 )
 ```
 
+(This initial draft/plot does not show edges with negative values, since edge.width is set to the correlation values)
+
+Interesting questions would be:
+
+ * What are genes and OTUs that are shared, unique or different between day and night?
+ * What are the edges that are shared, unique or different between day and night?
+ 
+ 
+```{r}
+
+```
+
 ## Analyzing networks
 
 Converting correlations to absolute values:
@@ -79,7 +91,7 @@ E(night_bipartite_graph_abs)$cor <- night_edges$CorrelationCoefficient
 ```
 
 
-Obtaining metrics such as connectance, modularity and robustness.
+Generating the biadjacency matrix and computing network modules:
 
 ```{r}
 library(bipartite)
@@ -101,5 +113,140 @@ night_modules_abs <- computeModules(night_biadjacency_abs,
                                   method="Beckett",
                                   forceLPA=FALSE)
 
+node_information_day_modules_abs <- listModuleInformation(day_modules_abs)
+node_information_night_modules_abs <- listModuleInformation(night_modules_abs)
 
+length(node_information_day_modules_abs[[2]])
+length(node_information_night_modules_abs[[2]])
+
+# Create empty dataframe to store module information and fill it from the list
+day_module_info_abs <- data.frame(matrix(ncol = 3, nrow = 0))
+night_module_info_abs <- data.frame(matrix(ncol = 3, nrow = 0))
+colnames(day_module_info_abs) <- c("Module", "ModuleSizeGene", "ModuleSizeOTU")
+colnames(night_module_info_abs) <- c("Module", "ModuleSizeGene", "ModuleSizeOTU")
+
+# Deep 2 modules
+for (i in 1:length(node_information_day_modules_abs[[2]])) {
+ day_module_info_abs <- rbind(day_module_info_abs, data.frame(Module = i,
+                                                               ModuleSizeGene = length(node_information_day_modules_abs[[2]][[i]][[1]]),
+                                                               ModuleSizeOTU = length(node_information_day_modules_abs[[2]][[i]][[2]])))
+}
+
+# Deep 2 modules
+for (i in 1:length(node_information_night_modules_abs[[2]])) {
+ night_module_info_abs <- rbind(night_module_info_abs, data.frame(Module = i,
+                                                               ModuleSizeGene = length(node_information_night_modules_abs[[2]][[i]][[1]]),
+                                                               ModuleSizeOTU = length(node_information_night_modules_abs[[2]][[i]][[2]])))
+}
+
+# Export list of genes for each module
+# day
+for (i in 1:length(node_information_day_modules_abs[[2]])) {
+  write.table(node_information_day_modules_abs[[2]][[i]][[1]],
+          paste("day_mod_", i, "_genes.txt", sep=""),
+          quote=FALSE,
+          sep="\t",
+          col.names=FALSE,
+          row.names=FALSE)
+}
+for (i in 1:length(node_information_day_modules_abs[[2]])) {
+  write.table(node_information_day_modules_abs[[2]][[i]][[2]],
+          paste("day_mod_", i, "_otus.txt", sep=""),
+          quote=FALSE,
+          sep="\t",
+          col.names=FALSE,
+          row.names=FALSE)
+}
+
+# night
+?write.csv
+for (i in 1:length(node_information_night_modules_abs[[2]])) {
+  write.table(node_information_night_modules_abs[[2]][[i]][[1]],
+          paste("night_mod_", i, "_genes.txt", sep=""),
+          quote=FALSE,
+          sep="\t",
+          col.names=FALSE,
+          row.names=FALSE)
+}
+for (i in 1:length(node_information_night_modules_abs[[2]])) {
+  write.table(node_information_night_modules_abs[[2]][[i]][[2]],
+          paste("night_mod_", i, "_otus.txt", sep=""),
+          quote=FALSE,
+          sep="\t",
+          col.names=FALSE,
+          row.names=FALSE)
+}
 ```
+
+```{r}
+day_module_info_abs
+```
+
+```{r}
+night_module_info_abs
+```
+
+Interesting questions would be:
+
+ * What modules are shared or unique between day and night? (regardless of correlation signs)
+
+
+Obtaining metrics such as connectance, modularity and robustness.
+
+```{r}
+# Here is a list of metrics that can be computed with the bipartite library:
+# Connectance
+# Web asymmetry
+# Links per species
+# Number of compartments
+# Compartment diversity
+# Cluster coefficient
+# Nestedness
+# Weighted nestedness
+# Weighted NODF (Almeida-Neto & Ulrich, 2011; method employed by Zhao et al 2024 - 10.1111/mec.17442)
+# Interaction strength asymmetry
+# Interaction asymmetry
+# Specialization asymmetry
+# Linkage density
+# Fisher alpha, diversity index
+# Alatalo interaction evenness
+# Shannon diversity index
+# Network-wide specialization index
+
+networklevel_day_abs <- networklevel(day_biadjacency_abs,
+             index="ALL",
+             level="both",
+             weighted=TRUE,
+             ISAmethod="Bluethgen",
+             extinctmethod="degree",
+             nrep=100,
+             CCfun=median,
+             dist="horn",
+             normalise=TRUE,
+             empty.web=TRUE,
+             intereven="sum",
+             H2_integer=FALSE,
+             fcweighted=TRUE,
+             fcdist="euclidean",
+             effective=FALSE)
+
+networklevel_night_abs <- networklevel(night_biadjacency_abs,
+             index="ALL",
+             level="both",
+             weighted=TRUE,
+             ISAmethod="Bluethgen",
+             extinctmethod="degree",
+             nrep=100,
+             CCfun=median,
+             dist="horn",
+             normalise=TRUE,
+             empty.web=TRUE,
+             intereven="sum",
+             H2_integer=FALSE,
+             fcweighted=TRUE,
+             fcdist="euclidean",
+             effective=FALSE)
+```
+
+
+
