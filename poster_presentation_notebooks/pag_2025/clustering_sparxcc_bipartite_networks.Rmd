@@ -139,6 +139,9 @@ for (i in 1:length(node_information_night_modules_abs[[2]])) {
                                                                ModuleSizeOTU = length(node_information_night_modules_abs[[2]][[i]][[2]])))
 }
 
+day_module_info_abs
+night_module_info_abs
+
 # Export list of genes for each module
 # day
 for (i in 1:length(node_information_day_modules_abs[[2]])) {
@@ -179,11 +182,24 @@ for (i in 1:length(node_information_night_modules_abs[[2]])) {
 ```
 
 ```{r}
+library(ggplot2)
+library(reshape2)
+
 day_module_info_abs
+day_module_info_abs_melt <- melt(day_module_info_abs, id.vars='Module')
+
+ggplot(day_module_info_abs_melt, aes(x=Module, y=value, fill=variable)) +
+    geom_bar(stat='identity', position='dodge')
 ```
 
 ```{r}
+
 night_module_info_abs
+night_module_info_abs_melt <- melt(night_module_info_abs, id.vars='Module')
+night_module_info_abs_melt
+
+ggplot(night_module_info_abs_melt, aes(x=Module, y=value, fill=variable)) +
+    geom_bar(stat='identity', position='dodge')
 ```
 
 Interesting questions would be:
