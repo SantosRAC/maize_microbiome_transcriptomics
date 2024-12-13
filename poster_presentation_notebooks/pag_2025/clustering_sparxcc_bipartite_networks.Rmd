@@ -16,8 +16,10 @@ Importing the bipartite networks from SparXCC:
 library(igraph)
 
 # Reading the edge list with node names and correlations
-day_edges <- read.csv("/media/rsantos/4TB_drive/Projects/UGA_RACS/CoNekT_Grasses_Microbiome/Transcriptome_Microbiome/SparXCC/PAG2025/SparXCC_output_day_pag25_edge_list.txt", sep="\t", header=TRUE)
-night_edges <- read.csv("/media/rsantos/4TB_drive/Projects/UGA_RACS/CoNekT_Grasses_Microbiome/Transcriptome_Microbiome/SparXCC/PAG2025/SparXCC_output_night_pag25_edge_list.txt", sep="\t", header=TRUE)
+#day_edges <- read.csv("/media/rsantos/4TB_drive/Projects/UGA_RACS/CoNekT_Grasses_Microbiome/Transcriptome_Microbiome/SparXCC/PAG2025/SparXCC_output_day_pag25_edge_list.txt", sep="\t", header=TRUE)
+day_edges <- read.csv("/home/santosrac/Projects/UGA_RACS/IntegrationMetataxExpression/SparXCC_OTUs_pag2025/SparXCC_output_day_pag25_edge_list.txt", sep="\t", header=TRUE)
+#night_edges <- read.csv("/media/rsantos/4TB_drive/Projects/UGA_RACS/CoNekT_Grasses_Microbiome/Transcriptome_Microbiome/SparXCC/PAG2025/SparXCC_output_night_pag25_edge_list.txt", sep="\t", header=TRUE)
+night_edges <- read.csv("/home/santosrac/Projects/UGA_RACS/IntegrationMetataxExpression/SparXCC_OTUs_pag2025/SparXCC_output_night_pag25_edge_list.txt", sep="\t", header=TRUE)
 
 # Assigning the node types
 day_node_types <- c(
@@ -106,12 +108,14 @@ night_biadjacency_abs <- as_biadjacency_matrix(night_bipartite_graph_abs,
                       attr="cor") # Correlations (absolute values)
 
 # Compute network modules
-day_modules_abs <- computeModules(day_biadjacency_abs,
+day_modules_abs <- metaComputeModules(day_biadjacency_abs,
                                   method="Beckett",
-                                  forceLPA=FALSE)
-night_modules_abs <- computeModules(night_biadjacency_abs,
+                                  forceLPA=FALSE,
+                                  N=100)
+night_modules_abs <- metaComputeModules(night_biadjacency_abs,
                                   method="Beckett",
-                                  forceLPA=FALSE)
+                                  forceLPA=FALSE,
+                                  N=100)
 
 node_information_day_modules_abs <- listModuleInformation(day_modules_abs)
 node_information_night_modules_abs <- listModuleInformation(night_modules_abs)
