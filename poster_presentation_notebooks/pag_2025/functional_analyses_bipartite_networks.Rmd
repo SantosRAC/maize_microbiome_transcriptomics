@@ -1,0 +1,138 @@
+---
+title: "Functional analyses of bipartite networks (PAG 2025)"
+output: html_notebook
+---
+
+Installing the `clusterProfiler` package from Bioconductor.
+
+```{r}
+# Installation step
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install(version = "3.20")
+BiocManager::install("clusterProfiler")
+library(clusterProfiler)
+```
+
+Enrichment analysis of the bipartite network for KEGG pathways.
+It looks like there is maize among the available organisms in KEGG; however, the identifiers are not the same as the ones I have been working with.
+
+```{r}
+search_kegg_organism('zma', by='kegg_code')
+zma <- search_kegg_organism('Zea mays', by='scientific_name')
+dim(zma)
+zma
+```
+
+It is possible to use KOs as identifiers. Since KOs are available for maize genes on Phytozome, I will use them to perform the enrichment analysis.
+
+```{r}
+# Importing a list of identifiers from a file and converting to a vector
+day_all_identifiers <- read.table("/home/santosrac/Projects/UGA_RACS/IntegrationMetataxExpression/SparXCC_OTUs_pag2025/modules/day_mod_all_kos.txt", header = FALSE, stringsAsFactors = FALSE)
+day_all_kos <- as.vector(day_all_identifiers$V1)  # Assuming the identifiers are in the first column
+length(day_all_kos)
+day_1_identifiers <- read.table("/home/santosrac/Projects/UGA_RACS/IntegrationMetataxExpression/SparXCC_OTUs_pag2025/modules/day_mod_1_kos.txt", header = FALSE, stringsAsFactors = FALSE)
+day_1_kos <- as.vector(day_1_identifiers$V1)  # Assuming the identifiers are in the first column
+length(day_1_kos)
+day_2_identifiers <- read.table("/home/santosrac/Projects/UGA_RACS/IntegrationMetataxExpression/SparXCC_OTUs_pag2025/modules/day_mod_2_kos.txt", header = FALSE, stringsAsFactors = FALSE)
+day_2_kos <- as.vector(day_2_identifiers$V1)  # Assuming the identifiers are in the first column
+length(day_2_kos)
+day_3_identifiers <- read.table("/home/santosrac/Projects/UGA_RACS/IntegrationMetataxExpression/SparXCC_OTUs_pag2025/modules/day_mod_3_kos.txt", header = FALSE, stringsAsFactors = FALSE)
+day_3_kos <- as.vector(day_3_identifiers$V1)  # Assuming the identifiers are in the first column
+length(day_3_kos)
+day_4_identifiers <- read.table("/home/santosrac/Projects/UGA_RACS/IntegrationMetataxExpression/SparXCC_OTUs_pag2025/modules/day_mod_4_kos.txt", header = FALSE, stringsAsFactors = FALSE)
+day_4_kos <- as.vector(day_4_identifiers$V1)  # Assuming the identifiers are in the first column
+length(day_4_kos)
+day_5_identifiers <- read.table("/home/santosrac/Projects/UGA_RACS/IntegrationMetataxExpression/SparXCC_OTUs_pag2025/modules/day_mod_5_kos.txt", header = FALSE, stringsAsFactors = FALSE)
+day_5_kos <- as.vector(day_5_identifiers$V1)  # Assuming the identifiers are in the first column
+length(day_5_kos)
+day_6_identifiers <- read.table("/home/santosrac/Projects/UGA_RACS/IntegrationMetataxExpression/SparXCC_OTUs_pag2025/modules/day_mod_6_kos.txt", header = FALSE, stringsAsFactors = FALSE)
+day_6_kos <- as.vector(day_6_identifiers$V1)  # Assuming the identifiers are in the first column
+length(day_6_kos)
+```
+
+```{r}
+enrichKEGG(
+  day_all_kos,
+  organism = "ko",
+  keyType = "kegg",
+  pvalueCutoff = 0.05,
+  pAdjustMethod = "BH",
+  minGSSize = 10,
+  maxGSSize = 500,
+  qvalueCutoff = 0.2,
+  use_internal_data = FALSE
+)
+
+enrichKEGG(
+  day_1_kos,
+  organism = "ko",
+  keyType = "kegg",
+  pvalueCutoff = 0.05,
+  pAdjustMethod = "BH",
+  minGSSize = 10,
+  maxGSSize = 500,
+  qvalueCutoff = 0.2,
+  use_internal_data = FALSE
+)
+
+enrichKEGG(
+  day_2_kos,
+  organism = "ko",
+  keyType = "kegg",
+  pvalueCutoff = 0.05,
+  pAdjustMethod = "BH",
+  minGSSize = 10,
+  maxGSSize = 500,
+  qvalueCutoff = 0.2,
+  use_internal_data = FALSE
+)
+
+enrichKEGG(
+  day_3_kos,
+  organism = "ko",
+  keyType = "kegg",
+  pvalueCutoff = 0.05,
+  pAdjustMethod = "BH",
+  minGSSize = 10,
+  maxGSSize = 500,
+  qvalueCutoff = 0.2,
+  use_internal_data = FALSE
+)
+
+enrichKEGG(
+  day_4_kos,
+  organism = "ko",
+  keyType = "kegg",
+  pvalueCutoff = 0.05,
+  pAdjustMethod = "BH",
+  minGSSize = 10,
+  maxGSSize = 500,
+  qvalueCutoff = 0.2,
+  use_internal_data = FALSE
+)
+
+enrichKEGG(
+  day_5_kos,
+  organism = "ko",
+  keyType = "kegg",
+  pvalueCutoff = 0.05,
+  pAdjustMethod = "BH",
+  minGSSize = 10,
+  maxGSSize = 500,
+  qvalueCutoff = 0.2,
+  use_internal_data = FALSE
+)
+
+enrichKEGG(
+  day_6_kos,
+  organism = "ko",
+  keyType = "kegg",
+  pvalueCutoff = 0.05,
+  pAdjustMethod = "BH",
+  minGSSize = 10,
+  maxGSSize = 500,
+  qvalueCutoff = 0.2,
+  use_internal_data = FALSE
+)
+```
