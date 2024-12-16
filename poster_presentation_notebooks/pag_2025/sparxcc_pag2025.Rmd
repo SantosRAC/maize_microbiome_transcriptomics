@@ -15,18 +15,21 @@ Importing the tables:
 
 ```{r}
 # Day samples
-wallace_otu_counts_filtered_day <- read.csv("C:/Users/renat/Downloads/tmp/pag25/filtered_otu_table_day_filtered_rel_abund_cv_filtered.tsv", sep="\t", header=TRUE, row.names=1)
+#wallace_otu_counts_filtered_day <- read.csv("C:/Users/renat/Downloads/tmp/pag25/filtered_otu_table_day_filtered_rel_abund_cv_filtered.tsv", sep="\t", header=TRUE, row.names=1)
+wallace_otu_counts_filtered_day <- read.csv("/home/santosrac/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/filtered_otu_table_day_filtered_rel_abund_cv_filtered.tsv", sep="\t", header=TRUE, row.names=1)
 dim(wallace_otu_counts_filtered_day)
 head(wallace_otu_counts_filtered_day)
 colnames(wallace_otu_counts_filtered_day) <- gsub("^X", "", colnames(wallace_otu_counts_filtered_day))
 
 # Night samples
-wallace_otu_counts_filtered_night <- read.csv("C:/Users/renat/Downloads/tmp/pag25/filtered_otu_table_night_filtered_rel_abund_cv_filtered.tsv", sep="\t", header=TRUE, row.names=1)
+#wallace_otu_counts_filtered_night <- read.csv("C:/Users/renat/Downloads/tmp/pag25/filtered_otu_table_night_filtered_rel_abund_cv_filtered.tsv", sep="\t", header=TRUE, row.names=1)
+wallace_otu_counts_filtered_night <- read.csv("/home/santosrac/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/filtered_otu_table_night_filtered_rel_abund_cv_filtered.tsv", sep="\t", header=TRUE, row.names=1)
 dim(wallace_otu_counts_filtered_night)
 head(wallace_otu_counts_filtered_night)
 colnames(wallace_otu_counts_filtered_night) <- gsub("^X", "", colnames(wallace_otu_counts_filtered_night))
 
-kremling_expression_counts_filtered <- read.csv("C:/Users/renat/Downloads/tmp/pag25/expression_counts_day_night_filtered_cv_filtered.tsv", sep="\t", header=TRUE, row.names=1)
+#kremling_expression_counts_filtered <- read.csv("C:/Users/renat/Downloads/tmp/pag25/expression_counts_day_night_filtered_cv_filtered.tsv", sep="\t", header=TRUE, row.names=1)
+kremling_expression_counts_filtered <- read.csv("/home/santosrac/Projects/UGA_RACS/IntegrationMetataxExpression/SparXCC_summed_OTUs_plant_center_retreat/expression_counts_day_night_filtered_cv_filtered.tsv", sep="\t", header=TRUE, row.names=1)
 head(kremling_expression_counts_filtered)
 
 kremling_expression_counts_filtered_day <- kremling_expression_counts_filtered[, grep("day", names(kremling_expression_counts_filtered), value = TRUE)]
@@ -84,3 +87,53 @@ SparXCC_output_night <- SparXCC_base(wallace_otu_counts_filtered_night_transpose
 write.table(SparXCC_output_night, file = "SparXCC_output_night_pag25.txt", sep = "\t")
 ```
 
+Since we noticed that the difference of numbers of cross-correlations between day and night samples is too high, we decided to run the SparXCC with the same plots for both day and night.
+
+```{r}
+# Find intersection of OTUs between day and night samples
+common_plots <- intersect(colnames(wallace_otu_counts_filtered_day), colnames(wallace_otu_counts_filtered_night))
+common_plots
+
+# Select columns based on vector
+wallace_otu_counts_filtered_day_common_plots <- wallace_otu_counts_filtered_day[ , common_plots]
+wallace_otu_counts_filtered_night_common_plots <- wallace_otu_counts_filtered_night[ , common_plots]
+kremling_expression_counts_filtered_day_common_plots <- kremling_expression_counts_filtered_day[ , common_plots]
+kremling_expression_counts_filtered_night_common_plots <- kremling_expression_counts_filtered_night[ , common_plots]
+
+head(wallace_otu_counts_filtered_day_common_plots)
+head(kremling_expression_counts_filtered_day_common_plots)
+
+# Check if columns are the same and in the same order
+identical(colnames(wallace_otu_counts_filtered_day_common_plots), colnames(kremling_expression_counts_filtered_day_common_plots))
+identical(colnames(wallace_otu_counts_filtered_night_common_plots), colnames(kremling_expression_counts_filtered_night_common_plots))
+
+# Transpose dataframes
+wallace_otu_counts_filtered_day_common_plots_transposed <- t(wallace_otu_counts_filtered_day_common_plots)
+wallace_otu_counts_filtered_night_common_plots_transposed <- t(wallace_otu_counts_filtered_night_common_plots)
+kremling_expression_counts_filtered_day_common_plots_transposed <- t(kremling_expression_counts_filtered_day_common_plots)
+kremling_expression_counts_filtered_night_common_plots_transposed <- t(kremling_expression_counts_filtered_night_common_plots)
+```
+
+Running SparXCC with the same plots for both day and night samples:
+
+```{r}
+SparXCC_output_common_plots_day <- SparXCC_base(wallace_otu_counts_filtered_day_common_plots_transposed,
+                        kremling_expression_counts_filtered_day_common_plots_transposed,
+                        pseudo_count = 1,
+                        var_min = 1e-05,
+                        Find_m = TRUE,
+                        B_m = 100,
+			cores = 8)
+
+write.table(SparXCC_output_common_plots_day, file = "SparXCC_output_day_common_samples_pag25.txt", sep = "\t")
+
+SparXCC_output_common_plots_night <- SparXCC_base(wallace_otu_counts_filtered_night_common_plots_transposed,
+                        kremling_expression_counts_filtered_night_common_plots_transposed,
+                        pseudo_count = 1,
+                        var_min = 1e-05,
+                        Find_m = TRUE,
+                        B_m = 100,
+			cores = 8)
+
+write.table(SparXCC_output_common_plots_night, file = "SparXCC_output_night_common_samples_pag25.txt", sep = "\t")
+```
