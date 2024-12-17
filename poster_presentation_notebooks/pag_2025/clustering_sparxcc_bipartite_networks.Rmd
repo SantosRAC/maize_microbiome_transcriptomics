@@ -8,7 +8,9 @@ output: html_notebook
 ## Importing the edge lists for Day and Night
 
 
-Correlations were obtained with all results from SparXCC having values above m (SparXCC permutation threshold).
+Cross-correlations were obtained with all results from SparXCC having values above m (SparXCC permutation threshold).
+After evaluating cross-correlations with different number of plots or the same plots, we noticed a huge difference between them (approx. 50 plots had paired microbiome and transcriptome only in night samples).
+Therefore, to make the analysis more robust, we decided to use the same number of plots for day and night analyses (n = 174).
 
 Importing the bipartite networks from SparXCC:
 
@@ -16,10 +18,10 @@ Importing the bipartite networks from SparXCC:
 library(igraph)
 
 # Reading the edge list with node names and correlations
-#day_edges <- read.csv("/media/rsantos/4TB_drive/Projects/UGA_RACS/CoNekT_Grasses_Microbiome/Transcriptome_Microbiome/SparXCC/PAG2025/SparXCC_output_day_pag25_edge_list.txt", sep="\t", header=TRUE)
-day_edges <- read.csv("/home/santosrac/Projects/UGA_RACS/IntegrationMetataxExpression/SparXCC_OTUs_pag2025/SparXCC_output_day_pag25_edge_list.txt", sep="\t", header=TRUE)
-#night_edges <- read.csv("/media/rsantos/4TB_drive/Projects/UGA_RACS/CoNekT_Grasses_Microbiome/Transcriptome_Microbiome/SparXCC/PAG2025/SparXCC_output_night_pag25_edge_list.txt", sep="\t", header=TRUE)
-night_edges <- read.csv("/home/santosrac/Projects/UGA_RACS/IntegrationMetataxExpression/SparXCC_OTUs_pag2025/SparXCC_output_night_pag25_edge_list.txt", sep="\t", header=TRUE)
+day_edges <- read.csv("/media/rsantos/4TB_drive/Projects/UGA_RACS/CoNekT_Grasses_Microbiome/Transcriptome_Microbiome/SparXCC/PAG2025/same_plots/SparXCC_output_day_common_samples_pag25_edge_list.txt", sep="\t", header=TRUE)
+#day_edges <- read.csv("/home/santosrac/Projects/UGA_RACS/IntegrationMetataxExpression/SparXCC_OTUs_pag2025/SparXCC_output_day_pag25_edge_list.txt", sep="\t", header=TRUE)
+night_edges <- read.csv("/media/rsantos/4TB_drive/Projects/UGA_RACS/CoNekT_Grasses_Microbiome/Transcriptome_Microbiome/SparXCC/PAG2025/same_plots/SparXCC_output_night_common_samples_pag25_edge_list.txt", sep="\t", header=TRUE)
+#night_edges <- read.csv("/home/santosrac/Projects/UGA_RACS/IntegrationMetataxExpression/SparXCC_OTUs_pag2025/SparXCC_output_night_pag25_edge_list.txt", sep="\t", header=TRUE)
 
 # Assigning the node types
 day_node_types <- c(
@@ -88,8 +90,6 @@ V(day_bipartite_graph_abs)$type <- day_node_types[V(day_bipartite_graph_abs)$nam
 E(day_bipartite_graph_abs)$cor <- day_edges$CorrelationCoefficient
 V(night_bipartite_graph_abs)$type <- night_node_types[V(night_bipartite_graph_abs)$name]
 E(night_bipartite_graph_abs)$cor <- night_edges$CorrelationCoefficient
-
-
 ```
 
 
