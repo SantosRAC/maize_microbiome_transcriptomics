@@ -608,6 +608,29 @@ dim(Exp_table_long_z)
 Exp_table_long_z <- Exp_table_long_z %>%
   mutate(SampleName = factor(SampleName, levels = unique(Exp_table_long_z$SampleName)))
 dim(Exp_table_long_z)
+head(Exp_table_long_z)
+
+write.table(Exp_table_long_z, file = "Exp_table_long_z.txt", sep = "\t", quote = F, row.names = F)
+
+# Getting details about the t.test function
+?t.test
+?p.adjust
+
+# Test differences between day and night periods for each module
+modules_t_test <- Exp_table_long_z %>% 
+  group_by(module) %>% 
+  summarise(
+    p.value = t.test(TPM ~ DayPeriod)$p.value,
+    mean_day = mean(TPM[DayPeriod == "day"]),
+    mean_night = mean(TPM[DayPeriod == "night"]),
+    log_fold_change = log2(mean_day/mean_night)
+  ) %>% 
+  mutate(adj_p.value = p.adjust(p.value, method = "bonferroni")) %>%
+  filter(adj_p.value < 0.05) %>%
+  filter(abs(log_fold_change) > 1) %>%
+  arrange(desc(abs(log_fold_change)))
+
+write.table(modules_t_test, file = "modules_t_test.txt", sep = "\t", quote = F, row.names = F)
 
 # Plotting z-scores for each module
 p <- ggplot(Exp_table_long_z, aes(x = SampleName, y = z.score)) +
@@ -630,34 +653,22 @@ ggsave("plot.png", plot = p, width = 20, height = 10)
 # Create a named vector of colors based on DayPeriod
 # This vector will be the same for any module
 sample_colors <- Exp_table_long_z %>%
-  filter(module == 2) %>%
+  filter(module == 64) %>%
   distinct(SampleName, DayPeriod) %>%
   mutate(color = ifelse(DayPeriod == "day", "gold", "blue")) %>%  # Map "Day" to gold and "Night" to blue
   select(SampleName, color) %>%  # Keep only SampleName and color columns
   deframe()
 
-# Calculate mean z-scores for each SampleName in the module
-mean_z_scores_mod11 <- Exp_table_long_z %>% 
-  filter(module == 11) %>% 
-  group_by(SampleName) %>% 
-  summarise(mean_z = mean(z.score, na.rm = FALSE), .groups = "drop")
-
-# Ensure mean_z_scores has SampleName as a factor with the same order
-mean_z_scores_mod11 <- mean_z_scores_mod11 %>%
-  mutate(SampleName = factor(SampleName, levels = levels(Exp_table_long_z$SampleName)))
-
-
-# Plot z-scores for each gene in module 11
+# Plot z-scores for each gene in module 118
 p_single_module <- Exp_table_long_z %>% 
-  filter(module == 11) %>% 
+  filter(module == 118) %>% 
   ggplot(aes(x = SampleName, y = z.score)) +
   geom_line(aes(group = Name), alpha = 0.3, color = "grey70") +
-  geom_point(data = mean_z_scores_mod11, aes(x = SampleName, y = mean_z), 
-            color = "black", size = 1) +
+  stat_summary(fun = mean, aes(group = 1), geom = "line", color = "black", size = 1.2) +
   labs(
     x = NULL,
     y = "z-score",
-    title = "Module 11"
+    title = "Module 118"
   ) +
   theme_classic() +
   theme(
@@ -672,8 +683,8 @@ p_single_module <- Exp_table_long_z %>%
     panel.spacing = unit(1, "line")
   )
 
-ggsave("plot2_mod11_means.pdf", plot = p_single_module, width = 20, height = 10)
-ggsave("plot2_mod11_means.png", plot = p_single_module, width = 20, height = 10)
+ggsave("plot2_mod118_means.pdf", plot = p_single_module, width = 20, height = 10)
+ggsave("plot2_mod118_means.png", plot = p_single_module, width = 20, height = 10)
 ```
 
 For selection of the bait genes, we are probably going to use circadian genes with clear expression peaks around noon or midnight, since we are comparing day and night periods and only have two time points (11AM-1PM and 11PM-1AM).
