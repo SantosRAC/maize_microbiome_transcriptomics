@@ -3,7 +3,7 @@ title: "Co-occurrence networks for day and night samples in Wallace et al (2018)
 output: html_notebook
 ---
 
-This notebook describes the reconstruction and analysis of co-occurrence networks of day and night samples in [Wallace et al (2018)](https://apsjournals.apsnet.org/doi/10.1094/PBIOMES-02-18-0008-R) that have paired RNA-Seq data. Samples and OTUs are the same used in cross-correlations carried out between OTUs and maize genes.
+This notebook describes the reconstruction and analysis of co-occurrence networks of day and night samples in [Wallace et al (2018)](https://apsjournals.apsnet.org/doi/10.1094/PBIOMES-02-18-0008-R) that have paired RNA-Seq data. OTUs are the same used in cross-correlations carried out between OTUs and maize genes.
 
 Before reconstruction of co-occurrence networks, OTUs were filtered based on relative abundance (> 0.001 in at least 50% samples) and the coefficient of variation (OTUs above the lower quartile), as described in `filter_original_otu_counts_day_periods_with_paired_rnaseq.ipynb` (PAG 25 folder).
 
@@ -11,9 +11,9 @@ Before reconstruction of co-occurrence networks, OTUs were filtered based on rel
 library(SpiecEasi)
 
 #Importing day and night tables
-day_otu_filtered_sparxcc_wallace2018 <- read.csv('C:/Users/renat/Downloads/tmp/pag25/filtered_otu_table_day_filtered_rel_abund_cv_filtered.tsv', sep='\t', header=TRUE, row.names=1)
+day_otu_filtered_sparxcc_wallace2018 <- read.csv('/home/santosrac/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/filtered_otu_table_day_filtered_rel_abund_cv_filtered.tsv', sep='\t', header=TRUE, row.names=1)
 colnames(day_otu_filtered_sparxcc_wallace2018) <- gsub("^X", "", colnames(day_otu_filtered_sparxcc_wallace2018))
-night_otu_filtered_sparxcc_wallace2018 <- read.csv('C:/Users/renat/Downloads/tmp/pag25/filtered_otu_table_night_filtered_rel_abund_cv_filtered.tsv', sep='\t', header=TRUE, row.names=1)
+night_otu_filtered_sparxcc_wallace2018 <- read.csv('/home/santosrac/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/filtered_otu_table_night_filtered_rel_abund_cv_filtered.tsv', sep='\t', header=TRUE, row.names=1)
 colnames(night_otu_filtered_sparxcc_wallace2018) <- gsub("^X", "", colnames(night_otu_filtered_sparxcc_wallace2018))
 
 head(day_otu_filtered_sparxcc_wallace2018)
@@ -23,9 +23,9 @@ head(night_otu_filtered_sparxcc_wallace2018)
 day_otu_filtered_sparxcc_wallace2018_transposed <- t(day_otu_filtered_sparxcc_wallace2018)
 night_otu_filtered_sparxcc_wallace2018_transposed <- t(night_otu_filtered_sparxcc_wallace2018)
 
-#Running spiec-easi
-se.mb.day_otu_filtered_sparxcc_wallace2018 <- spiec.easi(day_otu_filtered_sparxcc_wallace2018_transposed, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=1))
-se.mb.night_otu_filtered_sparxcc_wallace2018 <- spiec.easi(night_otu_filtered_sparxcc_wallace2018_transposed, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=1))
+#Running spiec-easi with Meinshausen-Bühlman (MB)
+se.mb.day_otu_filtered_sparxcc_wallace2018 <- spiec.easi(day_otu_filtered_sparxcc_wallace2018_transposed, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=8))
+se.mb.night_otu_filtered_sparxcc_wallace2018 <- spiec.easi(night_otu_filtered_sparxcc_wallace2018_transposed, method='mb', lambda.min.ratio=1e-2, nlambda=20, pulsar.params=list(rep.num=50, ncores=8))
 
 #Adding OTU names to adjacency matrices
 ?getRefit
@@ -347,3 +347,17 @@ se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net_df[which(se.mb.night_otu
 
 
 
+```{r}
+# Converting graphs to edge lists
+day_edge_list <- as.data.frame(get.edgelist(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net, names = TRUE))
+day_edge_list$weight <- E(se.mb.day_otu_filtered_sparxcc_wallace2018.matrix_net)$weight
+head(day_edge_list)
+dim(day_edge_list)
+night_edge_list <- as.data.frame(get.edgelist(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net, names = TRUE))
+night_edge_list$weight <- E(se.mb.night_otu_filtered_sparxcc_wallace2018.matrix_net)$weight
+head(night_edge_list)
+dim(night_edge_list)
+# Writing edge lists to tabulate files
+write.table(day_edge_list, file = "/home/santosrac/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/co_occurrence_day_edge_list.tsv", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
+write.table(night_edge_list, file = "/home/santosrac/Repositories/maize_microbiome_transcriptomics/poster_presentation_notebooks/pag_2025/co_occurrence_night_edge_list.tsv", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
+```
